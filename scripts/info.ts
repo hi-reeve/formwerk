@@ -6,7 +6,7 @@ function reportSize({ path, code }) {
   const { size } = fs.statSync(path);
   const gzipped = gzipSizeSync(code);
 
-  return `| Size: ${filesize(size)} | Gzip: ${filesize(gzipped)}`;
+  return `size: ${filesize(size)} | gzipped: ${filesize(gzipped)}`;
 }
 
 export { reportSize };

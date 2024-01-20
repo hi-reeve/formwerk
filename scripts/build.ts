@@ -25,12 +25,27 @@ async function minify({ code, pkg, bundleName }) {
   const fileName = bundleName.replace(/\.js$/, '.min.js');
   const filePath = `${pkgout}/${fileName}`;
   fs.outputFileSync(filePath, output.code);
-  const stats = reportSize({ code: output.code, path: filePath });
-  consola.info(`Output File: ${fileName} ${stats}`);
+}
+
+function logPkgSize(pkg: string) {
+  const pkgout = path.join(__dirname, `../packages/${pkg}/dist`);
+  const fileName = pkgNameMap[pkg];
+  const filePath = `${pkgout}/${fileName}.js`;
+
+  const code = fs.readFileSync(filePath, 'utf-8');
+  const stats = reportSize({ code, path: filePath });
+
+  consola.info(`📊 @formwerk/${pkg}`, `${stats}`);
+
+  const minifiedPath = filePath.replace(/\.js$/, '.min.js');
+  const minifiedCode = fs.readFileSync(minifiedPath, 'utf-8');
+  const minifiedStats = reportSize({ code: minifiedCode, path: minifiedPath });
+
+  consola.info(`📊 @formwerk/${pkg} minified`, `${minifiedStats}`);
 }
 
 async function build(pkg) {
-  consola.start(`Generating bundle for ${pkg}`);
+  consola.start(`📦 Generating bundle for @formwerk/${pkg}`);
   const pkgout = path.join(__dirname, `../packages/${pkg}/dist`);
   for (const format of ['es', 'umd']) {
     const { input, output, bundleName } = await createConfig(pkg, format);
@@ -42,16 +57,17 @@ async function build(pkg) {
     const outputPath = path.join(pkgout, bundleName);
     fs.outputFileSync(outputPath, code);
     const stats = reportSize({ code, path: outputPath });
-    // eslint-disable-next-line
-    consola.info(`Output File: ${bundleName} ${stats}`);
+    let minifiedStats;
 
     if (format === 'umd') {
-      await minify({ bundleName, pkg, code });
+      minifiedStats = await minify({ bundleName, pkg, code });
     }
+
   }
 
   await generateDts(pkg);
-  consola.success(`📦 Bundled ${pkg}`);
+  consola.success(`📦 Bundled @formwerk/${pkg}`);
+  logPkgSize(pkg);
 
   return true;
 }

@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export async function generateDts(pkg) {
-  consola.start(`Generating Declaration Files for ${pkg} ...`);
+  consola.start(`👕 Generating Declaration Files for ${pkg} ...`);
   const declarationDir = `../packages/${pkg}/dist/types`;
 
   const options = {
@@ -61,5 +61,5 @@ async function bundleDts(declarationDir, pkg) {
   const bundle = await rollup(config as any);
   await bundle.write(config.output as any);
   await fs.remove(`packages/${pkg}/dist/types`);
-  consola.success(`Bundled ${pkg} Declaration Files`);
+  consola.success(`👕 Bundled ${pkg} Declaration Files`);
 }
