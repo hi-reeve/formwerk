@@ -1,2 +1,2 @@
 export * from './composables/useTextField';
-export const test = 1;
+export * from './composables/useSearchField';

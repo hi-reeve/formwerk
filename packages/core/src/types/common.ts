@@ -26,6 +26,7 @@ export type InputEvents = {
   onBlur?: (event: Event) => void;
   onBeforeInput?: (event: Event) => void;
   onInvalid?: (event: Event) => void;
+  onKeydown?: (event: KeyboardEvent) => void;
 };
 
 export type InputBaseAttributes = {
@@ -33,3 +34,12 @@ export type InputBaseAttributes = {
   readonly?: boolean;
   disabled?: boolean;
 };
+
+export interface TextInputBaseAttributes extends InputBaseAttributes {
+  name?: string;
+  value?: string;
+  maxlength?: number;
+  minlength?: number;
+  pattern?: string;
+  placeholder?: string;
+}
