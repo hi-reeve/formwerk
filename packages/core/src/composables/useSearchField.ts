@@ -22,6 +22,8 @@ export interface SearchFieldProps {
   modelValue?: MaybeRefOrGetter<string>;
   description?: MaybeRefOrGetter<string>;
 
+  onSubmit?: (value: string) => void;
+
   // TODO: Vue cannot resolve these types if they are mapped from up there
   name?: MaybeRefOrGetter<string>;
   value?: MaybeRefOrGetter<string>;
@@ -79,6 +81,13 @@ export function useSearchField(props: SearchFieldProps, elementRef?: Ref<HTMLInp
         e.preventDefault();
         fieldValue.value = '';
         updateValidity();
+      }
+
+      if (e.key === 'Enter' && !inputRef.value?.form && props.onSubmit) {
+        e.preventDefault();
+        if (!isInvalid.value) {
+          props.onSubmit(fieldValue.value || '');
+        }
       }
     },
     onInvalid,
