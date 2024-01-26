@@ -71,7 +71,7 @@ export function useSwitchField(props: SwitchFieldProps, elementRef?: MaybeRefOrG
   const switchProps = computed(() => ({
     role: 'switch',
     tabindex: '0',
-    'aria-checked': isPressed.value,
+    'aria-checked': isPressed.value ?? false,
     'aria-labelledby': labelProps.id,
     'aria-readonly': toValue(props.readonly) ?? undefined,
     'aria-disabled': toValue(props.disabled) ?? undefined,
