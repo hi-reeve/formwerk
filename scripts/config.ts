@@ -10,11 +10,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const formatNameMap = {
-  'core': 'FormwerkCore'
+  core: 'FormwerkCore',
 };
 
- const pkgNameMap = {
-  'core': 'core',
+const pkgNameMap = {
+  core: 'core',
 };
 
 const formatMap = {
@@ -22,11 +22,29 @@ const formatMap = {
   umd: '',
 };
 
-async function createConfig(pkg, format) {
+const createPlugins = ({ version, format, pkg }) => {
+  const isEsm = format === 'es';
   const tsPlugin = typescript({
     declarationDir: normalizePath(path.resolve(__dirname, `../packages/${pkg}/dist`)),
   });
 
+  return [
+    replace({
+      preventAssignment: true,
+      values: {
+        __VERSION__: version,
+        __DEV__: isEsm ? `(process.env.NODE_ENV !== 'production')` : 'false',
+      },
+    }),
+    tsPlugin,
+    resolve({
+      dedupe: [],
+    }),
+    commonjs(),
+  ];
+};
+
+async function createConfig(pkg, format) {
   // An import assertion in a dynamic import
   const { default: info } = await import(normalizePath(path.resolve(__dirname, `../packages/${pkg}/package.json`)), {
     assert: {
@@ -42,25 +60,8 @@ async function createConfig(pkg, format) {
     bundleName: `${pkgNameMap[pkg]}${formatMap[format] ? '.' + formatMap[format] : ''}.js`,
     input: {
       input: slashes(path.resolve(__dirname, `../packages/${pkg}/src/index.ts`)),
-      external: ['vue',
-        isEsm ? '@vue/devtools-api' : undefined,
-  ].filter(
-        Boolean,
-      ) as string[],
-      plugins: [
-        replace({
-          preventAssignment: true,
-          values: {
-            __VERSION__: version,
-            __DEV__: isEsm ? `(process.env.NODE_ENV !== 'production')` : 'false',
-          },
-        }),
-        tsPlugin,
-        resolve({
-          dedupe: [],
-        }),
-        commonjs(),
-      ],
+      external: ['vue', isEsm ? '@vue/devtools-api' : undefined].filter(Boolean) as string[],
+      plugins: createPlugins({ version, pkg, format }),
     },
     output: {
       banner: `/**
@@ -87,4 +88,4 @@ async function createConfig(pkg, format) {
   return config;
 }
 
-export { formatNameMap, pkgNameMap, formatMap, createConfig };
+export { formatNameMap, pkgNameMap, formatMap, createConfig, createPlugins };
