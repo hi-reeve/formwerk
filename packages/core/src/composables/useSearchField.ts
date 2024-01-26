@@ -77,7 +77,7 @@ export function useSearchField(props: SearchFieldProps, elementRef?: Ref<HTMLInp
       updateValidity();
     },
     onKeydown(e: KeyboardEvent) {
-      if (e.key === 'Escape' && inputRef.value?.type !== 'search') {
+      if (e.key === 'Escape') {
         e.preventDefault();
         fieldValue.value = '';
         updateValidity();
