@@ -43,6 +43,14 @@ export function useSwitchField(props: SwitchFieldProps, elementRef?: MaybeRefOrG
     },
   };
 
+  function onClick() {
+    togglePressed();
+  }
+
+  function handleClick() {
+    togglePressed();
+  }
+
   /**
    * Use this if you are using a native input[type=checkbox] element.
    */
@@ -68,6 +76,7 @@ export function useSwitchField(props: SwitchFieldProps, elementRef?: MaybeRefOrG
     'aria-readonly': toValue(props.readonly) ?? undefined,
     'aria-disabled': toValue(props.disabled) ?? undefined,
     onKeydown: handlers.onKeydown,
+    onClick,
   }));
 
   function togglePressed(force?: boolean) {
@@ -81,5 +90,6 @@ export function useSwitchField(props: SwitchFieldProps, elementRef?: MaybeRefOrG
     inputProps,
     switchProps,
     togglePressed,
+    handleClick,
   };
 }
