@@ -32,12 +32,15 @@ export type InputEvents = {
 };
 
 export type InputBaseAttributes = {
-  required?: boolean;
   readonly?: boolean;
   disabled?: boolean;
 };
 
-export interface TextInputBaseAttributes extends InputBaseAttributes {
+export interface InputBaseValidationAttributes extends InputBaseAttributes {
+  required?: boolean;
+}
+
+export interface TextInputBaseAttributes extends InputBaseValidationAttributes {
   name?: string;
   value?: string;
   maxlength?: Numberish;
