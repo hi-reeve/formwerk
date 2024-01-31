@@ -4,6 +4,7 @@ import {
   AriaLabelableProps,
   AriaValidatableProps,
   InputEvents,
+  Numberish,
   TextInputBaseAttributes,
 } from '../types/common';
 import { createDescribedByProps, createLabelProps, createRefCapture, propsToValues, uniqId } from '../utils/common';
@@ -34,8 +35,8 @@ export interface SearchFieldProps {
   // TODO: Vue cannot resolve these types if they are mapped from up there
   name?: MaybeRefOrGetter<string>;
   value?: MaybeRefOrGetter<string>;
-  maxLength?: MaybeRefOrGetter<number>;
-  minLength?: MaybeRefOrGetter<number>;
+  maxLength?: MaybeRefOrGetter<Numberish>;
+  minLength?: MaybeRefOrGetter<Numberish>;
   pattern?: MaybeRefOrGetter<string | undefined>;
   placeholder?: MaybeRefOrGetter<string | undefined>;
 

@@ -6,6 +6,7 @@ import {
   TextInputBaseAttributes,
   InputEvents,
   AriaValidatableProps,
+  Numberish,
 } from '../types/common';
 import { useFieldValue } from './useFieldValue';
 import { useSyncModel } from './useModelSync';
@@ -35,8 +36,8 @@ export interface TextFieldProps {
   name?: MaybeRefOrGetter<string>;
   value?: MaybeRefOrGetter<string>;
   type?: MaybeRefOrGetter<TextInputDOMType>;
-  maxLength?: MaybeRefOrGetter<number>;
-  minLength?: MaybeRefOrGetter<number>;
+  maxLength?: MaybeRefOrGetter<Numberish>;
+  minLength?: MaybeRefOrGetter<Numberish>;
   pattern?: MaybeRefOrGetter<string | undefined>;
   placeholder?: MaybeRefOrGetter<string | undefined>;
 

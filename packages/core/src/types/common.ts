@@ -1,3 +1,5 @@
+export type Numberish = number | `${number}`;
+
 export type AriaLabelProps = {
   id: string;
   for: string;
@@ -38,8 +40,8 @@ export type InputBaseAttributes = {
 export interface TextInputBaseAttributes extends InputBaseAttributes {
   name?: string;
   value?: string;
-  maxlength?: number;
-  minlength?: number;
+  maxlength?: Numberish;
+  minlength?: Numberish;
   pattern?: string;
   placeholder?: string;
 }
