@@ -3,7 +3,7 @@ import { useSwitchField, SwitchFieldProps } from '@formwerk/core';
 
 const props = defineProps<SwitchFieldProps>();
 
-const { inputProps, inputRef, labelProps, isPressed, handleClick } = useSwitchField(props);
+const { inputProps, labelProps, isPressed, handleClick } = useSwitchField(props);
 </script>
 
 <template>
@@ -13,7 +13,7 @@ const { inputProps, inputRef, labelProps, isPressed, handleClick } = useSwitchFi
       :class="{ 'bg-blue-500': isPressed, 'bg-gray-400': !isPressed }"
       @click="handleClick"
     >
-      <input ref="inputRef" v-bind="inputProps" type="checkbox" class="sr-only" />
+      <input v-bind="inputProps" type="checkbox" class="sr-only" />
 
       <div
         class="rounded-full w-3 h-3 flex-shrink-0 bg-white origin-center transition-transform duration-200"

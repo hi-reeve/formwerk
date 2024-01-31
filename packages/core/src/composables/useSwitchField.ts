@@ -1,6 +1,6 @@
-import { MaybeRefOrGetter, computed, ref, toValue } from 'vue';
+import { MaybeRefOrGetter, Ref, computed, shallowRef, toValue } from 'vue';
 import { AriaDescribableProps, AriaLabelableProps, InputBaseAttributes, InputEvents } from '../types/common';
-import { createLabelProps, uniqId } from '../utils/common';
+import { createLabelProps, createRefCapture, uniqId } from '../utils/common';
 import { useFieldValue } from './useFieldValue';
 
 export interface SwitchInputDOMProps
@@ -10,7 +10,8 @@ export interface SwitchInputDOMProps
     InputEvents {
   id: string;
   checked: boolean;
-  role: string;
+  name?: string;
+  role?: string;
 }
 
 export type SwitchFieldProps = {
@@ -22,9 +23,9 @@ export type SwitchFieldProps = {
   disabled?: MaybeRefOrGetter<boolean>;
 };
 
-export function useSwitchField(props: SwitchFieldProps, elementRef?: MaybeRefOrGetter<HTMLInputElement>) {
+export function useSwitchField(props: SwitchFieldProps, elementRef?: Ref<HTMLInputElement>) {
   const id = uniqId();
-  const inputRef = elementRef || ref<HTMLInputElement>();
+  const inputRef = elementRef || shallowRef<HTMLInputElement>();
   const { fieldValue: isPressed } = useFieldValue(toValue(props.modelValue) ?? false);
   const labelProps = createLabelProps(id);
 
@@ -54,16 +55,24 @@ export function useSwitchField(props: SwitchFieldProps, elementRef?: MaybeRefOrG
   /**
    * Use this if you are using a native input[type=checkbox] element.
    */
-  const inputProps = computed<SwitchInputDOMProps>(() => ({
-    id: id,
-    name: toValue(props.name),
-    'aria-labelledby': labelProps.id,
-    disabled: toValue(props.disabled),
-    readonly: toValue(props.readonly),
-    checked: isPressed.value ?? false,
-    role: 'switch',
-    ...handlers,
-  }));
+  const inputProps = computed<SwitchInputDOMProps>(() => {
+    const baseProps: SwitchInputDOMProps = {
+      id: id,
+      name: toValue(props.name),
+      'aria-labelledby': labelProps.id,
+      disabled: toValue(props.disabled),
+      readonly: toValue(props.readonly),
+      checked: isPressed.value ?? false,
+      role: 'switch',
+      ...handlers,
+    };
+
+    if (!elementRef) {
+      (baseProps as any).ref = createRefCapture(inputRef);
+    }
+
+    return baseProps;
+  });
 
   /**
    * Use this if you are using divs or buttons
