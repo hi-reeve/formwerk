@@ -1,22 +1,16 @@
 <script setup lang="ts">
 import { SearchFieldProps, useSearchField } from '@formwerk/core';
-import { watch } from 'vue';
 
 const props = defineProps<SearchFieldProps>();
 
-const { inputProps, inputRef, labelProps, fieldValue, errorMessage, errorMessageProps, clearBtnProps } =
-  useSearchField(props);
-
-watch(fieldValue, value => {
-  console.log(value, inputRef.value.validity, inputRef.value.validationMessage);
-});
+const { inputProps, labelProps, fieldValue, errorMessage, errorMessageProps, clearBtnProps } = useSearchField(props);
 </script>
 
 <template>
   <div class="InputSearch">
     <label v-bind="labelProps">{{ label }}</label>
 
-    <input ref="inputRef" v-bind="inputProps" type="text xd" />
+    <input v-bind="inputProps" type="text xd" />
 
     <span v-bind="errorMessageProps" class="error-message">
       {{ errorMessage }}

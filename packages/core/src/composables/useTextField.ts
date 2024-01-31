@@ -1,6 +1,12 @@
-import { MaybeRefOrGetter, Ref, computed, ref, toValue } from 'vue';
-import { createDescriptionProps, createErrorProps, createLabelProps, uniqId } from '../utils/common';
-import { AriaDescribableProps, AriaLabelableProps, TextInputBaseAttributes, InputEvents } from '../types/common';
+import { MaybeRefOrGetter, Ref, computed, shallowRef, toValue } from 'vue';
+import { createDescribedByProps, createLabelProps, createRefCapture, propsToValues, uniqId } from '../utils/common';
+import {
+  AriaDescribableProps,
+  AriaLabelableProps,
+  TextInputBaseAttributes,
+  InputEvents,
+  AriaValidatableProps,
+} from '../types/common';
 import { useFieldValue } from './useFieldValue';
 import { useSyncModel } from './useModelSync';
 import { useInputValidity } from './useInputValidity';
@@ -15,6 +21,7 @@ export interface TextInputDOMProps
   extends TextInputDOMAttributes,
     AriaLabelableProps,
     AriaDescribableProps,
+    AriaValidatableProps,
     InputEvents {
   id: string;
 }
@@ -40,7 +47,7 @@ export interface TextFieldProps {
 
 export function useTextField(props: TextFieldProps, elementRef?: Ref<HTMLInputElement | HTMLTextAreaElement>) {
   const inputId = uniqId();
-  const inputRef = elementRef || ref<HTMLInputElement>();
+  const inputRef = elementRef || shallowRef<HTMLInputElement>();
   const { fieldValue } = useFieldValue<string>(toValue(props.modelValue));
   const { errorMessage, onInvalid, updateValidity, validityDetails, isInvalid } = useInputValidity(inputRef);
 
@@ -52,8 +59,11 @@ export function useTextField(props: TextFieldProps, elementRef?: Ref<HTMLInputEl
   });
 
   const labelProps = createLabelProps(inputId);
-  const descriptionProps = createDescriptionProps(inputId);
-  const errorMessageProps = createErrorProps(inputId);
+  const { errorMessageProps, descriptionProps, describedBy } = createDescribedByProps({
+    inputId,
+    errorMessage,
+    description: props.description,
+  });
 
   const handlers: InputEvents = {
     onInput: (event: Event) => {
@@ -70,23 +80,28 @@ export function useTextField(props: TextFieldProps, elementRef?: Ref<HTMLInputEl
     onInvalid,
   };
 
-  const inputProps = computed<TextInputDOMProps>(() => ({
-    id: inputId,
-    'aria-labelledby': labelProps.id,
-    name: toValue(props.name),
-    value: fieldValue.value,
-    type: toValue(props.type),
-    required: toValue(props.required),
-    readonly: toValue(props.readonly),
-    disabled: toValue(props.disabled),
-    maxlength: toValue(props.maxLength),
-    minlength: toValue(props.minLength),
-    pattern: inputRef.value?.tagName === 'TEXTAREA' ? undefined : toValue(props.pattern),
-    placeholder: toValue(props.placeholder),
-    'aria-describedby': errorMessage.value ? errorMessageProps.id : props.description ? descriptionProps.id : undefined,
-    'aria-invalid': errorMessage.value ? true : undefined,
-    ...handlers,
-  }));
+  const inputProps = computed<TextInputDOMProps>(() => {
+    const baseProps: TextInputDOMProps = {
+      ...propsToValues(props, ['name', 'type', 'placeholder', 'required', 'readonly', 'disabled']),
+      id: inputId,
+      'aria-labelledby': labelProps.id,
+      value: fieldValue.value,
+      maxlength: toValue(props.maxLength),
+      minlength: toValue(props.minLength),
+      pattern: inputRef.value?.tagName === 'TEXTAREA' ? undefined : toValue(props.pattern),
+      'aria-describedby': describedBy(),
+      'aria-invalid': errorMessage.value ? true : undefined,
+      ...handlers,
+    };
+
+    // If they passed an element ref then we don't need to override it.
+    if (!elementRef) {
+      // Capture the ref
+      (baseProps as any).ref = createRefCapture(inputRef);
+    }
+
+    return baseProps;
+  });
 
   return {
     inputRef,

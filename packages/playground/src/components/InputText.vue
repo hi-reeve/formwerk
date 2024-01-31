@@ -1,21 +1,16 @@
 <script setup lang="ts">
 import { TextFieldProps, useTextField } from '@formwerk/core';
-import { watch } from 'vue';
 
 const props = defineProps<TextFieldProps>();
 
-const { inputProps, inputRef, labelProps, fieldValue, errorMessage, errorMessageProps } = useTextField(props);
-
-watch(fieldValue, value => {
-  console.log(value, inputRef.value.validity, inputRef.value.validationMessage);
-});
+const { inputProps, labelProps, errorMessage, errorMessageProps } = useTextField(props);
 </script>
 
 <template>
   <div class="InputText">
     <label v-bind="labelProps">{{ label }}</label>
 
-    <input ref="inputRef" v-bind="inputProps" />
+    <input v-bind="inputProps" />
 
     <span v-bind="errorMessageProps" class="error-message">
       {{ errorMessage }}

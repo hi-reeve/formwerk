@@ -1,6 +1,12 @@
 import { MaybeRefOrGetter, Ref, computed, ref, toValue } from 'vue';
-import { AriaDescribableProps, AriaLabelableProps, InputEvents, TextInputBaseAttributes } from '../types/common';
-import { createDescriptionProps, createErrorProps, createLabelProps, uniqId } from '../utils/common';
+import {
+  AriaDescribableProps,
+  AriaLabelableProps,
+  AriaValidatableProps,
+  InputEvents,
+  TextInputBaseAttributes,
+} from '../types/common';
+import { createDescribedByProps, createLabelProps, createRefCapture, propsToValues, uniqId } from '../utils/common';
 import { useFieldValue } from './useFieldValue';
 import { useInputValidity } from './useInputValidity';
 import { useSyncModel } from './useModelSync';
@@ -13,6 +19,7 @@ export interface SearchInputDOMProps
   extends SearchInputDOMAttributes,
     AriaLabelableProps,
     AriaDescribableProps,
+    AriaValidatableProps,
     InputEvents {
   id: string;
 }
@@ -52,8 +59,12 @@ export function useSearchField(props: SearchFieldProps, elementRef?: Ref<HTMLInp
   });
 
   const labelProps = createLabelProps(inputId);
-  const descriptionProps = createDescriptionProps(inputId);
-  const errorMessageProps = createErrorProps(inputId);
+  const { errorMessageProps, descriptionProps, describedBy } = createDescribedByProps({
+    inputId,
+    errorMessage,
+    description: props.description,
+  });
+
   const clearBtnProps = {
     tabindex: '-1',
     type: 'button' as const,
@@ -93,23 +104,26 @@ export function useSearchField(props: SearchFieldProps, elementRef?: Ref<HTMLInp
     onInvalid,
   };
 
-  const inputProps = computed<SearchInputDOMProps>(() => ({
-    id: inputId,
-    'aria-labelledby': labelProps.id,
-    name: toValue(props.name),
-    value: fieldValue.value,
-    type: 'search',
-    required: toValue(props.required),
-    readonly: toValue(props.readonly),
-    disabled: toValue(props.disabled),
-    maxlength: toValue(props.maxLength),
-    minlength: toValue(props.minLength),
-    pattern: toValue(props.pattern),
-    placeholder: toValue(props.placeholder),
-    'aria-describedby': errorMessage.value ? errorMessageProps.id : props.description ? descriptionProps.id : undefined,
-    'aria-invalid': errorMessage.value ? true : undefined,
-    ...handlers,
-  }));
+  const inputProps = computed<SearchInputDOMProps>(() => {
+    const baseProps: SearchInputDOMProps = {
+      ...propsToValues(props, ['name', 'pattern', 'placeholder', 'required', 'readonly', 'disabled']),
+      id: inputId,
+      'aria-labelledby': labelProps.id,
+      value: fieldValue.value,
+      type: 'search',
+      maxlength: toValue(props.maxLength),
+      minlength: toValue(props.minLength),
+      'aria-describedby': describedBy(),
+      'aria-invalid': errorMessage.value ? true : undefined,
+      ...handlers,
+    };
+
+    if (!elementRef) {
+      (baseProps as any).ref = createRefCapture(inputRef);
+    }
+
+    return baseProps;
+  });
 
   return {
     inputRef,
