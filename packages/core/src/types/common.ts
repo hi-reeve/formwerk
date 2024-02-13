@@ -1,3 +1,5 @@
+export type Numberish = number | `${number}`;
+
 export type AriaLabelProps = {
   id: string;
   for: string;
@@ -26,6 +28,7 @@ export type InputEvents = {
   onBlur?: (event: Event) => void;
   onBeforeInput?: (event: Event) => void;
   onInvalid?: (event: Event) => void;
+  onKeydown?: (event: KeyboardEvent) => void;
 };
 
 export type InputBaseAttributes = {
@@ -33,3 +36,12 @@ export type InputBaseAttributes = {
   readonly?: boolean;
   disabled?: boolean;
 };
+
+export interface TextInputBaseAttributes extends InputBaseAttributes {
+  name?: string;
+  value?: string;
+  maxlength?: Numberish;
+  minlength?: Numberish;
+  pattern?: string;
+  placeholder?: string;
+}
