@@ -20,6 +20,10 @@
       pattern="[0-9]+"
     />
 
+    <SwitchInput label="Toggle me" />
+
+    <Switch label="Toggle me" />
+
     <pre>{{ model }}</pre>
 
     <button class="bg-blue-500 text-white px-4 py-1.5 rounded-md">KeKL</button>
@@ -33,6 +37,8 @@ import { ref } from 'vue';
 import InputText from './components/InputText.vue';
 import InputTextArea from './components/InputTextArea.vue';
 import InputSearch from './components/InputSearch.vue';
+import SwitchInput from './components/SwitchInput.vue';
+import Switch from './components/Switch.vue';
 
 const model = ref('');
 
