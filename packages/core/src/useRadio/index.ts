@@ -216,7 +216,7 @@ export function useRadioItem<TValue = string>(
   const labelProps = createLabelProps(inputId);
 
   const handlers: InputEvents & PressEvents = {
-    onClick(e) {
+    onClick() {
       group?.setValue(props.value);
     },
     onKeydown(e) {

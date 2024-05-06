@@ -1,16 +1,7 @@
 import { consola } from 'consola';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { exec as execCb } from 'child_process';
-import { promisify } from 'util';
 import { watch } from 'rollup';
 import { createConfig, pkgNameMap } from './config';
 import { generateDts } from './generate-dts';
-
-const exec = promisify(execCb);
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 (async function RunWatcher() {
   const arg = [...process.argv][2];

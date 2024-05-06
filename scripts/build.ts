@@ -2,15 +2,11 @@ import { consola } from 'consola';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
-import { exec as execCb } from 'child_process';
-import { promisify } from 'util';
 import { rollup } from 'rollup';
 import * as Terser from 'terser';
 import { createConfig, pkgNameMap } from './config';
 import { reportSize } from './info';
 import { generateDts } from './generate-dts';
-
-const exec = promisify(execCb);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -60,11 +56,9 @@ async function build(pkg) {
 
     const outputPath = path.join(pkgout, bundleName);
     fs.outputFileSync(outputPath, code);
-    const stats = reportSize({ code, path: outputPath });
-    let minifiedStats;
 
     if (format === 'umd') {
-      minifiedStats = await minify({ bundleName, pkg, code });
+      await minify({ bundleName, pkg, code });
     }
   }
 
