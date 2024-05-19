@@ -19,6 +19,9 @@ export type SwitchProps = {
 
   readonly?: MaybeRefOrGetter<boolean>;
   disabled?: MaybeRefOrGetter<boolean>;
+
+  trueValue?: MaybeRefOrGetter<unknown>;
+  falseValue?: MaybeRefOrGetter<unknown>;
 };
 
 export function useSwitch(props: SwitchProps, elementRef?: Ref<HTMLInputElement>) {
@@ -30,13 +33,40 @@ export function useSwitch(props: SwitchProps, elementRef?: Ref<HTMLInputElement>
     targetRef: inputRef,
   });
 
-  const { fieldValue: isPressed } = useFieldValue(toValue(props.modelValue) ?? false);
+  const { fieldValue } = useFieldValue<unknown>(toValue(props.modelValue) ?? toValue(props.falseValue) ?? false);
+
+  /**
+   * Normalizes in the incoming value to be either one of the given toggled values or a boolean.
+   */
+  function normalizeValue(nextValue: unknown) {
+    if (typeof nextValue === 'boolean') {
+      return nextValue ? toValue(props.trueValue) ?? true : toValue(props.falseValue) ?? false;
+    }
+
+    const trueValue = toValue(props.trueValue);
+    if (nextValue === trueValue) {
+      return trueValue;
+    }
+
+    const falseValue = toValue(props.falseValue);
+    if (nextValue === falseValue) {
+      return falseValue;
+    }
+
+    // Normalize the incoming value to a boolean
+    return !!nextValue;
+  }
+
   useSyncModel({
-    model: isPressed,
+    model: fieldValue,
     onModelPropUpdated: value => {
-      isPressed.value = value;
+      fieldValue.value = normalizeValue(value);
     },
   });
+
+  function setValueFromEvent(e: Event) {
+    fieldValue.value = normalizeValue((e.target as HTMLInputElement).checked);
+  }
 
   const handlers: InputEvents = {
     onKeydown: (evt: KeyboardEvent) => {
@@ -45,17 +75,22 @@ export function useSwitch(props: SwitchProps, elementRef?: Ref<HTMLInputElement>
         togglePressed();
       }
     },
-    onChange(event) {
-      isPressed.value = (event.target as HTMLInputElement).checked;
-    },
-    onInput(event) {
-      isPressed.value = (event.target as HTMLInputElement).checked;
-    },
+    onChange: setValueFromEvent,
+    onInput: setValueFromEvent,
   };
 
   function onClick() {
     togglePressed();
   }
+
+  const isPressed = computed({
+    get() {
+      return fieldValue.value === (toValue(props.trueValue) ?? true);
+    },
+    set(value: boolean) {
+      fieldValue.value = normalizeValue(value);
+    },
+  });
 
   /**
    * Use this if you are using a native input[type=checkbox] element.
@@ -68,7 +103,7 @@ export function useSwitch(props: SwitchProps, elementRef?: Ref<HTMLInputElement>
         name: toValue(props.name),
         disabled: toValue(props.disabled),
         readonly: toValue(props.readonly),
-        checked: isPressed.value ?? false,
+        checked: isPressed.value,
         role: 'switch',
         ...handlers,
       },
@@ -96,6 +131,7 @@ export function useSwitch(props: SwitchProps, elementRef?: Ref<HTMLInputElement>
   }
 
   return {
+    fieldValue,
     isPressed,
     inputRef,
     labelProps,

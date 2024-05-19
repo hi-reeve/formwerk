@@ -24,8 +24,10 @@
       />
 
       <SwitchInput v-model="form.switch">Toggle me</SwitchInput>
-
       <Switch label="Toggle me" v-model="form.switch" />
+
+      <SwitchInput v-model="form.interestingSwitch" :true-value="false" :false-value="true">Toggle me</SwitchInput>
+      <Switch label="Toggle me" v-model="form.interestingSwitch" :true-value="false" :false-value="true" />
 
       <RadioGroup v-model="form.radio" name="radio" label="Radio Vertical (inputs)">
         <InputRadioItem label="Radio 1" value="1" />
