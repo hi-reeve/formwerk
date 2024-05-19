@@ -20,12 +20,11 @@ import {
   AriaValidatableProps,
   Direction,
   InputBaseAttributes,
-  InputEvents,
   Orientation,
-  PressEvents,
   RovingTabIndex,
 } from '@core/types/common';
 import { useLabel } from '@core/composables/useLabel';
+import { useSyncModel } from '@core/composables/useModelSync';
 
 export interface RadioGroupContext<TValue> {
   name: string;
@@ -85,6 +84,13 @@ export function useRadioGroup<TValue = string>(props: RadioGroupProps<TValue>) {
   });
 
   const { fieldValue } = useFieldValue(toValue(props.modelValue));
+  useSyncModel({
+    model: fieldValue,
+    onModelPropUpdated: value => {
+      fieldValue.value = value;
+    },
+  });
+
   const { setValidity, errorMessage } = useInputValidity();
   const { describedBy, descriptionProps, errorMessageProps } = createDescribedByProps({
     inputId: groupId,
@@ -224,23 +230,33 @@ export function useRadioItem<TValue = string>(
     targetRef: inputRef,
   });
 
-  const handlers: InputEvents & PressEvents = {
-    onClick() {
-      group?.setValue(props.value);
-    },
-    onKeydown(e) {
-      if (e.code === 'Space') {
-        e.preventDefault();
+  function createHandlers(isInput: boolean) {
+    const baseHandlers = {
+      onClick() {
         group?.setValue(props.value);
-      }
-    },
-    onChange() {
-      group?.setValidity(inputRef.value?.validationMessage ?? '');
-    },
-    onInvalid() {
-      group?.setValidity(inputRef.value?.validationMessage ?? '');
-    },
-  };
+      },
+      onKeydown(e: KeyboardEvent) {
+        if (e.code === 'Space') {
+          e.preventDefault();
+          group?.setValue(props.value);
+        }
+      },
+    };
+
+    if (isInput) {
+      return {
+        ...baseHandlers,
+        onChange() {
+          group?.setValidity(inputRef.value?.validationMessage ?? '');
+        },
+        onInvalid() {
+          group?.setValidity(inputRef.value?.validationMessage ?? '');
+        },
+      };
+    }
+
+    return baseHandlers;
+  }
 
   const isDisabled = () => toValue(props.disabled || group?.disabled) ?? false;
 
@@ -251,7 +267,7 @@ export function useRadioItem<TValue = string>(
   function createBindings(isInput: boolean) {
     return {
       ...labelledByProps.value,
-      ...handlers,
+      ...createHandlers(isInput),
       id: inputId,
       name: group?.name,
       [isInput ? 'checked' : 'aria-checked']: checked.value || undefined,

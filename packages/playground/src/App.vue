@@ -1,97 +1,109 @@
 <template>
-  <form class="flex flex-col gap-4">
-    <InputText
-      v-model="form.email"
-      name="email"
-      label="Email"
-      :max-length="10"
-      :min-length="3"
-      required
-      placeholder="Sinners"
-      pattern="[0-9]+"
-    />
+  <form class="flex gap-4">
+    <div class="w-1/2 flex flex-col gap-4">
+      <InputText
+        v-model="form.email"
+        name="email"
+        label="Email"
+        :max-length="10"
+        :min-length="3"
+        required
+        placeholder="Sinners"
+        pattern="[0-9]+"
+      />
 
-    <InputTextArea
-      v-model="form.area"
-      name="email"
-      label="Email"
-      :max-length="10"
-      :min-length="3"
-      required
-      placeholder="Sinners"
-      pattern="[0-9]+"
-    />
+      <InputTextArea
+        v-model="form.area"
+        name="email"
+        label="Email"
+        :max-length="10"
+        :min-length="3"
+        required
+        placeholder="Sinners"
+        pattern="[0-9]+"
+      />
 
-    <SwitchInput v-model="form.switch">Toggle me</SwitchInput>
+      <SwitchInput v-model="form.switch">Toggle me</SwitchInput>
 
-    <Switch label="Toggle me" v-model="form.switch" />
+      <Switch label="Toggle me" v-model="form.switch" />
 
-    <RadioGroup v-model="form.radio" name="radio" label="Radio Vertical (inputs)">
-      <InputRadioItem label="Radio 1" value="1" />
-      <InputRadioItem label="Radio 2" value="2" />
-      <InputRadioItem label="Radio 3" value="3" />
-    </RadioGroup>
+      <RadioGroup v-model="form.radio" name="radio" label="Radio Vertical (inputs)">
+        <InputRadioItem label="Radio 1" value="1" />
+        <InputRadioItem label="Radio 2" value="2" />
+        <InputRadioItem label="Radio 3" value="3" />
+      </RadioGroup>
 
-    <RadioGroup v-model="form.radio2" name="radio2" label="Radio Horizontal (inputs)" orientation="horizontal" required>
-      <InputRadioItem label="Radio 1" value="1" />
-      <InputRadioItem label="Radio 2" value="2" />
-      <InputRadioItem label="Radio 3" value="3" />
-    </RadioGroup>
+      <RadioGroup
+        v-model="form.radio2"
+        name="radio2"
+        label="Radio Horizontal (inputs)"
+        orientation="horizontal"
+        required
+      >
+        <InputRadioItem label="Radio 1" value="1" />
+        <InputRadioItem label="Radio 2" value="2" />
+        <InputRadioItem label="Radio 3" value="3" />
+      </RadioGroup>
 
-    <RadioGroup
-      v-model="form.radio2rtl"
-      name="radio2rtl"
-      label="Radio Horizontal (inputs, RTL)"
-      orientation="horizontal"
-      dir="rtl"
-    >
-      <InputRadioItem label="Radio 1" value="1" />
-      <InputRadioItem label="Radio 2" value="2" />
-      <InputRadioItem label="Radio 3" value="3" />
-    </RadioGroup>
+      <RadioGroup
+        v-model="form.radio2rtl"
+        name="radio2rtl"
+        label="Radio Horizontal (inputs, RTL)"
+        orientation="horizontal"
+        dir="rtl"
+      >
+        <InputRadioItem label="Radio 1" value="1" />
+        <InputRadioItem label="Radio 2" value="2" />
+        <InputRadioItem label="Radio 3" value="3" />
+      </RadioGroup>
 
-    <RadioGroup v-model="form.radio3" name="radio3" label="Radio Items (non-inputs, vertical)" orientation="vertical">
-      <RadioItem label="Radio 1" value="1" />
-      <RadioItem label="Radio 2" value="2" />
-      <RadioItem label="Radio 3" value="3" />
-    </RadioGroup>
+      <RadioGroup v-model="form.radio3" name="radio3" label="Radio Items (non-inputs, vertical)" orientation="vertical">
+        <RadioItem label="Radio 1" value="1" />
+        <RadioItem label="Radio 2" value="2" />
+        <RadioItem label="Radio 3" value="3" />
+      </RadioGroup>
 
-    <RadioGroup
-      v-model="form.radio4"
-      name="radio4"
-      label="Radio Items (non-inputs, horizontal)"
-      orientation="horizontal"
-    >
-      <RadioItem label="Drink 1" value="1" />
-      <RadioItem label="Drink 2" value="2" />
-      <RadioItem label="Drink 3" value="3" />
-    </RadioGroup>
+      <RadioGroup
+        v-model="form.radio4"
+        name="radio4"
+        label="Radio Items (non-inputs, horizontal)"
+        orientation="horizontal"
+      >
+        <RadioItem label="Drink 1" value="1" />
+        <RadioItem label="Drink 2" value="2" />
+        <RadioItem label="Drink 3" value="3" />
+      </RadioGroup>
 
-    <RadioGroup
-      v-model="form.radio5"
-      name="radio5"
-      label="Radio Items (non-inputs, horizontal, RTL)"
-      orientation="horizontal"
-      dir="rtl"
-    >
-      <RadioItem label="Radio 1" value="1" />
-      <RadioItem label="Radio 2" value="2" />
-      <RadioItem label="Radio 3" value="3" />
-    </RadioGroup>
+      <RadioGroup
+        v-model="form.radio5"
+        name="radio5"
+        label="Radio Items (non-inputs, horizontal, RTL)"
+        orientation="horizontal"
+        dir="rtl"
+      >
+        <RadioItem label="Radio 1" value="1" />
+        <RadioItem label="Radio 2" value="2" />
+        <RadioItem label="Radio 3" value="3" />
+      </RadioGroup>
 
-    <Slider v-model="form.opacity" label="Opacity" :min="0" :max="100" />
+      <Slider v-model="form.opacity" label="Opacity" :min="0" :max="100" />
 
-    <Slider v-model="form.opacity" dir="rtl" label="Opacity RTL" :min="0" :max="100" />
+      <Slider v-model="form.opacity" dir="rtl" label="Opacity RTL" :min="0" :max="100" />
 
-    <MultiSlider v-model="form.opacity2" label="Opacity Multiple" :min="0" :max="100" />
+      <MultiSlider v-model="form.opacity2" label="Opacity Multiple" :min="0" :max="100" />
 
-    <MultiSlider v-model="form.opacity2" dir="rtl" label="Opacity Multiple RTL" :min="0" :max="100" />
+      <MultiSlider v-model="form.opacity2" dir="rtl" label="Opacity Multiple RTL" :min="0" :max="100" />
 
-    <Slider v-model="form.opacity3" label="Opacity" :min="0" :max="100" :step="2" orientation="vertical" />
+      <Slider v-model="form.opacity3" label="Opacity" :min="0" :max="100" :step="2" orientation="vertical" />
 
-    <MultiSlider v-model="form.opacity4" label="Opacity" :min="0" :max="100" orientation="vertical" />
+      <MultiSlider v-model="form.opacity4" label="Opacity" :min="0" :max="100" orientation="vertical" />
 
-    <button class="mt-9 bg-blue-500 text-white px-4 py-1.5 rounded-md">KeKL</button>
+      <button class="mt-9 bg-blue-500 text-white px-4 py-1.5 rounded-md">KeKL</button>
+    </div>
+
+    <div class="w-1/2 bg-gray-200 rounded-lg p-4">
+      <pre>{{ form }}</pre>
+    </div>
   </form>
 
   <InputSearch name="search" label="Search" :min-length="10" @submit="onSearchSubmit" />

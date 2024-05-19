@@ -3,6 +3,7 @@ import { AriaDescribableProps, AriaLabelableProps, InputBaseAttributes, InputEve
 import { uniqId, withRefCapture } from '@core/utils/common';
 import { useFieldValue } from '@core/composables/useFieldValue';
 import { useLabel } from '@core/composables/useLabel';
+import { useSyncModel } from '@core/composables/useModelSync';
 
 export interface SwitchDOMProps extends InputBaseAttributes, AriaLabelableProps, AriaDescribableProps, InputEvents {
   id: string;
@@ -23,11 +24,18 @@ export type SwitchProps = {
 export function useSwitch(props: SwitchProps, elementRef?: Ref<HTMLInputElement>) {
   const id = uniqId();
   const inputRef = elementRef || shallowRef<HTMLInputElement>();
-  const { fieldValue: isPressed } = useFieldValue(toValue(props.modelValue) ?? false);
   const { labelProps, labelledByProps } = useLabel({
     for: id,
     label: props.label,
     targetRef: inputRef,
+  });
+
+  const { fieldValue: isPressed } = useFieldValue(toValue(props.modelValue) ?? false);
+  useSyncModel({
+    model: isPressed,
+    onModelPropUpdated: value => {
+      isPressed.value = value;
+    },
   });
 
   const handlers: InputEvents = {
