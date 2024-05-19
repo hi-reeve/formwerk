@@ -1,5 +1,5 @@
 import { MaybeRefOrGetter, Ref, toValue } from 'vue';
-import { AriaDescriptionProps, AriaLabelProps } from '../types/common';
+import { AriaDescriptionProps } from '@core/types/common';
 
 export function uniqId() {
   return crypto.randomUUID();
@@ -8,13 +8,6 @@ export function uniqId() {
 // TODO: Make this a proper deep equality check
 export function isEqual(lhs: unknown, rhs: unknown) {
   return lhs === rhs;
-}
-
-export function createLabelProps(inputId: string): AriaLabelProps {
-  return {
-    id: `${inputId}-l`,
-    for: inputId,
-  };
 }
 
 export function createDescriptionProps(inputId: string): AriaDescriptionProps {
