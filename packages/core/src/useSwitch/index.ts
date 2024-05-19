@@ -1,5 +1,5 @@
 import { MaybeRefOrGetter, Ref, computed, shallowRef, toValue } from 'vue';
-import { AriaDescribableProps, AriaLabelableProps, InputBaseAttributes, InputEvents } from '@core/types/common';
+import { AriaDescribableProps, AriaLabelableProps, InputBaseAttributes, InputEvents } from '@core/types';
 import { uniqId, withRefCapture } from '@core/utils/common';
 import { useFieldValue } from '@core/composables/useFieldValue';
 import { useLabel } from '@core/composables/useLabel';

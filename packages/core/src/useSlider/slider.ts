@@ -1,6 +1,6 @@
 import { InjectionKey, MaybeRefOrGetter, computed, onBeforeUnmount, provide, ref, toValue } from 'vue';
 import { useLabel } from '@core/composables/useLabel';
-import { AriaLabelableProps, Orientation } from '@core/types/common';
+import { AriaLabelableProps, Orientation } from '@core/types';
 import { uniqId, withRefCapture } from '@core/utils/common';
 import { toNearestMultipleOf } from '@core/utils/math';
 import { useSyncModel } from '@core/composables/useModelSync';

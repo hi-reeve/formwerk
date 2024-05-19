@@ -3,3 +3,4 @@ export * from './useSearchField';
 export * from './useSwitch';
 export * from './useRadio';
 export * from './useSlider';
+export * from './types/index';

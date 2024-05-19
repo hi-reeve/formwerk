@@ -6,7 +6,7 @@ import {
   InputEvents,
   Numberish,
   TextInputBaseAttributes,
-} from '@core/types/common';
+} from '@core/types';
 import { createDescribedByProps, propsToValues, uniqId, withRefCapture } from '@core/utils/common';
 import { useFieldValue } from '@core/composables/useFieldValue';
 import { useInputValidity } from '@core/composables/useInputValidity';

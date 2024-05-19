@@ -1,5 +1,5 @@
 import { MaybeRefOrGetter, computed, ref, toValue } from 'vue';
-import { Maybe, AriaLabelProps, AriaLabelableProps } from '@core/types/common';
+import { Maybe, AriaLabelProps, AriaLabelableProps } from '@core/types';
 import { createRefCapture } from '@core/utils/common';
 
 interface LabelProps {

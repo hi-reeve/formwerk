@@ -22,7 +22,7 @@ import {
   InputBaseAttributes,
   Orientation,
   RovingTabIndex,
-} from '@core/types/common';
+} from '@core/types';
 import { useLabel } from '@core/composables/useLabel';
 import { useSyncModel } from '@core/composables/useModelSync';
 
