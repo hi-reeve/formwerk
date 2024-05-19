@@ -8,10 +8,10 @@ import {
   AriaValidatableProps,
   Numberish,
 } from '../types/common';
-import { useFieldValue } from '@core/composables/useFieldValue';
-import { useSyncModel } from '@core/composables/useModelSync';
-import { useInputValidity } from '@core/composables/useInputValidity';
-import { useLabel } from '@core/composables/useLabel';
+import { useSyncModel } from '../composables/useModelSync';
+import { useInputValidity } from '../composables/useInputValidity';
+import { useLabel } from '../composables/useLabel';
+import { useFieldValue } from '../composables/useFieldValue';
 
 export type TextInputDOMType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'url';
 

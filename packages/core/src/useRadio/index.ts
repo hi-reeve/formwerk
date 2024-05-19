@@ -11,9 +11,9 @@ import {
   ref,
   toValue,
 } from 'vue';
-import { createDescribedByProps, getNextCycleArrIdx, uniqId, withRefCapture } from '@core/utils/common';
-import { useInputValidity } from '@core/composables/useInputValidity';
-import { useFieldValue } from '@core/composables/useFieldValue';
+import { createDescribedByProps, getNextCycleArrIdx, uniqId, withRefCapture } from '../utils/common';
+import { useInputValidity } from '../composables/useInputValidity';
+import { useFieldValue } from '../composables/useFieldValue';
 import {
   AriaDescribableProps,
   AriaLabelableProps,
@@ -22,9 +22,9 @@ import {
   InputBaseAttributes,
   Orientation,
   RovingTabIndex,
-} from '@core/types';
-import { useLabel } from '@core/composables/useLabel';
-import { useSyncModel } from '@core/composables/useModelSync';
+} from '../types';
+import { useLabel } from '../composables/useLabel';
+import { useSyncModel } from '../composables/useModelSync';
 
 export interface RadioGroupContext<TValue> {
   name: string;

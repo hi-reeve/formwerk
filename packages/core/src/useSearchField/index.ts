@@ -6,12 +6,12 @@ import {
   InputEvents,
   Numberish,
   TextInputBaseAttributes,
-} from '@core/types';
-import { createDescribedByProps, propsToValues, uniqId, withRefCapture } from '@core/utils/common';
-import { useFieldValue } from '@core/composables/useFieldValue';
-import { useInputValidity } from '@core/composables/useInputValidity';
-import { useSyncModel } from '@core/composables/useModelSync';
-import { useLabel } from '@core/composables/useLabel';
+} from '../types';
+import { createDescribedByProps, propsToValues, uniqId, withRefCapture } from '../utils/common';
+import { useFieldValue } from '../composables/useFieldValue';
+import { useInputValidity } from '../composables/useInputValidity';
+import { useSyncModel } from '../composables/useModelSync';
+import { useLabel } from '../composables/useLabel';
 
 export interface SearchInputDOMAttributes extends TextInputBaseAttributes {
   type?: 'search';

@@ -1,8 +1,8 @@
 import { MaybeRefOrGetter, Ref, computed, inject, ref, toValue } from 'vue';
 import { SliderContext, SliderInjectionKey, ThumbContext } from './slider';
-import { withRefCapture } from '@core/utils/common';
-import { useFieldValue } from '@core/composables/useFieldValue';
-import { Direction } from '@core/types';
+import { withRefCapture } from '../utils/common';
+import { useFieldValue } from '../composables/useFieldValue';
+import { Direction } from '../types';
 
 export interface SliderThumbProps {
   label?: MaybeRefOrGetter<string>;

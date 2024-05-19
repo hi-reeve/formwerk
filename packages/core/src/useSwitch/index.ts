@@ -1,9 +1,9 @@
 import { MaybeRefOrGetter, Ref, computed, shallowRef, toValue } from 'vue';
-import { AriaDescribableProps, AriaLabelableProps, InputBaseAttributes, InputEvents } from '@core/types';
-import { uniqId, withRefCapture } from '@core/utils/common';
-import { useFieldValue } from '@core/composables/useFieldValue';
-import { useLabel } from '@core/composables/useLabel';
-import { useSyncModel } from '@core/composables/useModelSync';
+import { AriaDescribableProps, AriaLabelableProps, InputBaseAttributes, InputEvents } from '../types';
+import { uniqId, withRefCapture } from '../utils/common';
+import { useFieldValue } from '../composables/useFieldValue';
+import { useLabel } from '../composables/useLabel';
+import { useSyncModel } from '../composables/useModelSync';
 
 export interface SwitchDOMProps extends InputBaseAttributes, AriaLabelableProps, AriaDescribableProps, InputEvents {
   id: string;

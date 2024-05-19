@@ -1,5 +1,5 @@
 import { MaybeRefOrGetter, Ref, toValue } from 'vue';
-import { AriaDescriptionProps } from '@core/types';
+import { AriaDescriptionProps } from '../types';
 
 export function uniqId() {
   return crypto.randomUUID();

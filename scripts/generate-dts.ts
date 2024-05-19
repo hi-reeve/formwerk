@@ -33,7 +33,7 @@ export async function generateDts(pkg) {
   const program = ts.createProgram([path.resolve(__dirname, `../packages/${pkg}/src/index.ts`)], options, host);
   program.emit();
   for (const [file, contents] of Object.entries(createdFiles)) {
-    fs.outputFileSync(path.resolve(__dirname, file), contents);
+    fs.outputFileSync(path.resolve(__dirname, file), contents as string);
   }
 
   await bundleDts(declarationDir, pkg);
