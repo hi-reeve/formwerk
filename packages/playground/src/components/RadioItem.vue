@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { RadioItemProps, useRadioItem } from '@formwerk/core';
+import { RadioProps, useRadio } from '@formwerk/core';
 
-const props = defineProps<RadioItemProps>();
+const props = defineProps<RadioProps>();
 
-const { labelProps, radioProps, isChecked } = useRadioItem(props);
+const { labelProps, radioProps, isChecked } = useRadio(props);
 </script>
 
 <template>
