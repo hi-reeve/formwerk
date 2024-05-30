@@ -17,6 +17,7 @@ export interface RadioDomInputProps extends AriaLabelableProps, InputBaseAttribu
 
 export interface RadioDomProps extends AriaLabelableProps {
   tabindex: RovingTabIndex;
+  role: 'radio';
   'aria-checked'?: boolean;
   'aria-readonly'?: boolean;
   'aria-disabled'?: boolean;
