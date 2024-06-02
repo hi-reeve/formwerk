@@ -92,7 +92,8 @@ export function useRadioGroup<TValue = string>(props: Reactivify<RadioGroupProps
       return;
     }
 
-    const nextCandidate = radios[getNextCycleArrIdx(currentIdx + 1, radios)];
+    const availableCandidates = radios.filter(radio => !radio.isDisabled());
+    const nextCandidate = availableCandidates[getNextCycleArrIdx(currentIdx + 1, availableCandidates)];
     nextCandidate?.setChecked();
   }
 
@@ -103,7 +104,8 @@ export function useRadioGroup<TValue = string>(props: Reactivify<RadioGroupProps
       return;
     }
 
-    const prevCandidate = radios[getNextCycleArrIdx(currentIdx - 1, radios)];
+    const availableCandidates = radios.filter(radio => !radio.isDisabled());
+    const prevCandidate = availableCandidates[getNextCycleArrIdx(currentIdx - 1, availableCandidates)];
     prevCandidate?.setChecked();
   }
 

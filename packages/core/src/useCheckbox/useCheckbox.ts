@@ -1,4 +1,4 @@
-import { Ref, computed, inject, ref, toValue } from 'vue';
+import { Ref, computed, inject, nextTick, ref, toValue } from 'vue';
 import { uniqId, withRefCapture } from '../utils/common';
 import { AriaLabelableProps, Reactivify, InputBaseAttributes, RovingTabIndex } from '../types';
 import { useLabel } from '../composables/useLabel';
@@ -82,9 +82,17 @@ export function useCheckbox<TValue = string>(
   function createHandlers(isInput: boolean) {
     const baseHandlers = {
       onClick() {
+        if (toValue(props.disabled)) {
+          return;
+        }
+
         toggleValue();
       },
       onKeydown(e: KeyboardEvent) {
+        if (toValue(props.disabled)) {
+          return;
+        }
+
         if (e.code === 'Space') {
           e.preventDefault();
           toggleValue();
@@ -107,6 +115,10 @@ export function useCheckbox<TValue = string>(
   const isDisabled = () => toValue(props.disabled || group?.disabled) ?? false;
 
   function focus() {
+    if (toValue(props.disabled)) {
+      return;
+    }
+
     inputRef.value?.focus();
   }
 
@@ -122,18 +134,19 @@ export function useCheckbox<TValue = string>(
     };
   }
 
-  // const registration = group?.useCheckboxRegistration({
-  //   isDisabled,
-  //   setChecked: (force?: boolean) => {
-  //     focus();
-  //     group?.toggleValue(getTrueValue(), force);
-  //     nextTick(() => {
-  //       group?.setValidity(inputRef.value?.validationMessage ?? '');
-  //     });
+  group?.useCheckboxRegistration({
+    isDisabled,
+    isChecked: () => checked.value,
+    setChecked: (force?: boolean) => {
+      focus();
+      group?.toggleValue(getTrueValue(), force);
+      nextTick(() => {
+        group?.setValidity(inputRef.value?.validationMessage ?? '');
+      });
 
-  //     return true;
-  //   },
-  // });
+      return true;
+    },
+  });
 
   const inputProps = computed<CheckboxDomInputProps>(() =>
     withRefCapture(
@@ -152,7 +165,7 @@ export function useCheckbox<TValue = string>(
     withRefCapture(
       {
         role: 'checkbox',
-        tabindex: '0',
+        tabindex: toValue(props.disabled) ? '-1' : '0',
         ...createBindings(false),
       },
       inputRef,

@@ -30,7 +30,7 @@ export interface CheckboxGroupContext<TCheckbox> {
   hasValue(value: TCheckbox): boolean;
   toggleValue(value: TCheckbox, force?: boolean): void;
 
-  useCheckboxRegistration(checkbox: CheckboxContext): { canReceiveFocus(): boolean };
+  useCheckboxRegistration(checkbox: CheckboxContext): void;
 }
 
 export interface CheckboxContext {
@@ -110,16 +110,9 @@ export function useCheckboxGroup<TCheckbox>(props: Reactivify<CheckboxGroupProps
 
   function useCheckboxRegistration(checkbox: CheckboxContext) {
     registerCheckbox(checkbox);
-
     onBeforeUnmount(() => {
       unregisterCheckbox(checkbox);
     });
-
-    return {
-      canReceiveFocus() {
-        return checkboxes[0] === checkbox && fieldValue.value === undefined;
-      },
-    };
   }
 
   function toggleValue(value: TCheckbox, force?: boolean) {

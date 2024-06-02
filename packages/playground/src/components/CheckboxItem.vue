@@ -17,3 +17,9 @@ const { labelProps, checkboxProps, isChecked } = useCheckbox(props);
     <span v-bind="labelProps" class="ml-1">{{ label }}</span>
   </div>
 </template>
+
+<style scoped>
+[aria-disabled='true'] {
+  @apply opacity-50;
+}
+</style>

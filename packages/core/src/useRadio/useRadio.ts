@@ -40,9 +40,17 @@ export function useRadio<TValue = string>(
   function createHandlers(isInput: boolean) {
     const baseHandlers = {
       onClick() {
+        if (toValue(props.disabled)) {
+          return;
+        }
+
         group?.setValue(toValue(props.value));
       },
       onKeydown(e: KeyboardEvent) {
+        if (toValue(props.disabled)) {
+          return;
+        }
+
         if (e.code === 'Space') {
           e.preventDefault();
           group?.setValue(toValue(props.value));

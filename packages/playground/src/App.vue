@@ -56,7 +56,7 @@
       >
         <InputRadioItem label="Radio 1" value="1" />
         <InputRadioItem label="Radio 2" value="2" />
-        <InputRadioItem label="Radio 3" value="3" />
+        <InputRadioItem label="Radio 3" disabled value="3" />
       </RadioGroup>
 
       <RadioGroup v-model="form.radio3" name="radio3" label="Radio Items (non-inputs, vertical)" orientation="vertical">
@@ -85,7 +85,7 @@
       >
         <RadioItem label="Radio 1" value="1" />
         <RadioItem label="Radio 2" value="2" />
-        <RadioItem label="Radio 3" value="3" />
+        <RadioItem label="Radio 3" disabled value="3" />
       </RadioGroup>
 
       <Slider v-model="form.opacity" label="Opacity" :min="0" :max="100" />
@@ -103,7 +103,7 @@
       <CheckboxGroup v-model="form.checkboxGroup1" name="checkbox" label="Checkbox Group">
         <CheckboxItem label="Checkbox 1" true-value="1" />
         <CheckboxItem label="Checkbox 2" true-value="2" />
-        <CheckboxItem label="Checkbox 3" true-value="3" />
+        <CheckboxItem label="Checkbox 3" disabled true-value="3" />
       </CheckboxGroup>
 
       <CheckboxItem label="Standalone Box" v-model="form.checkboxSolo1" />
@@ -111,7 +111,7 @@
       <CheckboxGroup v-model="form.checkboxGroup2" name="checkbox" label="Checkbox Group (Inputs)">
         <CheckboxInput label="Checkbox 1" true-value="1" />
         <CheckboxInput label="Checkbox 2" true-value="2" />
-        <CheckboxInput label="Checkbox 3" true-value="3" />
+        <CheckboxInput label="Checkbox 3" disabled true-value="3" />
       </CheckboxGroup>
 
       <CheckboxInput label="Standalone Input Box" :true-value="'lil'" indeterminate v-model="form.checkboxSolo2" />
