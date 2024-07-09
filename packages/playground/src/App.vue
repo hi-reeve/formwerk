@@ -106,7 +106,7 @@
         <CheckboxItem label="Checkbox 3" disabled true-value="3" />
       </CheckboxGroup>
 
-      <CheckboxItem label="Standalone Box" v-model="form.checkboxSolo1" />
+      <CheckboxItem label="Standalone Box" indeterminate v-model="form.checkboxSolo1" />
 
       <CheckboxGroup v-model="form.checkboxGroup2" name="checkbox" label="Checkbox Group (Inputs)">
         <CheckboxInput label="Checkbox 1" true-value="1" />

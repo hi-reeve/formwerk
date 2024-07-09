@@ -81,8 +81,12 @@ export function useCheckbox<TValue = string>(
 
   function createHandlers(isInput: boolean) {
     const baseHandlers = {
-      onClick() {
-        if (toValue(props.disabled)) {
+      onClick(e: Event) {
+        if (toValue(props.disabled) || toValue(props.indeterminate)) {
+          if (isInput) {
+            e.stopPropagation();
+            e.preventDefault();
+          }
           return;
         }
 
@@ -127,7 +131,7 @@ export function useCheckbox<TValue = string>(
       ...labelledByProps.value,
       ...createHandlers(isInput),
       id: inputId,
-      [isInput ? 'checked' : 'aria-checked']: checked.value || undefined,
+      [isInput ? 'checked' : 'aria-checked']: checked.value,
       [isInput ? 'readonly' : 'aria-readonly']: group?.readonly || undefined,
       [isInput ? 'disabled' : 'aria-disabled']: isDisabled() || undefined,
       [isInput ? 'required' : 'aria-required']: group?.required,
@@ -174,10 +178,20 @@ export function useCheckbox<TValue = string>(
   );
 
   function setChecked(force?: boolean) {
+    // Unless this is set to false, you cannot change the value of the checkbox
+    if (toValue(props.indeterminate)) {
+      return;
+    }
+
     group?.toggleValue(getTrueValue(), force);
   }
 
   function toggleValue(force?: boolean) {
+    // Unless this is set to false, you cannot change the value of the checkbox
+    if (toValue(props.indeterminate)) {
+      return;
+    }
+
     const shouldTrue = force ?? !checked.value;
     fieldValue.value = shouldTrue ? getTrueValue() : getFalseValue();
   }
