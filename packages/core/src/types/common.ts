@@ -25,10 +25,10 @@ export type AriaValidatableProps = {
 };
 
 export type InputEvents = {
-  onInput?: (event: Event) => void;
+  onInput?: (event: InputEvent) => void;
   onChange?: (event: Event) => void;
   onBlur?: (event: Event) => void;
-  onBeforeInput?: (event: Event) => void;
+  onBeforeinput?: (event: InputEvent) => void;
   onInvalid?: (event: Event) => void;
   onKeydown?: (event: KeyboardEvent) => void;
 };
@@ -62,6 +62,8 @@ export type RovingTabIndex = '0' | '-1';
 export type Getter<T> = () => T;
 
 export type Orientation = 'horizontal' | 'vertical';
+
+export type Orientation2D = 'horizontal' | 'vertical' | 'both';
 
 export type Direction = 'ltr' | 'rtl';
 
