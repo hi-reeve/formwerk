@@ -1,10 +1,10 @@
 import { Ref, computed, inject, nextTick, ref, toValue } from 'vue';
 import { normalizeProps, uniqId, withRefCapture } from '../utils/common';
 import { AriaLabelableProps, Reactivify, InputBaseAttributes, RovingTabIndex } from '../types';
-import { useLabel } from '../composables/useLabel';
+import { useLabel } from '../a11y/useLabel';
 import { CheckboxGroupContext, CheckboxGroupKey } from './useCheckboxGroup';
-import { useFieldValue } from '../composables/useFieldValue';
-import { useSyncModel } from '../composables/useModelSync';
+import { useFieldValue } from '../reactivity/useFieldValue';
+import { useSyncModel } from '../reactivity/useModelSync';
 
 export interface CheckboxProps<TValue = string> {
   name?: string;

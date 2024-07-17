@@ -1,7 +1,7 @@
 import { Ref, computed, inject, nextTick, ref, toValue } from 'vue';
 import { normalizeProps, uniqId, withRefCapture } from '../utils/common';
 import { AriaLabelableProps, InputBaseAttributes, Reactivify, RovingTabIndex } from '../types';
-import { useLabel } from '../composables/useLabel';
+import { useLabel } from '../a11y/useLabel';
 import { RadioGroupContext, RadioGroupKey } from './useRadioGroup';
 
 export interface RadioProps<TValue = string> {

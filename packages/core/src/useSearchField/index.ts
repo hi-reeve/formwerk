@@ -9,10 +9,10 @@ import {
   TextInputBaseAttributes,
 } from '../types';
 import { createDescribedByProps, normalizeProps, propsToValues, uniqId, withRefCapture } from '../utils/common';
-import { useFieldValue } from '../composables/useFieldValue';
-import { useInputValidity } from '../composables/useInputValidity';
-import { useSyncModel } from '../composables/useModelSync';
-import { useLabel } from '../composables/useLabel';
+import { useFieldValue } from '../reactivity/useFieldValue';
+import { useInputValidity } from '../validation/useInputValidity';
+import { useSyncModel } from '../reactivity/useModelSync';
+import { useLabel } from '../a11y/useLabel';
 
 export interface SearchInputDOMAttributes extends TextInputBaseAttributes {
   type?: 'search';

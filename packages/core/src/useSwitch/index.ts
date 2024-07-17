@@ -1,9 +1,9 @@
 import { Ref, computed, shallowRef, toValue } from 'vue';
 import { AriaDescribableProps, AriaLabelableProps, InputBaseAttributes, InputEvents, Reactivify } from '../types';
 import { normalizeProps, uniqId, withRefCapture } from '../utils/common';
-import { useFieldValue } from '../composables/useFieldValue';
-import { useLabel } from '../composables/useLabel';
-import { useSyncModel } from '../composables/useModelSync';
+import { useFieldValue } from '../reactivity/useFieldValue';
+import { useLabel } from '../a11y/useLabel';
+import { useSyncModel } from '../reactivity/useModelSync';
 
 export interface SwitchDOMProps extends InputBaseAttributes, AriaLabelableProps, AriaDescribableProps, InputEvents {
   id: string;

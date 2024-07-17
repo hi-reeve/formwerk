@@ -9,10 +9,10 @@ import {
   Numberish,
   Reactivify,
 } from '../types/common';
-import { useSyncModel } from '../composables/useModelSync';
-import { useInputValidity } from '../composables/useInputValidity';
-import { useLabel } from '../composables/useLabel';
-import { useFieldValue } from '../composables/useFieldValue';
+import { useSyncModel } from '../reactivity/useModelSync';
+import { useInputValidity } from '../validation/useInputValidity';
+import { useLabel } from '../a11y/useLabel';
+import { useFieldValue } from '../reactivity/useFieldValue';
 
 export type TextInputDOMType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'url';
 

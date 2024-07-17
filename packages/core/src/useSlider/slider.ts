@@ -1,9 +1,9 @@
 import { InjectionKey, computed, onBeforeUnmount, provide, ref, toValue } from 'vue';
-import { useLabel } from '../composables/useLabel';
+import { useLabel } from '../a11y/useLabel';
 import { AriaLabelableProps, Orientation, Reactivify } from '../types';
 import { normalizeProps, uniqId, withRefCapture } from '../utils/common';
 import { toNearestMultipleOf } from '../utils/math';
-import { useSyncModel } from '../composables/useModelSync';
+import { useSyncModel } from '../reactivity/useModelSync';
 
 export interface SliderProps {
   label?: string;

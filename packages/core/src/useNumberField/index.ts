@@ -8,12 +8,12 @@ import {
   Numberish,
   Reactivify,
 } from '../types/common';
-import { useSyncModel } from '../composables/useModelSync';
-import { useInputValidity } from '../composables/useInputValidity';
-import { useLabel } from '../composables/useLabel';
-import { useFieldValue } from '../composables/useFieldValue';
-import { useNumberFormatOptions } from '../composables/useLocale';
-import { useNumberParser } from '../i18n/numberParser';
+import { useSyncModel } from '../reactivity/useModelSync';
+import { useInputValidity } from '../validation/useInputValidity';
+import { useLabel } from '../a11y/useLabel';
+import { useFieldValue } from '../reactivity/useFieldValue';
+import { useNumberFormatOptions } from '../i18n/useLocale';
+import { useNumberParser } from '../i18n/useNumberParser';
 import { useSpinButton } from '../useSpinButton';
 
 export interface NumberInputDOMAttributes {

@@ -1,8 +1,8 @@
 import { InjectionKey, toValue, computed, onBeforeUnmount, reactive, provide } from 'vue';
-import { useFieldValue } from '../composables/useFieldValue';
-import { useInputValidity } from '../composables/useInputValidity';
-import { useLabel } from '../composables/useLabel';
-import { useSyncModel } from '../composables/useModelSync';
+import { useFieldValue } from '../reactivity/useFieldValue';
+import { useInputValidity } from '../validation/useInputValidity';
+import { useLabel } from '../a11y/useLabel';
+import { useSyncModel } from '../reactivity/useModelSync';
 import {
   Orientation,
   AriaLabelableProps,

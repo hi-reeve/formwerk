@@ -1,7 +1,7 @@
 import { computed, toValue } from 'vue';
 import { Direction, Numberish, Orientation2D, Reactivify } from '../types';
 import { toNearestMultipleOf } from '../utils/math';
-import { useButtonHold } from '../composables/useButtonHold';
+import { useButtonHold } from '../helpers/useButtonHold';
 import { normalizeProps } from '../utils/common';
 
 export interface SpinButtonProps {
