@@ -7,3 +7,4 @@ export * from './useCheckbox';
 export * from './useNumberField';
 export * from './useSpinButton';
 export * from './types/index';
+export * from './config';
