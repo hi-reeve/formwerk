@@ -26,19 +26,17 @@
       <InputNumber
         v-model="form.amount"
         name="number"
-        label="amount"
-        :max="1000000"
+        :label="`amount ${form.amount}`"
+        :max="max"
         locale="ar-EG"
-        :format-options="{
-          style: 'percent',
-        }"
+        :format-options="{ style: 'currency', currency: 'EGP' }"
         :min="0"
         :step="1"
         required
         placeholder="nani"
       />
 
-      <button @click="form.amount = 5555">chANGE AMOUNT</button>
+      <button type="button" @click="max += 5">Max ({{ max }})</button>
 
       <SwitchInput v-model="form.switch">Toggle me</SwitchInput>
       <Switch label="Toggle me" v-model="form.switch" />
@@ -46,31 +44,19 @@
       <SwitchInput v-model="form.interestingSwitch" :true-value="false" :false-value="true">Toggle me</SwitchInput>
       <Switch label="Toggle me" v-model="form.interestingSwitch" :true-value="false" :false-value="true" />
 
-      <RadioGroup v-model="form.radio" name="radio" label="Radio Vertical (inputs)">
+      <RadioGroup v-model="form.radio" name="radio" label="Radio  (inputs)" orientation="vertical">
         <InputRadioItem label="Radio 1" value="1" />
         <InputRadioItem label="Radio 2" value="2" />
         <InputRadioItem label="Radio 3" value="3" />
       </RadioGroup>
 
-      <RadioGroup
-        v-model="form.radio2"
-        name="radio2"
-        label="Radio Horizontal (inputs)"
-        orientation="horizontal"
-        required
-      >
+      <RadioGroup v-model="form.radio2" name="radio2" label="Radio Horizontal (inputs)" required>
         <InputRadioItem label="Radio 1" value="1" />
         <InputRadioItem label="Radio 2" value="2" />
         <InputRadioItem label="Radio 3" value="3" />
       </RadioGroup>
 
-      <RadioGroup
-        v-model="form.radio2rtl"
-        name="radio2rtl"
-        label="Radio Horizontal (inputs, RTL)"
-        orientation="horizontal"
-        dir="rtl"
-      >
+      <RadioGroup v-model="form.radio2rtl" name="radio2rtl" label="Radio Horizontal (inputs, RTL)" dir="rtl">
         <InputRadioItem label="Radio 1" value="1" />
         <InputRadioItem label="Radio 2" value="2" />
         <InputRadioItem label="Radio 3" disabled value="3" />
@@ -145,7 +131,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import InputText from './components/InputText.vue';
 import InputNumber from './components/InputNumber.vue';
 import InputTextArea from './components/InputTextArea.vue';
@@ -183,6 +169,8 @@ const form = reactive({
   checkboxGroup2: undefined,
   checkboxSolo2: undefined,
 });
+
+const max = ref(10);
 
 function onSearchSubmit(value: string) {
   console.log(value);
