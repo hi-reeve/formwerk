@@ -1,8 +1,8 @@
-export function useNumberFormatOptions() {
-  const { locale, ...opts } = new Intl.NumberFormat().resolvedOptions();
+import { computed } from 'vue';
+import { getConfig } from '../../config';
 
-  return {
-    locale: locale,
-    formatOptions: opts,
-  };
+export function useLocale() {
+  const locale = computed(() => getConfig().locale);
+
+  return locale;
 }

@@ -1,4 +1,5 @@
 import { MaybeRefOrGetter, toValue } from 'vue';
+import { getLocale } from '../getLocale';
 
 /**
  * Stuff that are considered "literals" that's not part of the number itself and should be stripped out when parsing/validating.
@@ -206,11 +207,17 @@ export function defineNumberParser(locale: string, options: Intl.NumberFormatOpt
 }
 
 export function useNumberParser(
-  locale: MaybeRefOrGetter<string>,
+  locale: MaybeRefOrGetter<string | undefined>,
   opts?: MaybeRefOrGetter<Intl.NumberFormatOptions | undefined>,
 ) {
-  function resolveParser(value: string) {
-    const defaultLocale = toValue(locale);
+  const resolvedLocale = getLocale();
+  // Keeps references to the last resolved parser to avoid re-resolving it.
+  // Also has the benefit to format the value with the same parser that parsed before.
+  // So it will keep the same numbering system that the user prefers.
+  let lastResolvedParser: NumberParser | null = null;
+
+  function findParser(value: string) {
+    const defaultLocale = toValue(locale) ?? toValue(resolvedLocale);
     const defaultOpts = toValue(opts) || {};
     // Gets the default parser as per the user config
     const defaultParser = getParser(defaultLocale, defaultOpts);
@@ -243,6 +250,17 @@ export function useNumberParser(
     return defaultParser;
   }
 
+  function resolveParser(value: string) {
+    if (lastResolvedParser && lastResolvedParser.isValidNumberPart(value)) {
+      return lastResolvedParser;
+    }
+
+    const parser = findParser(value);
+    lastResolvedParser = parser;
+
+    return parser;
+  }
+
   function getNumberingSystem(value: string) {
     return resolveParser(value).options.numberingSystem;
   }
@@ -256,7 +274,9 @@ export function useNumberParser(
   }
 
   function format(value: number): string {
-    return getParser(toValue(locale), toValue(opts) || {}).format(value);
+    const defaultParser = getParser(toValue(locale) ?? toValue(resolvedLocale), toValue(opts) || {});
+
+    return (lastResolvedParser ?? defaultParser).format(value);
   }
 
   return {

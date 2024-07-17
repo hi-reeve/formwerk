@@ -28,7 +28,6 @@
         name="number"
         :label="`amount ${form.amount}`"
         :max="max"
-        locale="ar-EG"
         :format-options="{ style: 'currency', currency: 'EGP' }"
         :min="0"
         :step="1"
@@ -146,6 +145,11 @@ import MultiSlider from './components/MultiSlider.vue';
 import CheckboxGroup from './components/CheckboxGroup.vue';
 import CheckboxItem from './components/CheckboxItem.vue';
 import CheckboxInput from './components/CheckboxInput.vue';
+import { configure } from '@formwerk/core';
+
+configure({
+  locale: 'ar-EG',
+});
 
 const form = reactive({
   email: '',

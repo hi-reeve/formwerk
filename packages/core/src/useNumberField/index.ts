@@ -1,5 +1,12 @@
 import { Ref, computed, nextTick, shallowRef, toValue } from 'vue';
-import { createDescribedByProps, normalizeProps, propsToValues, uniqId, withRefCapture } from '../utils/common';
+import {
+  createDescribedByProps,
+  isEmpty,
+  normalizeProps,
+  propsToValues,
+  uniqId,
+  withRefCapture,
+} from '../utils/common';
 import {
   AriaDescribableProps,
   AriaLabelableProps,
@@ -12,9 +19,9 @@ import { useSyncModel } from '../reactivity/useModelSync';
 import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel } from '../a11y/useLabel';
 import { useFieldValue } from '../reactivity/useFieldValue';
-import { useNumberFormatOptions } from '../i18n/useLocale';
 import { useNumberParser } from '../i18n/useNumberParser';
 import { useSpinButton } from '../useSpinButton';
+import { useLocale } from '../i18n/useLocale';
 
 export interface NumberInputDOMAttributes {
   name?: string;
@@ -61,12 +68,11 @@ export function useNumberField(
   const inputRef = elementRef || shallowRef<HTMLInputElement>();
   const { fieldValue } = useFieldValue<number>(toValue(props.modelValue));
   const { errorMessage, onInvalid, updateValidity, validityDetails, isInvalid } = useInputValidity(inputRef);
-  const { locale } = useNumberFormatOptions();
+  const locale = useLocale();
+  const parser = useNumberParser(() => toValue(props.locale) ?? locale.value, props.formatOptions);
 
-  const parser = useNumberParser(() => toValue(props.locale) || locale, props.formatOptions);
-
-  const formattedText = computed(() => {
-    if (Number.isNaN(fieldValue.value) || fieldValue.value === undefined) {
+  const formattedText = computed<string>(() => {
+    if (Number.isNaN(fieldValue.value) || isEmpty(fieldValue.value)) {
       return '';
     }
 

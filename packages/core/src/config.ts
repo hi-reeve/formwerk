@@ -1,16 +1,19 @@
 import { shallowRef } from 'vue';
-import { uniqId } from './utils/common';
+import { getLocale } from './i18n/getLocale';
 
 interface Config {
-  idGenerator: (prefix: string) => string;
+  locale: string;
 }
 
 const currentConfig = shallowRef<Config>({
-  idGenerator: uniqId,
+  locale: getLocale(),
 });
 
-export function configure(config: Config) {
-  return config;
+export function configure(config: Partial<Config>) {
+  currentConfig.value = {
+    ...currentConfig.value,
+    ...config,
+  };
 }
 
 export function getConfig() {
