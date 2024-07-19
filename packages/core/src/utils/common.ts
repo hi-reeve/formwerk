@@ -118,7 +118,7 @@ export function withRefCapture<TProps>(
   return props;
 }
 
-function isCallable(fn: unknown): fn is (...args: any[]) => any {
+export function isCallable(fn: unknown): fn is (...args: any[]) => any {
   return typeof fn === 'function';
 }
 
@@ -129,3 +129,5 @@ export function isNullOrUndefined(value: unknown): value is null | undefined {
 export function isEmpty(value: unknown): value is null | undefined | '' {
   return isNullOrUndefined(value) || value === '';
 }
+
+export const isSSR = typeof window === 'undefined';
