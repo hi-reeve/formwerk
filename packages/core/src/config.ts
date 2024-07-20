@@ -1,5 +1,5 @@
 import { shallowRef } from 'vue';
-import { getSiteLocale } from './i18n/useLocale/getSiteLocale';
+import { getSiteLocale } from './i18n/getSiteLocale';
 
 interface Config {
   locale: string;

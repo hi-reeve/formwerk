@@ -1,4 +1,4 @@
-import { isSSR } from '../../utils/common';
+import { isSSR } from '../utils/common';
 
 /**
  * Tries to guess the site locale based on a few strategies.

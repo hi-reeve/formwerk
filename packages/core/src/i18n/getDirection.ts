@@ -1,5 +1,5 @@
-import { Direction } from '../../types';
-import { isCallable } from '../../utils/common';
+import { Direction } from '../types';
+import { isCallable } from '../utils/common';
 
 export function getDirection(locale: string): Direction {
   try {

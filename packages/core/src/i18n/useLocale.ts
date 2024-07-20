@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { getConfig } from '../../config';
+import { getConfig } from '../config';
 import { getDirection } from './getDirection';
 
 export * from './getDirection';
