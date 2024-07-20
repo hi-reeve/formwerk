@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/vue';
-import { useLabel } from '.';
+import { useLabel } from './useLabel';
 import { ref } from 'vue';
 
 describe('label element', () => {
