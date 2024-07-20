@@ -27,7 +27,7 @@
     "dist/*.js",
     "dist/*.d.ts"
   ],
-  "peerDependencies": {
-    "vue": "^3.3.11"
+  "dependencies": {
+    "vue": "^3.4.33"
   }
 }
