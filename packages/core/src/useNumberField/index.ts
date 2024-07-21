@@ -2,6 +2,7 @@ import { Ref, computed, nextTick, shallowRef, toValue } from 'vue';
 import {
   createDescribedByProps,
   isEmpty,
+  isNullOrUndefined,
   normalizeProps,
   propsToValues,
   uniqId,
@@ -120,7 +121,7 @@ export function useNumberField(
   const handlers: InputEvents = {
     onBeforeinput: (event: InputEvent) => {
       // No data,like backspace or whatever
-      if (event.data === null) {
+      if (isNullOrUndefined(event.data)) {
         return;
       }
 
