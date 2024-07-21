@@ -67,7 +67,7 @@ export function useNumberField(
   const inputId = uniqId();
   const inputRef = elementRef || shallowRef<HTMLInputElement>();
   const { fieldValue } = useFieldValue<number>(toValue(props.modelValue));
-  const { errorMessage, onInvalid, updateValidity, validityDetails, isInvalid } = useInputValidity(inputRef);
+  const { errorMessage, updateValidity, validityDetails, isInvalid } = useInputValidity(inputRef);
   const { locale } = useLocale();
   const parser = useNumberParser(() => toValue(props.locale) ?? locale.value, props.formatOptions);
 
@@ -148,7 +148,6 @@ export function useNumberField(
     onBlur() {
       updateValidity();
     },
-    onInvalid,
   };
 
   const inputMode = computed(() => {

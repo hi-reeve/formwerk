@@ -56,7 +56,7 @@ export function useTextField(
   const inputId = uniqId();
   const inputRef = elementRef || shallowRef<HTMLInputElement>();
   const { fieldValue } = useFieldValue<string | undefined>(props.modelValue);
-  const { errorMessage, onInvalid, updateValidity, validityDetails, isInvalid } = useInputValidity(inputRef);
+  const { errorMessage, updateValidity, validityDetails, isInvalid } = useInputValidity(inputRef);
 
   useSyncModel({
     model: fieldValue,
@@ -89,7 +89,6 @@ export function useTextField(
     onBlur() {
       updateValidity();
     },
-    onInvalid,
   };
 
   const inputProps = computed<TextInputDOMProps>(() => {

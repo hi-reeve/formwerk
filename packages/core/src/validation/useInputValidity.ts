@@ -1,4 +1,5 @@
 import { Ref, computed, nextTick, ref, shallowRef } from 'vue';
+import { useEventListener } from '../helpers/useEventListener';
 
 export function useInputValidity(inputRef?: Ref<HTMLInputElement | HTMLTextAreaElement | undefined>) {
   const errorMessage = ref<string>();
@@ -22,11 +23,12 @@ export function useInputValidity(inputRef?: Ref<HTMLInputElement | HTMLTextAreaE
     });
   }
 
+  useEventListener(inputRef, 'invalid', onInvalid);
+
   return {
     errorMessage,
     validityDetails,
     isInvalid,
-    onInvalid,
     setValidity,
     updateValidity,
   };

@@ -52,7 +52,7 @@ export function useSearchField(_props: Reactivify<SearchFieldProps, 'onSubmit'>,
   const inputRef = elementRef || ref<HTMLInputElement>();
 
   const { fieldValue } = useFieldValue<string | undefined>(props.modelValue);
-  const { errorMessage, onInvalid, updateValidity, validityDetails, isInvalid } = useInputValidity(inputRef);
+  const { errorMessage, updateValidity, validityDetails, isInvalid } = useInputValidity(inputRef);
 
   useSyncModel({
     model: fieldValue,
@@ -109,7 +109,6 @@ export function useSearchField(_props: Reactivify<SearchFieldProps, 'onSubmit'>,
         }
       }
     },
-    onInvalid,
   };
 
   const inputProps = computed<SearchInputDOMProps>(() =>
