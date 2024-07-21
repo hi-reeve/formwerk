@@ -6,10 +6,6 @@ export function useInputValidity(inputRef?: Ref<HTMLInputElement | HTMLTextAreaE
   const validityDetails = shallowRef<ValidityState>();
   const isInvalid = computed(() => !!errorMessage.value);
 
-  function onInvalid() {
-    updateValidity();
-  }
-
   function setValidity(message: string) {
     errorMessage.value = message;
     inputRef?.value?.setCustomValidity(message);
@@ -23,7 +19,7 @@ export function useInputValidity(inputRef?: Ref<HTMLInputElement | HTMLTextAreaE
     });
   }
 
-  useEventListener(inputRef, 'invalid', onInvalid);
+  useEventListener(inputRef, ['invalid', 'input', 'change', 'blur'], updateValidity);
 
   return {
     errorMessage,

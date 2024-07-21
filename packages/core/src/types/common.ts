@@ -78,3 +78,5 @@ export type NormalizedProps<TProps extends object, Exclude extends keyof TProps 
       ? Getter<TValue>
       : Getter<TProps[TProp]>;
 };
+
+export type Arrayable<T> = T | T[];

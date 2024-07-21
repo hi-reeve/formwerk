@@ -86,14 +86,9 @@ export function useSearchField(_props: Reactivify<SearchFieldProps, 'onSubmit'>,
   const handlers: InputEvents = {
     onInput: (event: Event) => {
       fieldValue.value = (event.target as HTMLInputElement).value;
-      updateValidity();
     },
     onChange: (event: Event) => {
       fieldValue.value = (event.target as HTMLInputElement).value;
-      updateValidity();
-    },
-    onBlur() {
-      updateValidity();
     },
     onKeydown(e: KeyboardEvent) {
       if (e.key === 'Escape') {

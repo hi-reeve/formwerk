@@ -1,5 +1,5 @@
 import { MaybeRefOrGetter, Ref, toValue } from 'vue';
-import { AriaDescriptionProps, NormalizedProps } from '../types';
+import { AriaDescriptionProps, Arrayable, NormalizedProps } from '../types';
 
 export function uniqId() {
   return crypto.randomUUID();
@@ -131,3 +131,7 @@ export function isEmpty(value: unknown): value is null | undefined | '' {
 }
 
 export const isSSR = typeof window === 'undefined';
+
+export function normalizeArrayable<T>(value: Arrayable<T>): T[] {
+  return Array.isArray(value) ? value : [value];
+}

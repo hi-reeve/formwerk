@@ -56,7 +56,7 @@ export function useTextField(
   const inputId = uniqId();
   const inputRef = elementRef || shallowRef<HTMLInputElement>();
   const { fieldValue } = useFieldValue<string | undefined>(props.modelValue);
-  const { errorMessage, updateValidity, validityDetails, isInvalid } = useInputValidity(inputRef);
+  const { errorMessage, validityDetails, isInvalid } = useInputValidity(inputRef);
 
   useSyncModel({
     model: fieldValue,
@@ -80,14 +80,9 @@ export function useTextField(
   const handlers: InputEvents = {
     onInput: (event: Event) => {
       fieldValue.value = (event.target as HTMLInputElement).value;
-      updateValidity();
     },
     onChange: (event: Event) => {
       fieldValue.value = (event.target as HTMLInputElement).value;
-      updateValidity();
-    },
-    onBlur() {
-      updateValidity();
     },
   };
 
