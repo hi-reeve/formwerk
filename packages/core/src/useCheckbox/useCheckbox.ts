@@ -1,10 +1,9 @@
 import { Ref, computed, inject, nextTick, ref, toValue } from 'vue';
-import { normalizeProps, uniqId, withRefCapture } from '../utils/common';
+import { isEqual, normalizeProps, uniqId, withRefCapture } from '../utils/common';
 import { AriaLabelableProps, Reactivify, InputBaseAttributes, RovingTabIndex } from '../types';
 import { useLabel } from '../a11y/useLabel';
 import { CheckboxGroupContext, CheckboxGroupKey } from './useCheckboxGroup';
-import { useFieldValue } from '../reactivity/useFieldValue';
-import { useSyncModel } from '../reactivity/useModelSync';
+import { useFormField } from '../form/useFormField';
 
 export interface CheckboxProps<TValue = string> {
   name?: string;
@@ -39,26 +38,9 @@ export function useCheckbox<TValue = string>(
   const getFalseValue = () => (toValue(props.falseValue) as TValue) ?? (false as TValue);
   const group: CheckboxGroupContext<TValue> | null = inject(CheckboxGroupKey, null);
   const inputRef = elementRef || ref<HTMLInputElement>();
-  const fieldValue = group
-    ? computed({
-        get() {
-          return group.modelValue as TValue;
-        },
-        set() {
-          // TODO: WARN HERE SINCE CHECKBOX IS GROUPED, SO NO POINT IN TRYING TO CHANGE ITS FIELD VALUE
-          group.toggleValue(getTrueValue());
-        },
-      })
-    : useFieldValue<TValue>(getFalseValue()).fieldValue;
-
-  if (!group) {
-    useSyncModel({
-      model: fieldValue,
-      onModelPropUpdated(value) {
-        fieldValue.value = value;
-      },
-    });
-  }
+  const { fieldValue, setValue } = group
+    ? createGroupField(group, getTrueValue)
+    : useFormField<TValue>({ path: props.name, initialValue: toValue(props.modelValue) as TValue });
 
   const checked = computed({
     get() {
@@ -66,8 +48,7 @@ export function useCheckbox<TValue = string>(
         return group.hasValue(getTrueValue());
       }
 
-      // TODO: BETTER EQUALITY CHECK
-      return fieldValue.value === getTrueValue();
+      return isEqual(fieldValue.value, getTrueValue());
     },
     set(value: boolean) {
       setChecked(value);
@@ -194,7 +175,7 @@ export function useCheckbox<TValue = string>(
     }
 
     const shouldTrue = force ?? !checked.value;
-    fieldValue.value = shouldTrue ? getTrueValue() : getFalseValue();
+    setValue(shouldTrue ? getTrueValue() : getFalseValue());
   }
 
   return {
@@ -207,5 +188,17 @@ export function useCheckbox<TValue = string>(
     setChecked,
     toggleValue,
     focus,
+  };
+}
+
+function createGroupField<TValue = unknown>(group: CheckboxGroupContext<TValue>, getTrueValue: () => TValue) {
+  const fieldValue = computed(() => group.modelValue as TValue);
+  function setValue() {
+    group.toggleValue(getTrueValue());
+  }
+
+  return {
+    fieldValue: fieldValue as Ref<TValue | undefined>,
+    setValue,
   };
 }
