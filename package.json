@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-  "packageManager": "pnpm@8.14.1",
+  "packageManager": "pnpm@9.6.0",
   "homepage": "https://formwerk.dev",
   "repository": "https://github.com/formwerkjs/formwerk",
   "scripts": {
