@@ -1,4 +1,15 @@
-import { computed, inject, MaybeRefOrGetter, nextTick, onBeforeUnmount, readonly, ref, Ref, toValue, watch } from 'vue';
+import {
+  computed,
+  inject,
+  MaybeRefOrGetter,
+  nextTick,
+  onBeforeUnmount,
+  readonly,
+  Ref,
+  shallowRef,
+  toValue,
+  watch,
+} from 'vue';
 import { FormContextWithTransactions, FormKey } from './useForm';
 import { Getter } from '../types';
 import { useSyncModel } from '../reactivity/useModelSync';
@@ -7,6 +18,7 @@ import { cloneDeep, isEqual } from '../utils/common';
 interface FormFieldOptions<TValue = unknown> {
   path: MaybeRefOrGetter<string | undefined> | undefined;
   initialValue: TValue;
+  initialTouched: boolean;
   syncModel: boolean;
   modelName: string;
 }
@@ -15,7 +27,22 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
   const form = inject(FormKey, null);
   const getPath = () => toValue(opts?.path);
   const { fieldValue, pathlessValue, setValue } = useFieldValue(getPath, form, opts?.initialValue);
-  const { touched, setTouched } = form ? createFormTouchedRef(getPath, form) : createTouchedRef(false);
+  const { isTouched, pathlessTouched, setTouched } = form
+    ? createFormTouchedRef(getPath, form)
+    : createTouchedRef(false);
+
+  const isDirty = computed(() => {
+    if (!form) {
+      return !isEqual(fieldValue.value, opts?.initialValue);
+    }
+
+    const path = getPath();
+    if (!path) {
+      return !isEqual(pathlessValue.value, opts?.initialValue);
+    }
+
+    return !isEqual(fieldValue.value, form.getFieldOriginalValue(path));
+  });
 
   if (opts?.syncModel ?? true) {
     useSyncModel({
@@ -27,7 +54,8 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
 
   const field = {
     fieldValue: readonly(fieldValue) as Ref<TValue | undefined>,
-    touched,
+    isTouched: readonly(isTouched) as Ref<boolean>,
+    isDirty,
     setValue,
     setTouched,
   };
@@ -36,13 +64,11 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
     return field;
   }
 
-  // TODO: How to react to a field path change?
-  // We need to update the form with the new path and value, this is easy, just call `setFieldValue` with the existing value.
-  // But what about the previous path left behind? We need to remove it from the form. This is a bit tricky, because it could've been swapped with another field.
-  // This means a path could be controlled by a field or taken over by another field. We need to handle this case.
-  // This is what made vee-validate so complex, it had to handle all these cases. I need to figure a way to make this simpler. Something that just "works" without much thought.
+  initFormPathIfNecessary(form, getPath, opts?.initialValue, opts?.initialTouched ?? false);
 
-  initFormPathIfNecessary(form, getPath, opts?.initialValue);
+  form.onSubmitted(() => {
+    setTouched(true);
+  });
 
   onBeforeUnmount(() => {
     const path = getPath();
@@ -74,6 +100,7 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
           kind: SET_PATH,
           path: newPath,
           value: cloneDeep(oldPath ? tf.getFieldValue(oldPath) : pathlessValue.value),
+          touched: oldPath ? tf.isFieldTouched(oldPath) : pathlessTouched.value,
         };
       });
     }
@@ -91,18 +118,20 @@ function useFieldValue<TValue = unknown>(
 }
 
 function createTouchedRef(initialTouched?: boolean) {
-  const touched = ref(initialTouched ?? false);
+  const isTouched = shallowRef(initialTouched ?? false);
 
   return {
-    touched,
+    isTouched,
+    pathlessTouched: isTouched,
     setTouched(value: boolean) {
-      touched.value = value;
+      isTouched.value = value;
     },
   };
 }
 
 function createFormTouchedRef(getPath: Getter<string | undefined>, form: FormContextWithTransactions) {
-  const touched = computed(() => {
+  const pathlessTouched = shallowRef(false);
+  const isTouched = computed(() => {
     const path = getPath();
 
     return path ? form.isFieldTouched(path) : false;
@@ -110,13 +139,17 @@ function createFormTouchedRef(getPath: Getter<string | undefined>, form: FormCon
 
   function setTouched(value: boolean) {
     const path = getPath();
-    if (path) {
+    const isDifferent = pathlessTouched.value !== value;
+    pathlessTouched.value = value;
+    // Only update it if the value is actually different, this avoids unnecessary path traversal/creation
+    if (path && isDifferent) {
       form.setFieldTouched(path, value);
     }
   }
 
   return {
-    touched,
+    isTouched,
+    pathlessTouched,
     setTouched,
   };
 }
@@ -126,7 +159,7 @@ function createFormValueRef<TValue = unknown>(
   form: FormContextWithTransactions,
   initialValue?: TValue | undefined,
 ) {
-  const pathlessValue = ref(toValue(initialValue ?? undefined)) as Ref<TValue | undefined>;
+  const pathlessValue = shallowRef(toValue(initialValue ?? undefined)) as Ref<TValue | undefined>;
 
   const fieldValue = computed(() => {
     const path = getPath();
@@ -150,7 +183,7 @@ function createFormValueRef<TValue = unknown>(
 }
 
 function createValueRef<TValue = unknown>(initialValue?: TValue) {
-  const fieldValue = ref(toValue(initialValue ?? undefined)) as Ref<TValue | undefined>;
+  const fieldValue = shallowRef(toValue(initialValue ?? undefined)) as Ref<TValue | undefined>;
 
   return {
     fieldValue,
@@ -168,6 +201,7 @@ function initFormPathIfNecessary(
   form: FormContextWithTransactions,
   getPath: Getter<string | undefined>,
   initialValue: unknown,
+  initialTouched: boolean,
 ) {
   const path = getPath();
   if (!path) {
@@ -181,6 +215,7 @@ function initFormPathIfNecessary(
         kind: INIT_PATH,
         path,
         value: initialValue,
+        touched: initialTouched,
       }));
     });
     return;
@@ -193,6 +228,7 @@ function initFormPathIfNecessary(
         kind: INIT_PATH,
         path,
         value: initialValue,
+        touched: initialTouched,
       }));
     });
 
