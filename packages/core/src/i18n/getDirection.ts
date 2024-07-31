@@ -13,7 +13,7 @@ export function getDirection(locale: string): Direction {
     }
 
     throw new Error(`Cannot determine direction for locale ${locale}`);
-  } catch (err) {
+  } catch {
     // TODO: WARN
 
     return 'ltr';

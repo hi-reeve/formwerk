@@ -21,7 +21,7 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['packages/core/dist/*', 'packages/playground/dist/*'],
+    ignores: ['packages/**/dist/*', 'coverage/*'],
   },
   {
     files: ['packages/playground/postcss.config.js'],
