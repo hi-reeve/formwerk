@@ -1,6 +1,6 @@
 import { computed, InjectionKey, provide, reactive, readonly } from 'vue';
 import { cloneDeep, isEqual, useUniqId } from '../utils/common';
-import { FormObject, MaybeAsync, MaybeGetter, TouchedSchema, Path } from '../types';
+import { FormObject, MaybeAsync, MaybeGetter, TouchedSchema, DisabledSchema, ValiditySchema, Path } from '../types';
 import { createFormContext, FormContext } from './formContext';
 import { FormTransactionManager, useFormTransactions } from './useFormTransactions';
 import { useFormActions } from './useFormActions';
@@ -29,7 +29,20 @@ export function useForm<TForm extends FormObject = FormObject>(opts?: Partial<Fo
 
   const values = reactive(cloneDeep(valuesSnapshot.originals.value)) as TForm;
   const touched = reactive(cloneDeep(touchedSnapshot.originals.value)) as TouchedSchema<TForm>;
-  const disabled = {} as Partial<Record<Path<TForm>, boolean>>;
+  const disabled = {} as DisabledSchema<TForm>;
+  const errors = reactive({}) as ValiditySchema<TForm>;
+
+  const ctx = createFormContext({
+    id: opts?.id || useUniqId('form'),
+    values,
+    touched,
+    disabled,
+    errors,
+    snapshots: {
+      values: valuesSnapshot,
+      touched: touchedSnapshot,
+    },
+  });
 
   const isTouched = computed(() => {
     return !!findLeaf(touched, l => l === true);
@@ -39,15 +52,8 @@ export function useForm<TForm extends FormObject = FormObject>(opts?: Partial<Fo
     return !isEqual(values, valuesSnapshot.originals.value);
   });
 
-  const ctx = createFormContext({
-    id: opts?.id || useUniqId('form'),
-    values,
-    touched,
-    disabled,
-    snapshots: {
-      values: valuesSnapshot,
-      touched: touchedSnapshot,
-    },
+  const isValid = computed(() => {
+    return !ctx.hasErrors();
   });
 
   function onAsyncInit(v: TForm) {
@@ -56,6 +62,10 @@ export function useForm<TForm extends FormObject = FormObject>(opts?: Partial<Fo
 
   const transactionsManager = useFormTransactions(ctx);
   const { actions, onSubmitted, isSubmitting } = useFormActions(ctx, disabled);
+
+  function getError<TPath extends Path<TForm>>(path: TPath): string | undefined {
+    return ctx.getFieldErrors(path)[0];
+  }
 
   provide(FormKey, {
     ...ctx,
@@ -69,11 +79,14 @@ export function useForm<TForm extends FormObject = FormObject>(opts?: Partial<Fo
     isSubmitting,
     isTouched,
     isDirty,
+    isValid,
     setFieldValue: ctx.setFieldValue,
     getFieldValue: ctx.getFieldValue,
     isFieldTouched: ctx.isFieldTouched,
     setFieldTouched: ctx.setFieldTouched,
+    setFieldErrors: ctx.setFieldErrors,
     setValues: ctx.setValues,
+    getError,
     ...actions,
   };
 }

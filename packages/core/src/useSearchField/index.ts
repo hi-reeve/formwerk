@@ -13,6 +13,7 @@ import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel } from '../a11y/useLabel';
 import { useFormField } from '../form/useFormField';
 import { FieldTypePrefixes } from '../constants';
+import { useErrorDisplay } from '../form/useErrorDisplay';
 
 export interface SearchInputDOMAttributes extends TextInputBaseAttributes {
   type?: 'search';
@@ -50,13 +51,15 @@ export function useSearchField(_props: Reactivify<SearchFieldProps, 'onSubmit'>,
   const props = normalizeProps(_props, ['onSubmit']);
   const inputId = useUniqId(FieldTypePrefixes.SearchField);
   const inputRef = elementRef || ref<HTMLInputElement>();
-
-  const { errorMessage, updateValidity, validityDetails, isInvalid } = useInputValidity(inputRef);
-  const { fieldValue, setValue, isTouched, setTouched } = useFormField<string | undefined>({
+  const field = useFormField<string | undefined>({
     path: props.name,
     initialValue: toValue(props.modelValue),
     disabled: props.disabled,
   });
+
+  const { validityDetails, updateValidity } = useInputValidity({ inputRef, field });
+  const { displayError } = useErrorDisplay(field);
+  const { fieldValue, setValue, isTouched, setTouched, errorMessage, isValid, errors } = field;
 
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
@@ -102,7 +105,7 @@ export function useSearchField(_props: Reactivify<SearchFieldProps, 'onSubmit'>,
       if (e.key === 'Enter' && !inputRef.value?.form && props.onSubmit) {
         e.preventDefault();
         setTouched(true);
-        if (!isInvalid.value) {
+        if (isValid.value) {
           props.onSubmit(fieldValue.value || '');
         }
       }
@@ -138,7 +141,13 @@ export function useSearchField(_props: Reactivify<SearchFieldProps, 'onSubmit'>,
     descriptionProps,
     clearBtnProps,
     validityDetails,
-    isInvalid,
+    isValid,
     isTouched,
+    errors,
+
+    setErrors: field.setErrors,
+    setValue: field.setValue,
+    setTouched: field.setTouched,
+    displayError,
   };
 }

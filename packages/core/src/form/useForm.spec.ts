@@ -1,7 +1,9 @@
 import { renderSetup } from '@test-utils/index';
 import { useForm } from './useForm';
 import { useFormField } from './useFormField';
-import { nextTick, ref } from 'vue';
+import { nextTick, Ref, ref } from 'vue';
+import { useInputValidity } from '../validation/useInputValidity';
+import { fireEvent, render, screen } from '@testing-library/vue';
 
 describe('form values', () => {
   test('it initializes form values', async () => {
@@ -307,5 +309,99 @@ describe('form dirty state', () => {
     expect(form.isDirty.value).toBe(true);
     field.setValue('foo');
     expect(field.isDirty.value).toBe(false);
+  });
+});
+
+describe('validation', () => {
+  function createInputComponent(inputRef: Ref<HTMLInputElement | undefined>) {
+    return {
+      setup: () => {
+        const field = useFormField({ path: 'test' });
+        useInputValidity({ inputRef, field });
+
+        return { input: inputRef, errorMessage: field.errorMessage };
+      },
+      template: `
+        <input ref="input" data-testid="input" required />
+        <span data-testid="err">{{ errorMessage }}</span>
+      `,
+    };
+  }
+
+  test('updates the form errors', async () => {
+    const input = ref<HTMLInputElement>();
+
+    await render({
+      components: { Child: createInputComponent(input) },
+      setup() {
+        const { getError } = useForm();
+
+        return { getError };
+      },
+      template: `
+      <form>
+        <Child />
+
+        <span data-testid="form-err">{{ getError('test') }}</span>
+      </form>
+    `,
+    });
+
+    await fireEvent.blur(screen.getByTestId('input'));
+    expect(screen.getByTestId('err').textContent).toBe('Constraints not satisfied');
+    expect(screen.getByTestId('form-err').textContent).toBe('Constraints not satisfied');
+  });
+
+  test('updates the form isValid', async () => {
+    const input = ref<HTMLInputElement>();
+
+    await render({
+      components: { Child: createInputComponent(input) },
+      setup() {
+        const { isValid } = useForm();
+
+        return { isValid };
+      },
+      template: `
+      <form>
+        <Child />
+
+        <span v-if="isValid">Form is valid</span>
+        <span v-else>Form is invalid</span>
+      </form>
+    `,
+    });
+
+    expect(screen.getByText('Form is valid')).toBeDefined();
+    await fireEvent.blur(screen.getByTestId('input'));
+    expect(screen.getByText('Form is invalid')).toBeDefined();
+  });
+
+  test('prevents submission if the form is not valid', async () => {
+    const input = ref<HTMLInputElement>();
+    const handler = vi.fn();
+
+    await render({
+      components: { Child: createInputComponent(input) },
+      setup() {
+        const { handleSubmit } = useForm();
+
+        return { onSubmit: handleSubmit(handler) };
+      },
+      template: `
+      <form @submit="onSubmit" novalidate>
+        <Child />
+
+        <button type="submit">Submit</button>
+      </form>
+    `,
+    });
+
+    await nextTick();
+    await fireEvent.click(screen.getByText('Submit'));
+    expect(handler).not.toHaveBeenCalled();
+    await fireEvent.change(screen.getByTestId('input'), { target: { value: 'test' } });
+    await fireEvent.click(screen.getByText('Submit'));
+    expect(handler).toHaveBeenCalledOnce();
   });
 });

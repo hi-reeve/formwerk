@@ -1,37 +1,51 @@
-import { Ref, computed, nextTick, ref, shallowRef } from 'vue';
+import { Ref, inject, nextTick, onMounted, shallowRef, watch } from 'vue';
 import { useEventListener } from '../helpers/useEventListener';
+import { FormField, FormKey } from '../form';
 
 interface InputValidityOptions {
+  inputRef?: Ref<HTMLInputElement | HTMLTextAreaElement | undefined>;
+  field: FormField<any>;
   events?: string[];
 }
 
-export function useInputValidity(
-  inputRef?: Ref<HTMLInputElement | HTMLTextAreaElement | undefined>,
-  opts?: InputValidityOptions,
-) {
-  const errorMessage = ref<string>();
+export function useInputValidity(opts: InputValidityOptions) {
+  const { setErrors, errorMessage } = opts.field;
   const validityDetails = shallowRef<ValidityState>();
-  const isInvalid = computed(() => !!errorMessage.value);
+  const form = inject(FormKey, null);
 
-  function setValidity(message: string) {
-    errorMessage.value = message;
-    inputRef?.value?.setCustomValidity(message);
-    validityDetails.value = inputRef?.value?.validity;
+  function updateValiditySync() {
+    validityDetails.value = opts.inputRef?.value?.validity;
+    // TODO: Only do that if native field/validation is enabled
+    setErrors(opts.inputRef?.value?.validationMessage || []);
   }
 
   async function updateValidity() {
     await nextTick();
-    errorMessage.value = inputRef?.value?.validationMessage;
-    validityDetails.value = inputRef?.value?.validity;
+    updateValiditySync();
   }
 
-  useEventListener(inputRef, opts?.events || ['invalid', 'change', 'blur'], updateValidity);
+  useEventListener(opts.inputRef, opts?.events || ['invalid', 'change', 'blur'], updateValidity);
+
+  form?.onSubmitted(updateValiditySync);
+
+  if (opts.inputRef) {
+    watch(errorMessage, msg => {
+      const inputMsg = opts.inputRef?.value?.validationMessage;
+      if (inputMsg !== msg) {
+        opts.inputRef?.value?.setCustomValidity(msg || '');
+      }
+    });
+  }
+
+  /**
+   * Validity is always updated on mount.
+   */
+  onMounted(() => {
+    nextTick(updateValidity);
+  });
 
   return {
-    errorMessage,
     validityDetails,
-    isInvalid,
-    setValidity,
     updateValidity,
   };
 }

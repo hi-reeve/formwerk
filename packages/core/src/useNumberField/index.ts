@@ -23,6 +23,7 @@ import { useSpinButton } from '../useSpinButton';
 import { useLocale } from '../i18n/useLocale';
 import { useFormField } from '../form/useFormField';
 import { FieldTypePrefixes } from '../constants';
+import { useErrorDisplay } from '../form/useErrorDisplay';
 
 export interface NumberInputDOMAttributes {
   name?: string;
@@ -67,15 +68,17 @@ export function useNumberField(
   const props = normalizeProps(_props);
   const inputId = useUniqId(FieldTypePrefixes.NumberField);
   const inputRef = elementRef || shallowRef<HTMLInputElement>();
-  const { errorMessage, validityDetails, isInvalid } = useInputValidity(inputRef);
   const { locale } = useLocale();
   const parser = useNumberParser(() => toValue(props.locale) ?? locale.value, props.formatOptions);
-  const { fieldValue, setValue, setTouched, isTouched } = useFormField<number>({
+  const field = useFormField<number>({
     path: props.name,
     initialValue: toValue(props.modelValue),
     disabled: props.disabled,
   });
 
+  const { validityDetails } = useInputValidity({ inputRef, field });
+  const { displayError } = useErrorDisplay(field);
+  const { fieldValue, setValue, setTouched, isTouched, errorMessage } = field;
   const formattedText = computed<string>(() => {
     if (Number.isNaN(fieldValue.value) || isEmpty(fieldValue.value)) {
       return '';
@@ -191,11 +194,17 @@ export function useNumberField(
     errorMessageProps,
     descriptionProps,
     validityDetails,
-    isInvalid,
+    isValid: field.isValid,
     incrementButtonProps,
     decrementButtonProps,
     isTouched,
+    errors: field.errors,
+
+    setValue,
     increment,
     decrement,
+    setTouched,
+    setErrors: field.setErrors,
+    displayError,
   };
 }

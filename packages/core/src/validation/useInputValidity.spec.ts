@@ -1,15 +1,17 @@
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { useInputValidity } from './useInputValidity';
 import { fireEvent, render, screen } from '@testing-library/vue';
+import { FormField, useFormField } from '../form';
 
 test('updates the validity state on blur events', async () => {
   const input = ref<HTMLInputElement>();
 
   await render({
     setup: () => {
-      const { errorMessage } = useInputValidity(input);
+      const field = useFormField();
+      useInputValidity({ inputRef: input, field });
 
-      return { input, errorMessage };
+      return { input, errorMessage: field.errorMessage };
     },
     template: `
       <form>
@@ -28,9 +30,10 @@ test('updates the validity state on change events', async () => {
 
   await render({
     setup: () => {
-      const { errorMessage } = useInputValidity(input);
+      const field = useFormField();
+      useInputValidity({ inputRef: input, field });
 
-      return { input, errorMessage };
+      return { input, errorMessage: field.errorMessage };
     },
     template: `
       <form>
@@ -51,9 +54,10 @@ test('updates the validity on specified events', async () => {
 
   await render({
     setup: () => {
-      const { errorMessage } = useInputValidity(input, { events: ['input'] });
+      const field = useFormField();
+      useInputValidity({ inputRef: input, field, events: ['input'] });
 
-      return { input, errorMessage };
+      return { input, errorMessage: field.errorMessage };
     },
     template: `
       <form>
@@ -67,4 +71,28 @@ test('updates the validity on specified events', async () => {
   expect(screen.getByTestId('err').textContent).toBe('Constraints not satisfied');
   await fireEvent.input(screen.getByTestId('input'), { target: { value: 'test' } });
   expect(screen.getByTestId('err').textContent).toBe('');
+});
+
+test('updates the input native validity with custom validity errors', async () => {
+  const input = ref<HTMLInputElement>();
+  let field!: FormField<any>;
+  await render({
+    setup: () => {
+      field = useFormField();
+      useInputValidity({ inputRef: input, field, events: ['input'] });
+
+      return { input, errorMessage: field.errorMessage };
+    },
+    template: `
+      <form>
+        <input ref="input" data-testid="input" />
+        <span data-testid="err">{{ errorMessage }}</span>
+      </form>
+    `,
+  });
+
+  field.setErrors('Custom error');
+  await nextTick();
+  expect(screen.getByTestId('err').textContent).toBe('Custom error');
+  expect(input.value?.validationMessage).toBe('Custom error');
 });
