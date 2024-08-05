@@ -4,6 +4,7 @@ import { useFormField } from './useFormField';
 import { nextTick, Ref, ref } from 'vue';
 import { useInputValidity } from '../validation/useInputValidity';
 import { fireEvent, render, screen } from '@testing-library/vue';
+import { TypedSchema } from '../types';
 
 describe('form values', () => {
   test('it initializes form values', async () => {
@@ -244,13 +245,12 @@ describe('form submit', () => {
     const cb = vi.fn();
     const onSubmit = handleSubmit(cb);
     expect(values).toEqual(defaults());
-    onSubmit(new Event('submit'));
-    await nextTick();
+    await onSubmit(new Event('submit'));
     expect(cb).toHaveBeenLastCalledWith(defaults());
 
     disabled.value = true;
-    onSubmit(new Event('submit'));
-    await nextTick();
+    await onSubmit(new Event('submit'));
+    expect(cb).toHaveBeenCalledTimes(2);
     expect(cb).toHaveBeenLastCalledWith({ multiple: ['field 1', 'field 3', 'field 4'] });
   });
 });
@@ -352,6 +352,17 @@ describe('validation', () => {
     expect(screen.getByTestId('form-err').textContent).toBe('Constraints not satisfied');
   });
 
+  test('displays errors if the field is touched', async () => {
+    const { setFieldTouched, displayError, setFieldErrors } = await renderSetup(() => {
+      return useForm();
+    });
+
+    setFieldErrors('test', 'error');
+    expect(displayError('test')).toBeUndefined();
+    setFieldTouched('test', true);
+    expect(displayError('test')).toBe('error');
+  });
+
   test('updates the form isValid', async () => {
     const input = ref<HTMLInputElement>();
 
@@ -402,6 +413,233 @@ describe('validation', () => {
     expect(handler).not.toHaveBeenCalled();
     await fireEvent.change(screen.getByTestId('input'), { target: { value: 'test' } });
     await fireEvent.click(screen.getByText('Submit'));
+    await nextTick();
     expect(handler).toHaveBeenCalledOnce();
+  });
+
+  test('prevent submission if typed schema has errors', async () => {
+    const handler = vi.fn();
+    const schema: TypedSchema<object, object> = {
+      async parse() {
+        return {
+          errors: [{ path: 'test', errors: ['error'] }],
+        };
+      },
+    };
+
+    await render({
+      setup() {
+        const { handleSubmit } = useForm({
+          schema,
+        });
+
+        return { onSubmit: handleSubmit(handler) };
+      },
+      template: `
+      <form @submit="onSubmit" novalidate>
+        <button type="submit">Submit</button>
+      </form>
+    `,
+    });
+
+    await nextTick();
+    await fireEvent.click(screen.getByText('Submit'));
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  test('typed schema sets field errors', async () => {
+    const handler = vi.fn();
+    const input = ref<HTMLInputElement>();
+    let shouldError = true;
+    const schema: TypedSchema<object, object> = {
+      async parse() {
+        return {
+          errors: shouldError ? [{ path: 'test', errors: ['error'] }] : [],
+        };
+      },
+    };
+
+    await render({
+      components: { Child: createInputComponent(input) },
+      setup() {
+        const { handleSubmit, getError } = useForm({
+          schema,
+        });
+
+        return { getError, onSubmit: handleSubmit(handler) };
+      },
+      template: `
+      <form @submit="onSubmit" novalidate>
+        <Child />
+        <span data-testid="form-err">{{ getError('test') }}</span>
+
+        <button type="submit">Submit</button>
+      </form>
+    `,
+    });
+
+    await fireEvent.click(screen.getByText('Submit'));
+    await nextTick();
+    expect(screen.getByTestId('err').textContent).toBe('error');
+    expect(screen.getByTestId('form-err').textContent).toBe('error');
+    expect(handler).not.toHaveBeenCalled();
+    shouldError = false;
+    await fireEvent.click(screen.getByText('Submit'));
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
+  test('typed schema clears errors on successful submission', async () => {
+    const handler = vi.fn();
+    const input = ref<HTMLInputElement>();
+    const schema: TypedSchema<object, object> = {
+      async parse() {
+        return {
+          errors: [],
+        };
+      },
+    };
+
+    await render({
+      components: { Child: createInputComponent(input) },
+      setup() {
+        const { handleSubmit, getError, setFieldErrors } = useForm({
+          schema,
+        });
+
+        // @ts-expect-error - We don't care about our fake form here
+        setFieldErrors('test', 'error');
+
+        return { getError, onSubmit: handleSubmit(handler) };
+      },
+      template: `
+      <form @submit="onSubmit" novalidate>
+        <Child />
+        <span data-testid="form-err">{{ getError('test') }}</span>
+
+        <button type="submit">Submit</button>
+      </form>
+    `,
+    });
+
+    expect(screen.getByTestId('err').textContent).toBe('error');
+    expect(screen.getByTestId('form-err').textContent).toBe('error');
+    await fireEvent.click(screen.getByText('Submit'));
+    await nextTick();
+    expect(handler).toHaveBeenCalledOnce();
+    expect(screen.getByTestId('err').textContent).toBe('');
+    expect(screen.getByTestId('form-err').textContent).toBe('');
+  });
+
+  test('typed schema parses values which is used on submission', async () => {
+    const handler = vi.fn();
+    const input = ref<HTMLInputElement>();
+    const schema: TypedSchema<object, { test: true; foo: string }> = {
+      async parse() {
+        return {
+          errors: [],
+          output: {
+            test: true,
+            foo: 'bar',
+          },
+        };
+      },
+    };
+
+    await render({
+      components: { Child: createInputComponent(input) },
+      setup() {
+        const { handleSubmit, getError, setFieldErrors } = useForm({
+          schema,
+        });
+
+        // @ts-expect-error - We don't care about our fake form here
+        setFieldErrors('test', 'error');
+
+        return { getError, onSubmit: handleSubmit(handler) };
+      },
+      template: `
+      <form @submit="onSubmit" novalidate>
+        <Child />
+        <span data-testid="form-err">{{ getError('test') }}</span>
+
+        <button type="submit">Submit</button>
+      </form>
+    `,
+    });
+
+    await fireEvent.click(screen.getByText('Submit'));
+    await nextTick();
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenLastCalledWith({ test: true, foo: 'bar' });
+  });
+
+  test('typed schema is executed on form init', async () => {
+    const schema: TypedSchema<object, object> = {
+      async parse() {
+        return {
+          errors: [{ path: 'test', errors: ['error'] }],
+        };
+      },
+    };
+
+    await render({
+      setup() {
+        const { getError } = useForm({
+          schema,
+        });
+
+        return { getError };
+      },
+      template: `
+      <span data-testid="form-err">{{ getError('test') }}</span>
+    `,
+    });
+
+    await nextTick();
+    expect(screen.getByTestId('form-err').textContent).toBe('error');
+  });
+
+  test('form reset clears errors', async () => {
+    const schema: TypedSchema<{ test: string }> = {
+      async parse() {
+        return {
+          errors: [{ path: 'test', errors: ['error'] }],
+        };
+      },
+    };
+
+    const { reset, getError } = await renderSetup(() => {
+      return useForm<{ test: string }>({
+        schema,
+      });
+    });
+
+    await nextTick();
+    expect(getError('test')).toBe('error');
+    await reset();
+    expect(getError('test')).toBeUndefined();
+  });
+
+  test('form reset can revalidate', async () => {
+    let wasReset = false;
+    const schema: TypedSchema<{ test: string }> = {
+      async parse() {
+        return {
+          errors: [{ path: 'test', errors: wasReset ? ['reset'] : ['error'] }],
+        };
+      },
+    };
+
+    const { reset, getError } = await renderSetup(() => {
+      return useForm<{ test: string }>({
+        schema,
+      });
+    });
+
+    await nextTick();
+    expect(getError('test')).toBe('error');
+    wasReset = true;
+    await reset({ revalidate: true });
+    expect(getError('test')).toBe('reset');
   });
 });
