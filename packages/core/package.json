@@ -29,7 +29,7 @@
   ],
   "dependencies": {
     "klona": "^2.0.6",
-    "type-fest": "^4.23.0",
+    "type-fest": "^4.24.0",
     "vue": "^3.5.0-alpha.4"
   }
 }
