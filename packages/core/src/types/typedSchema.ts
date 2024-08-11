@@ -2,7 +2,7 @@ import { FormObject } from './common';
 
 export interface TypedSchemaError {
   path: string;
-  errors: string[];
+  messages: string[];
 }
 
 export interface TypedSchemaContext {
@@ -11,7 +11,7 @@ export interface TypedSchemaContext {
 
 export interface TypedSchema<TInput = any, TOutput = TInput> {
   parse(values: TInput, context?: TypedSchemaContext): Promise<{ output?: TOutput; errors: TypedSchemaError[] }>;
-  cast?(values: Partial<TInput>): TInput;
+  defaults?(values: TInput): TInput;
 }
 
 export type InferOutput<TSchema extends TypedSchema> =

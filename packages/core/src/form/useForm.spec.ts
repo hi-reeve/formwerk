@@ -411,7 +411,7 @@ describe('validation', () => {
     await nextTick();
     await fireEvent.click(screen.getByText('Submit'));
     expect(handler).not.toHaveBeenCalled();
-    await fireEvent.change(screen.getByTestId('input'), { target: { value: 'test' } });
+    await fireEvent.update(screen.getByTestId('input'), 'test');
     await fireEvent.click(screen.getByText('Submit'));
     await nextTick();
     expect(handler).toHaveBeenCalledOnce();
@@ -422,7 +422,7 @@ describe('validation', () => {
     const schema: TypedSchema<object, object> = {
       async parse() {
         return {
-          errors: [{ path: 'test', errors: ['error'] }],
+          errors: [{ path: 'test', messages: ['error'] }],
         };
       },
     };
@@ -454,7 +454,7 @@ describe('validation', () => {
     const schema: TypedSchema<object, object> = {
       async parse() {
         return {
-          errors: shouldError ? [{ path: 'test', errors: ['error'] }] : [],
+          errors: shouldError ? [{ path: 'test', messages: ['error'] }] : [],
         };
       },
     };
@@ -577,7 +577,7 @@ describe('validation', () => {
     const schema: TypedSchema<object, object> = {
       async parse() {
         return {
-          errors: [{ path: 'test', errors: ['error'] }],
+          errors: [{ path: 'test', messages: ['error'] }],
         };
       },
     };
@@ -603,7 +603,7 @@ describe('validation', () => {
     const schema: TypedSchema<{ test: string }> = {
       async parse() {
         return {
-          errors: [{ path: 'test', errors: ['error'] }],
+          errors: [{ path: 'test', messages: ['error'] }],
         };
       },
     };
@@ -625,7 +625,7 @@ describe('validation', () => {
     const schema: TypedSchema<{ test: string }> = {
       async parse() {
         return {
-          errors: [{ path: 'test', errors: wasReset ? ['reset'] : ['error'] }],
+          errors: [{ path: 'test', messages: wasReset ? ['reset'] : ['error'] }],
         };
       },
     };
@@ -641,5 +641,22 @@ describe('validation', () => {
     wasReset = true;
     await reset({ revalidate: true });
     expect(getError('test')).toBe('reset');
+  });
+
+  test('typed schema can initialize with default values', async () => {
+    const { values } = await renderSetup(() => {
+      return useForm({
+        schema: {
+          defaults: () => ({ test: 'foo' }),
+          async parse() {
+            return {
+              errors: [],
+            };
+          },
+        },
+      });
+    });
+
+    expect(values).toEqual({ test: 'foo' });
   });
 });
