@@ -196,3 +196,27 @@ export function findLeaf(
     }
   }
 }
+
+const ARRAY_INDICES_RE = /\[(\d+)]$/;
+
+/**
+ * Swaps out array brackets for dots in a path.
+ */
+export function normalizePath(path: string): string {
+  const pathArr = path.split('.');
+  if (!pathArr.length) {
+    return '';
+  }
+
+  let fullPath = String(pathArr[0]);
+  for (let i = 1; i < pathArr.length; i++) {
+    if (ARRAY_INDICES_RE.test(pathArr[i])) {
+      fullPath += `.${pathArr[i].replace(ARRAY_INDICES_RE, '.$1')}`;
+      continue;
+    }
+
+    fullPath += `.${pathArr[i]}`;
+  }
+
+  return fullPath;
+}

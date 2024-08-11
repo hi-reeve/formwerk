@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { FormObject, Path, PathValue } from '../types';
-import { FormContext } from './formContext';
+import { BaseFormContext } from './formContext';
 
 interface SetPathStateTransaction<TForm extends FormObject> {
   kind: 2;
@@ -50,7 +50,7 @@ export interface FormTransactionManager<TForm extends FormObject> {
   transaction(
     tr: (
       formCtx: Pick<
-        FormContext<TForm>,
+        BaseFormContext<TForm>,
         'getValues' | 'getFieldValue' | 'isFieldSet' | 'isFieldTouched' | 'getFieldErrors'
       >,
       codes: typeof TransactionKind,
@@ -58,13 +58,13 @@ export interface FormTransactionManager<TForm extends FormObject> {
   ): void;
 }
 
-export function useFormTransactions<TForm extends FormObject>(form: FormContext<TForm>) {
+export function useFormTransactions<TForm extends FormObject>(form: BaseFormContext<TForm>) {
   const transactions = new Set<FormTransaction<TForm>>([]);
 
   let tick: Promise<void>;
 
   function transaction(
-    tr: (formCtx: FormContext<TForm>, codes: typeof TransactionKind) => FormTransaction<TForm> | null,
+    tr: (formCtx: BaseFormContext<TForm>, codes: typeof TransactionKind) => FormTransaction<TForm> | null,
   ) {
     const commit = tr(form, TransactionKind);
     if (commit) {

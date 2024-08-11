@@ -1,10 +1,11 @@
-import { renderSetup } from '@test-utils/index';
+import { flush, renderSetup } from '@test-utils/index';
 import { useForm } from './useForm';
 import { useFormField } from './useFormField';
-import { nextTick, Ref, ref } from 'vue';
+import { Component, nextTick, Ref, ref } from 'vue';
 import { useInputValidity } from '../validation/useInputValidity';
 import { fireEvent, render, screen } from '@testing-library/vue';
 import { TypedSchema } from '../types';
+import { useTextField } from '../useTextField';
 
 describe('form values', () => {
   test('it initializes form values', async () => {
@@ -312,68 +313,89 @@ describe('form dirty state', () => {
   });
 });
 
-describe('validation', () => {
-  function createInputComponent(inputRef: Ref<HTMLInputElement | undefined>) {
-    return {
-      setup: () => {
-        const field = useFormField({ path: 'test' });
-        useInputValidity({ inputRef, field });
+describe('form validation', () => {
+  describe('constraints API', () => {
+    function createInputComponent(inputRef: Ref<HTMLInputElement | undefined>): Component {
+      return {
+        setup: () => {
+          const field = useFormField({ path: 'test' });
+          useInputValidity({ inputRef, field });
 
-        return { input: inputRef, errorMessage: field.errorMessage };
-      },
-      template: `
-        <input ref="input" data-testid="input" required />
-        <span data-testid="err">{{ errorMessage }}</span>
-      `,
-    };
-  }
+          return { input: inputRef, errorMessage: field.errorMessage };
+        },
+        template: `
+          <input ref="input" data-testid="input" required />
+          <span data-testid="err">{{ errorMessage }}</span>
+        `,
+      };
+    }
 
-  test('updates the form errors', async () => {
-    const input = ref<HTMLInputElement>();
+    test('validates initially with native constraint API', async () => {
+      const input = ref<HTMLInputElement>();
 
-    await render({
-      components: { Child: createInputComponent(input) },
-      setup() {
-        const { getError } = useForm();
+      await render({
+        components: { Child: createInputComponent(input) },
+        setup() {
+          const { getError } = useForm();
 
-        return { getError };
-      },
-      template: `
+          return { getError };
+        },
+        template: `
       <form>
         <Child />
 
         <span data-testid="form-err">{{ getError('test') }}</span>
       </form>
     `,
+      });
+
+      await fireEvent.blur(screen.getByTestId('input'));
+      expect(screen.getByTestId('err').textContent).toBe('Constraints not satisfied');
+      expect(screen.getByTestId('form-err').textContent).toBe('Constraints not satisfied');
     });
 
-    await fireEvent.blur(screen.getByTestId('input'));
-    expect(screen.getByTestId('err').textContent).toBe('Constraints not satisfied');
-    expect(screen.getByTestId('form-err').textContent).toBe('Constraints not satisfied');
-  });
+    test('prevents submission if the form is not valid', async () => {
+      const input = ref<HTMLInputElement>();
+      const handler = vi.fn();
 
-  test('displays errors if the field is touched', async () => {
-    const { setFieldTouched, displayError, setFieldErrors } = await renderSetup(() => {
-      return useForm();
+      await render({
+        components: { Child: createInputComponent(input) },
+        setup() {
+          const { handleSubmit } = useForm();
+
+          return { onSubmit: handleSubmit(handler) };
+        },
+        template: `
+      <form @submit="onSubmit" novalidate>
+        <Child />
+
+        <button type="submit">Submit</button>
+      </form>
+    `,
+      });
+
+      // FIXME: Looks like it is possible to submit the form before the initial validation kicks in.
+      await nextTick();
+      await fireEvent.click(screen.getByText('Submit'));
+      await flush();
+      expect(handler).not.toHaveBeenCalled();
+      await fireEvent.update(screen.getByTestId('input'), 'test');
+      await fireEvent.click(screen.getByText('Submit'));
+      await flush();
+      expect(handler).toHaveBeenCalledOnce();
     });
 
-    setFieldErrors('test', 'error');
-    expect(displayError('test')).toBeUndefined();
-    setFieldTouched('test', true);
-    expect(displayError('test')).toBe('error');
-  });
+    test('updates the form isValid', async () => {
+      const input = ref<HTMLInputElement>();
 
-  test('updates the form isValid', async () => {
-    const input = ref<HTMLInputElement>();
+      await render({
+        components: { Child: createInputComponent(input) },
+        setup() {
+          const { isValid } = useForm();
 
-    await render({
-      components: { Child: createInputComponent(input) },
-      setup() {
-        const { isValid } = useForm();
-
-        return { isValid };
-      },
-      template: `
+          return { isValid };
+        },
+        template: `
       <form>
         <Child />
 
@@ -381,94 +403,82 @@ describe('validation', () => {
         <span v-else>Form is invalid</span>
       </form>
     `,
-    });
+      });
 
-    expect(screen.getByText('Form is valid')).toBeDefined();
-    await fireEvent.blur(screen.getByTestId('input'));
-    expect(screen.getByText('Form is invalid')).toBeDefined();
+      expect(screen.getByText('Form is valid')).toBeDefined();
+      await fireEvent.blur(screen.getByTestId('input'));
+      expect(screen.getByText('Form is invalid')).toBeDefined();
+    });
   });
 
-  test('prevents submission if the form is not valid', async () => {
-    const input = ref<HTMLInputElement>();
-    const handler = vi.fn();
+  describe('TypedSchema', () => {
+    function createInputComponent(): Component {
+      return {
+        inheritAttrs: false,
+        setup: (_, { attrs }) => {
+          const name = (attrs.name || 'test') as string;
+          const { errorMessage, inputProps } = useTextField({ name, label: name });
 
-    await render({
-      components: { Child: createInputComponent(input) },
-      setup() {
-        const { handleSubmit } = useForm();
+          return { errorMessage: errorMessage, inputProps, name };
+        },
+        template: `
+        <input v-bind="inputProps" :data-testid="name" />
+        <span data-testid="err">{{ errorMessage }}</span>
+      `,
+      };
+    }
 
-        return { onSubmit: handleSubmit(handler) };
-      },
-      template: `
-      <form @submit="onSubmit" novalidate>
-        <Child />
+    test('prevent submission if typed schema has errors', async () => {
+      const handler = vi.fn();
+      const schema: TypedSchema<object, object> = {
+        async parse() {
+          return {
+            errors: [{ path: 'test', messages: ['error'] }],
+          };
+        },
+      };
 
-        <button type="submit">Submit</button>
-      </form>
-    `,
-    });
+      await render({
+        setup() {
+          const { handleSubmit } = useForm({
+            schema,
+          });
 
-    await nextTick();
-    await fireEvent.click(screen.getByText('Submit'));
-    expect(handler).not.toHaveBeenCalled();
-    await fireEvent.update(screen.getByTestId('input'), 'test');
-    await fireEvent.click(screen.getByText('Submit'));
-    await nextTick();
-    expect(handler).toHaveBeenCalledOnce();
-  });
-
-  test('prevent submission if typed schema has errors', async () => {
-    const handler = vi.fn();
-    const schema: TypedSchema<object, object> = {
-      async parse() {
-        return {
-          errors: [{ path: 'test', messages: ['error'] }],
-        };
-      },
-    };
-
-    await render({
-      setup() {
-        const { handleSubmit } = useForm({
-          schema,
-        });
-
-        return { onSubmit: handleSubmit(handler) };
-      },
-      template: `
+          return { onSubmit: handleSubmit(handler) };
+        },
+        template: `
       <form @submit="onSubmit" novalidate>
         <button type="submit">Submit</button>
       </form>
     `,
+      });
+
+      await nextTick();
+      await fireEvent.click(screen.getByText('Submit'));
+      expect(handler).not.toHaveBeenCalled();
     });
 
-    await nextTick();
-    await fireEvent.click(screen.getByText('Submit'));
-    expect(handler).not.toHaveBeenCalled();
-  });
+    test('sets field errors', async () => {
+      const handler = vi.fn();
+      let shouldError = true;
+      const schema: TypedSchema<object, object> = {
+        async parse() {
+          return {
+            errors: shouldError ? [{ path: 'test', messages: ['error'] }] : [],
+          };
+        },
+      };
 
-  test('typed schema sets field errors', async () => {
-    const handler = vi.fn();
-    const input = ref<HTMLInputElement>();
-    let shouldError = true;
-    const schema: TypedSchema<object, object> = {
-      async parse() {
-        return {
-          errors: shouldError ? [{ path: 'test', messages: ['error'] }] : [],
-        };
-      },
-    };
+      await render({
+        components: { Child: createInputComponent() },
+        setup() {
+          const { handleSubmit, getError } = useForm({
+            schema,
+          });
 
-    await render({
-      components: { Child: createInputComponent(input) },
-      setup() {
-        const { handleSubmit, getError } = useForm({
-          schema,
-        });
-
-        return { getError, onSubmit: handleSubmit(handler) };
-      },
-      template: `
+          return { getError, onSubmit: handleSubmit(handler) };
+        },
+        template: `
       <form @submit="onSubmit" novalidate>
         <Child />
         <span data-testid="form-err">{{ getError('test') }}</span>
@@ -476,42 +486,42 @@ describe('validation', () => {
         <button type="submit">Submit</button>
       </form>
     `,
+      });
+
+      await fireEvent.click(screen.getByText('Submit'));
+      await nextTick();
+      expect(screen.getByTestId('err').textContent).toBe('error');
+      expect(screen.getByTestId('form-err').textContent).toBe('error');
+      expect(handler).not.toHaveBeenCalled();
+      shouldError = false;
+      await fireEvent.click(screen.getByText('Submit'));
+      await flush();
+      expect(handler).toHaveBeenCalledOnce();
     });
 
-    await fireEvent.click(screen.getByText('Submit'));
-    await nextTick();
-    expect(screen.getByTestId('err').textContent).toBe('error');
-    expect(screen.getByTestId('form-err').textContent).toBe('error');
-    expect(handler).not.toHaveBeenCalled();
-    shouldError = false;
-    await fireEvent.click(screen.getByText('Submit'));
-    expect(handler).toHaveBeenCalledOnce();
-  });
+    test('clears errors on successful submission', async () => {
+      const handler = vi.fn();
+      const schema: TypedSchema<object, object> = {
+        async parse() {
+          return {
+            errors: [],
+          };
+        },
+      };
 
-  test('typed schema clears errors on successful submission', async () => {
-    const handler = vi.fn();
-    const input = ref<HTMLInputElement>();
-    const schema: TypedSchema<object, object> = {
-      async parse() {
-        return {
-          errors: [],
-        };
-      },
-    };
+      await render({
+        components: { Child: createInputComponent() },
+        setup() {
+          const { handleSubmit, getError, setFieldErrors } = useForm({
+            schema,
+          });
 
-    await render({
-      components: { Child: createInputComponent(input) },
-      setup() {
-        const { handleSubmit, getError, setFieldErrors } = useForm({
-          schema,
-        });
+          // @ts-expect-error - We don't care about our fake form here
+          setFieldErrors('test', 'error');
 
-        // @ts-expect-error - We don't care about our fake form here
-        setFieldErrors('test', 'error');
-
-        return { getError, onSubmit: handleSubmit(handler) };
-      },
-      template: `
+          return { getError, onSubmit: handleSubmit(handler) };
+        },
+        template: `
       <form @submit="onSubmit" novalidate>
         <Child />
         <span data-testid="form-err">{{ getError('test') }}</span>
@@ -519,84 +529,110 @@ describe('validation', () => {
         <button type="submit">Submit</button>
       </form>
     `,
+      });
+
+      expect(screen.getByTestId('err').textContent).toBe('error');
+      expect(screen.getByTestId('form-err').textContent).toBe('error');
+      await fireEvent.click(screen.getByText('Submit'));
+      await nextTick();
+      expect(handler).toHaveBeenCalledOnce();
+      expect(screen.getByTestId('err').textContent).toBe('');
+      expect(screen.getByTestId('form-err').textContent).toBe('');
     });
 
-    expect(screen.getByTestId('err').textContent).toBe('error');
-    expect(screen.getByTestId('form-err').textContent).toBe('error');
-    await fireEvent.click(screen.getByText('Submit'));
-    await nextTick();
-    expect(handler).toHaveBeenCalledOnce();
-    expect(screen.getByTestId('err').textContent).toBe('');
-    expect(screen.getByTestId('form-err').textContent).toBe('');
-  });
+    test('parses values which is used on submission', async () => {
+      const handler = vi.fn();
+      const schema: TypedSchema<object, { test: true; foo: string }> = {
+        async parse() {
+          return {
+            errors: [],
+            output: {
+              test: true,
+              foo: 'bar',
+            },
+          };
+        },
+      };
 
-  test('typed schema parses values which is used on submission', async () => {
-    const handler = vi.fn();
-    const input = ref<HTMLInputElement>();
-    const schema: TypedSchema<object, { test: true; foo: string }> = {
-      async parse() {
-        return {
-          errors: [],
-          output: {
-            test: true,
-            foo: 'bar',
+      await render({
+        components: { Child: createInputComponent() },
+        setup() {
+          const { handleSubmit, getError, setFieldErrors } = useForm({
+            schema,
+          });
+
+          // @ts-expect-error - We don't care about our fake form here
+          setFieldErrors('test', 'error');
+
+          return { getError, onSubmit: handleSubmit(handler) };
+        },
+        template: `
+      <form @submit="onSubmit" novalidate>
+        <Child />
+        <span data-testid="form-err">{{ getError('test') }}</span>
+
+        <button type="submit">Submit</button>
+      </form>
+    `,
+      });
+
+      await fireEvent.click(screen.getByText('Submit'));
+      await nextTick();
+      expect(handler).toHaveBeenCalledOnce();
+      expect(handler).toHaveBeenLastCalledWith({ test: true, foo: 'bar' });
+    });
+
+    test('re-validates on field value change', async () => {
+      const schema: TypedSchema<{ test: string }> = {
+        async parse(values) {
+          return {
+            errors: !values.test ? [{ path: 'test', messages: ['error'] }] : [],
+          };
+        },
+      };
+
+      await render({
+        components: { Child: createInputComponent() },
+        setup() {
+          const { getError } = useForm({
+            schema,
+          });
+
+          return { getError };
+        },
+        template: `
+      <form>
+        <Child />
+
+        <span data-testid="form-err">{{ getError('test') }}</span>
+      </form>
+    `,
+      });
+
+      await flush();
+      expect(screen.getByTestId('form-err').textContent).toBe('error');
+      await fireEvent.update(screen.getByTestId('test'), 'test');
+      await fireEvent.blur(screen.getByTestId('test'));
+      await flush();
+      expect(screen.getByTestId('form-err').textContent).toBe('');
+    });
+
+    test('initializes with default values', async () => {
+      const { values } = await renderSetup(() => {
+        return useForm({
+          schema: {
+            defaults: () => ({ test: 'foo' }),
+            async parse() {
+              return {
+                errors: [],
+              };
+            },
           },
-        };
-      },
-    };
-
-    await render({
-      components: { Child: createInputComponent(input) },
-      setup() {
-        const { handleSubmit, getError, setFieldErrors } = useForm({
-          schema,
         });
+      });
 
-        // @ts-expect-error - We don't care about our fake form here
-        setFieldErrors('test', 'error');
-
-        return { getError, onSubmit: handleSubmit(handler) };
-      },
-      template: `
-      <form @submit="onSubmit" novalidate>
-        <Child />
-        <span data-testid="form-err">{{ getError('test') }}</span>
-
-        <button type="submit">Submit</button>
-      </form>
-    `,
+      expect(values).toEqual({ test: 'foo' });
     });
-
-    await fireEvent.click(screen.getByText('Submit'));
-    await nextTick();
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenLastCalledWith({ test: true, foo: 'bar' });
-  });
-
-  test('typed schema is executed on form init', async () => {
-    const schema: TypedSchema<object, object> = {
-      async parse() {
-        return {
-          errors: [{ path: 'test', messages: ['error'] }],
-        };
-      },
-    };
-
-    await render({
-      setup() {
-        const { getError } = useForm({
-          schema,
-        });
-
-        return { getError };
-      },
-      template: `
-      <span data-testid="form-err">{{ getError('test') }}</span>
-    `,
-    });
-
-    await nextTick();
-    expect(screen.getByTestId('form-err').textContent).toBe('error');
   });
 
   test('form reset clears errors', async () => {
@@ -643,20 +679,14 @@ describe('validation', () => {
     expect(getError('test')).toBe('reset');
   });
 
-  test('typed schema can initialize with default values', async () => {
-    const { values } = await renderSetup(() => {
-      return useForm({
-        schema: {
-          defaults: () => ({ test: 'foo' }),
-          async parse() {
-            return {
-              errors: [],
-            };
-          },
-        },
-      });
+  test('displays errors if the field is touched', async () => {
+    const { setFieldTouched, displayError, setFieldErrors } = await renderSetup(() => {
+      return useForm();
     });
 
-    expect(values).toEqual({ test: 'foo' });
+    setFieldErrors('test', 'error');
+    expect(displayError('test')).toBeUndefined();
+    setFieldTouched('test', true);
+    expect(displayError('test')).toBe('error');
   });
 });

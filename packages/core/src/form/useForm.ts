@@ -10,9 +10,9 @@ import {
   Path,
   TypedSchema,
 } from '../types';
-import { createFormContext, FormContext } from './formContext';
+import { createFormContext, BaseFormContext } from './formContext';
 import { FormTransactionManager, useFormTransactions } from './useFormTransactions';
-import { useFormActions } from './useFormActions';
+import { FormValidationResult, useFormActions } from './useFormActions';
 import { useFormSnapshots } from './formSnapshot';
 import { findLeaf } from '../utils/path';
 
@@ -23,14 +23,15 @@ export interface FormOptions<TForm extends FormObject = FormObject, TOutput exte
   schema: TypedSchema<TForm, TOutput>;
 }
 
-export interface FormContextWithTransactions<TForm extends FormObject = FormObject>
-  extends FormContext<TForm>,
+export interface FormContext<TForm extends FormObject = FormObject, TOutput extends FormObject = TForm>
+  extends BaseFormContext<TForm>,
     FormTransactionManager<TForm> {
+  requestValidation(): Promise<FormValidationResult<TOutput>>;
   onSubmitAttempt(cb: () => void): void;
-  onValidateTriggered(cb: () => void): void;
+  onNativeValidationDispatch(cb: () => void): void;
 }
 
-export const FormKey: InjectionKey<FormContextWithTransactions<any>> = Symbol('Formwerk FormKey');
+export const FormKey: InjectionKey<FormContext<any>> = Symbol('Formwerk FormKey');
 
 export function useForm<TForm extends FormObject = FormObject, TOutput extends FormObject = TForm>(
   opts?: Partial<FormOptions<TForm, TOutput>>,
@@ -76,10 +77,14 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
   }
 
   const transactionsManager = useFormTransactions(ctx);
-  const { actions, onSubmitAttempt, onValidateTriggered, isSubmitting } = useFormActions<TForm, TOutput>(ctx, {
+  const { actions, isSubmitting, ...privateActions } = useFormActions<TForm, TOutput>(ctx, {
     disabled,
     schema: opts?.schema,
   });
+
+  function getErrors() {
+    return ctx.getErrors();
+  }
 
   function getError<TPath extends Path<TForm>>(path: TPath): string | undefined {
     return ctx.getFieldErrors(path)[0];
@@ -92,9 +97,8 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
   provide(FormKey, {
     ...ctx,
     ...transactionsManager,
-    onSubmitAttempt,
-    onValidateTriggered,
-  } as FormContextWithTransactions<TForm>);
+    ...privateActions,
+  } as FormContext<TForm, TOutput>);
 
   if (ctx.getValidationMode() === 'schema') {
     onMounted(() => {
@@ -117,6 +121,7 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
     setValues: ctx.setValues,
     getError,
     displayError,
+    getErrors,
     ...actions,
   };
 }

@@ -10,7 +10,7 @@ import {
   toValue,
   watch,
 } from 'vue';
-import { FormContextWithTransactions, FormKey } from './useForm';
+import { FormContext, FormKey } from './useForm';
 import { Arrayable, Getter } from '../types';
 import { useSyncModel } from '../reactivity/useModelSync';
 import { cloneDeep, isEqual, normalizeArrayable } from '../utils/common';
@@ -147,7 +147,7 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
   return field;
 }
 
-function useFieldValidity(getPath: Getter<string | undefined>, form?: FormContextWithTransactions | null) {
+function useFieldValidity(getPath: Getter<string | undefined>, form?: FormContext | null) {
   const validity = form ? createFormValidityRef(getPath, form) : createLocalValidity();
   const errorMessage = computed(() => validity.errors.value[0] ?? '');
   const isValid = computed(() => validity.errors.value.length === 0);
@@ -161,13 +161,13 @@ function useFieldValidity(getPath: Getter<string | undefined>, form?: FormContex
 
 function useFieldValue<TValue = unknown>(
   getPath: Getter<string | undefined>,
-  form?: FormContextWithTransactions | null,
+  form?: FormContext | null,
   initialValue?: TValue,
 ) {
   return form ? createFormValueRef<TValue>(getPath, form, initialValue) : createLocalValueRef<TValue>(initialValue);
 }
 
-function useFieldTouched(getPath: Getter<string | undefined>, form?: FormContextWithTransactions | null) {
+function useFieldTouched(getPath: Getter<string | undefined>, form?: FormContext | null) {
   return form ? createFormTouchedRef(getPath, form) : createLocalTouchedRef(false);
 }
 
@@ -183,7 +183,7 @@ function createLocalTouchedRef(initialTouched?: boolean) {
   };
 }
 
-function createFormTouchedRef(getPath: Getter<string | undefined>, form: FormContextWithTransactions) {
+function createFormTouchedRef(getPath: Getter<string | undefined>, form: FormContext) {
   const pathlessTouched = shallowRef(false);
   const isTouched = computed(() => {
     const path = getPath();
@@ -210,7 +210,7 @@ function createFormTouchedRef(getPath: Getter<string | undefined>, form: FormCon
 
 function createFormValueRef<TValue = unknown>(
   getPath: Getter<string | undefined>,
-  form: FormContextWithTransactions,
+  form: FormContext,
   initialValue?: TValue | undefined,
 ) {
   const pathlessValue = shallowRef(toValue(initialValue ?? undefined)) as Ref<TValue | undefined>;
@@ -252,7 +252,7 @@ function createLocalValueRef<TValue = unknown>(initialValue?: TValue) {
  * Sets the initial value of the form if not already set and if an initial value is provided.
  */
 function initFormPathIfNecessary(
-  form: FormContextWithTransactions,
+  form: FormContext,
   getPath: Getter<string | undefined>,
   initialValue: unknown,
   initialTouched: boolean,
@@ -276,7 +276,7 @@ function initFormPathIfNecessary(
   });
 }
 
-function createFormValidityRef(getPath: Getter<string | undefined>, form: FormContextWithTransactions) {
+function createFormValidityRef(getPath: Getter<string | undefined>, form: FormContext) {
   const pathlessValidity = createLocalValidity();
   const errors = computed(() => {
     const path = getPath();

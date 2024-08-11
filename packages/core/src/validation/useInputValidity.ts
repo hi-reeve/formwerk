@@ -1,6 +1,7 @@
 import { Ref, inject, nextTick, onMounted, shallowRef, watch } from 'vue';
 import { useEventListener } from '../helpers/useEventListener';
 import { FormField, FormKey } from '../form';
+import { Maybe } from '../types';
 
 interface InputValidityOptions {
   inputRef?: Ref<HTMLInputElement | HTMLTextAreaElement | undefined>;
@@ -9,36 +10,36 @@ interface InputValidityOptions {
 }
 
 export function useInputValidity(opts: InputValidityOptions) {
+  const form = inject(FormKey, null);
   const { setErrors, errorMessage } = opts.field;
   const validityDetails = shallowRef<ValidityState>();
-  const form = inject(FormKey, null);
   const validationMode = form?.getValidationMode() ?? 'native';
+  useMessageCustomValiditySync(errorMessage, opts.inputRef);
 
-  function updateValiditySync() {
-    if (validationMode !== 'native') {
-      return;
-    }
-
+  function updateWithNativeValidity() {
     validityDetails.value = opts.inputRef?.value?.validity;
     setErrors(opts.inputRef?.value?.validationMessage || []);
   }
 
-  async function updateValidity() {
-    await nextTick();
-    updateValiditySync();
+  function _updateValidity() {
+    if (validationMode === 'native') {
+      updateWithNativeValidity();
+      return;
+    }
+
+    form?.requestValidation();
   }
 
-  useEventListener(opts.inputRef, opts?.events || ['invalid', 'change', 'blur'], updateValidity);
+  async function updateValidity() {
+    await nextTick();
+    _updateValidity();
+  }
 
-  form?.onValidateTriggered(updateValiditySync);
+  useEventListener(opts.inputRef, opts?.events || ['change', 'blur'], updateValidity);
 
-  if (opts.inputRef) {
-    watch(errorMessage, msg => {
-      const inputMsg = opts.inputRef?.value?.validationMessage;
-      if (inputMsg !== msg) {
-        opts.inputRef?.value?.setCustomValidity(msg || '');
-      }
-    });
+  if (validationMode === 'native') {
+    form?.onNativeValidationDispatch(updateWithNativeValidity);
+    useEventListener(opts.inputRef, opts?.events || ['invalid'], updateWithNativeValidity);
   }
 
   /**
@@ -52,4 +53,23 @@ export function useInputValidity(opts: InputValidityOptions) {
     validityDetails,
     updateValidity,
   };
+}
+
+/**
+ * Syncs the message with the input's native validation message.
+ */
+function useMessageCustomValiditySync(
+  message: Ref<string>,
+  input?: Ref<Maybe<HTMLInputElement | HTMLTextAreaElement>>,
+) {
+  if (!input) {
+    return;
+  }
+
+  watch(message, msg => {
+    const inputMsg = input?.value?.validationMessage;
+    if (inputMsg !== msg) {
+      input?.value?.setCustomValidity(msg || '');
+    }
+  });
 }

@@ -1,9 +1,10 @@
 import { shallowRef } from 'vue';
 import { DisabledSchema, FormObject, MaybeAsync, Path, TouchedSchema, TypedSchema, TypedSchemaError } from '../types';
-import { cloneDeep } from '../utils/common';
+import { batchAsync, cloneDeep, withLatestCall } from '../utils/common';
 import { createEventDispatcher } from '../utils/events';
-import { FormContext, SetValueOptions } from './formContext';
+import { BaseFormContext, FormValidationMode, SetValueOptions } from './formContext';
 import { unsetPath } from '../utils/path';
+import { SCHEMA_BATCH_MS } from '../constants';
 
 export interface ResetState<TForm extends FormObject> {
   values: Partial<TForm>;
@@ -20,15 +21,16 @@ export interface FormValidationResult<TOutput extends FormObject = FormObject> {
   isValid: boolean;
   errors: TypedSchemaError[];
   output: TOutput;
+  mode: FormValidationMode;
 }
 
 export function useFormActions<TForm extends FormObject = FormObject, TOutput extends FormObject = TForm>(
-  form: FormContext<TForm>,
+  form: BaseFormContext<TForm>,
   { disabled, schema }: FormActionsOptions<TForm, TOutput>,
 ) {
   const isSubmitting = shallowRef(false);
   const [dispatchSubmit, onSubmitAttempt] = createEventDispatcher<void>('submit');
-  const [dispatchValidate, onValidateTriggered] = createEventDispatcher<void>('validate');
+  const [dispatchValidate, onNativeValidationDispatch] = createEventDispatcher<void>('native-validate');
 
   function handleSubmit<TReturns>(onSuccess: (values: TOutput) => MaybeAsync<TReturns>) {
     return async function onSubmit(e: Event) {
@@ -60,11 +62,17 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     };
   }
 
-  async function validate(): Promise<FormValidationResult<TOutput>> {
+  /**
+   * Validates but tries to not mutate anything if possible.
+   */
+  async function _validate(): Promise<FormValidationResult<TOutput>> {
+    // If we are using native validation, then we don't stop the state mutation
+    // Because it already has happened, since validations are sourced from the fields.
     if (form.getValidationMode() === 'native' || !schema) {
       await dispatchValidate();
 
       return {
+        mode: 'native',
         isValid: !form.hasErrors(),
         errors: form.getErrors(),
         output: cloneDeep(form.getValues() as unknown as TOutput),
@@ -72,15 +80,31 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     }
 
     const { errors, output } = await schema.parse(form.getValues());
-    form.clearErrors();
-
-    applyErrors(errors);
 
     return {
+      mode: 'schema',
       isValid: !errors.length,
       errors,
       output: cloneDeep(output ?? (form.getValues() as unknown as TOutput)),
     };
+  }
+
+  function updateValidationStateFromResult(result: FormValidationResult<TOutput>) {
+    form.clearErrors();
+    applyErrors(result.errors);
+
+    return result;
+  }
+
+  async function validate(): Promise<FormValidationResult<TOutput>> {
+    const result = await _validate();
+    if (result.mode === 'native') {
+      return result;
+    }
+
+    updateValidationStateFromResult(result);
+
+    return result;
   }
 
   function applyErrors(errors: TypedSchemaError[]) {
@@ -110,14 +134,21 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     return Promise.resolve();
   }
 
+  const requestValidation = withLatestCall(batchAsync(_validate, SCHEMA_BATCH_MS), result => {
+    updateValidationStateFromResult(result);
+
+    return result;
+  });
+
   return {
     actions: {
       handleSubmit,
       reset,
       validate,
     },
+    requestValidation,
     onSubmitAttempt,
-    onValidateTriggered,
+    onNativeValidationDispatch,
     isSubmitting,
   };
 }

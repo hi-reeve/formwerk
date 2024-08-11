@@ -10,3 +10,4 @@ export * from './types';
 export * from './config';
 export * from './form';
 export * from './validation';
+export { normalizePath } from './utils/path';

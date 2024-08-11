@@ -17,7 +17,7 @@ import { merge } from '../../../shared/src';
 
 export type FormValidationMode = 'native' | 'schema';
 
-export interface FormContext<TForm extends FormObject = FormObject> {
+export interface BaseFormContext<TForm extends FormObject = FormObject> {
   id: string;
   getFieldValue<TPath extends Path<TForm>>(path: TPath): PathValue<TForm, TPath>;
   setFieldValue<TPath extends Path<TForm>>(path: TPath, value: PathValue<TForm, TPath> | undefined): void;
@@ -69,7 +69,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
   schema,
   touched,
   snapshots,
-}: FormContextCreateOptions<TForm, TOutput>): FormContext<TForm> {
+}: FormContextCreateOptions<TForm, TOutput>): BaseFormContext<TForm> {
   function setFieldValue<TPath extends Path<TForm>>(path: TPath, value: PathValue<TForm, TPath> | undefined) {
     setInPath(values, path, cloneDeep(value));
   }

@@ -1,6 +1,7 @@
 import { MaybeRefOrGetter, Ref, toValue, useId } from 'vue';
 import { klona } from 'klona/full';
 import { AriaDescriptionProps, Arrayable, NormalizedProps } from '../types';
+import { AsyncReturnType } from 'type-fest';
 
 export function useUniqId(prefix?: string) {
   return prefix ? `${prefix}-${useId()}` : useId() || '';
@@ -230,4 +231,50 @@ export function isEqual(a: any, b: any) {
   // true if both NaN, false otherwise
 
   return a !== a && b !== b;
+}
+
+export function withLatestCall<
+  TFunction extends (...args: any[]) => Promise<any>,
+  TResult = AsyncReturnType<TFunction>,
+>(fn: TFunction, onDone: (result: TResult, args: Parameters<TFunction>) => TResult) {
+  let latestRun: Promise<TResult> | undefined;
+
+  return async function runLatest(...args: Parameters<TFunction>) {
+    const pending = fn(...args);
+    latestRun = pending;
+    const result = await pending;
+    if (pending !== latestRun) {
+      return result;
+    }
+
+    latestRun = undefined;
+
+    return onDone(result, args);
+  };
+}
+
+export function batchAsync<TFunction extends (...args: any) => Promise<any>, TResult = AsyncReturnType<TFunction>>(
+  inner: TFunction,
+  ms = 0,
+): (...args: Parameters<TFunction>) => Promise<TResult> {
+  let timer: number | null = null;
+  let resolves: any[] = [];
+
+  return function (...args: Parameters<TFunction>) {
+    // Run the function after a certain amount of time
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = window.setTimeout(() => {
+      // Get the result of the inner function, then apply it to the resolve function of
+      // each promise that has been created since the last time the inner function was run
+      const result = inner(...(args as any));
+
+      resolves.forEach(r => r(result));
+      resolves = [];
+    }, ms);
+
+    return new Promise<TResult>(resolve => resolves.push(resolve));
+  };
 }
