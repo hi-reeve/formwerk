@@ -101,9 +101,7 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
   } as FormContext<TForm, TOutput>);
 
   if (ctx.getValidationMode() === 'schema') {
-    onMounted(() => {
-      actions.validate();
-    });
+    onMounted(privateActions.requestValidation);
   }
 
   return {

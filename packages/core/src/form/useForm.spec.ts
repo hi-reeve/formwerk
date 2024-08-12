@@ -650,7 +650,7 @@ describe('form validation', () => {
       });
     });
 
-    await nextTick();
+    await flush();
     expect(getError('test')).toBe('error');
     await reset();
     expect(getError('test')).toBeUndefined();
@@ -672,7 +672,7 @@ describe('form validation', () => {
       });
     });
 
-    await nextTick();
+    await flush();
     expect(getError('test')).toBe('error');
     wasReset = true;
     await reset({ revalidate: true });
