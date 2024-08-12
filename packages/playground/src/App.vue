@@ -1,26 +1,34 @@
 <template>
   <div class="flex flex-col">
-    <InputText label="Test" name="test" />
+    <InputText label="deep" name="some.deep.path" />
+    <InputText label="arr" name="some.array.0.path" />
 
-    <pre>{{ isValid }}</pre>
+    <span data-testid="e2">{{ getError('some.array.0.path') }}</span>
+
+    <pre>{{ getErrors() }}</pre>
   </div>
 </template>
 
 <script lang="ts" setup>
 import InputText from '@/components/InputText.vue';
 import { useForm } from '@formwerk/core';
-import { defineSchema } from '@formwerk/schema-yup';
-import * as yup from 'yup';
+import { defineSchema } from '@formwerk/schema-zod';
+import { z } from 'zod';
 
-const { values, isValid, handleSubmit } = useForm({
+const { getError, isValid, getErrors } = useForm({
   schema: defineSchema(
-    yup.object({
-      test: yup.string().required(),
+    z.object({
+      some: z.object({
+        deep: z.object({
+          path: z.string().min(1, 'REQUIRED'),
+        }),
+        array: z.array(
+          z.object({
+            path: z.string().min(1, 'REQUIRED'),
+          }),
+        ),
+      }),
     }),
   ),
-});
-
-const onSubmit = handleSubmit(values => {
-  console.log(values);
 });
 </script>

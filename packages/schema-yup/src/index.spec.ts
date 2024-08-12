@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/vue';
 import { useForm, useTextField } from '@formwerk/core';
 import { defineSchema } from '.';
 import * as y from 'yup';
-import flush from 'flush-promises';
+import { flush } from '@test-utils/index';
 
 const requiredMessage = (field: string) => `${field} is a required field`;
 
@@ -52,6 +52,56 @@ describe('schema-yup', () => {
     expect(screen.getByTestId('form-valid').textContent).toBe('false');
     expect(screen.getByTestId('err').textContent).toBe(requiredMessage('test'));
     expect(screen.getByTestId('form-err').textContent).toBe(requiredMessage('test'));
+  });
+
+  test('validates nested paths', async () => {
+    await render({
+      components: { Child: createInputComponent() },
+      setup() {
+        const { getError, isValid } = useForm({
+          schema: defineSchema(
+            y.object({
+              some: y.object({
+                deep: y.object({
+                  path: y.string().required(),
+                }),
+                array: y.array().of(
+                  y.object({
+                    path: y.string().required(),
+                  }),
+                ),
+              }),
+            }),
+          ),
+        });
+
+        return { getError, isValid };
+      },
+      template: `
+      <form>
+        <Child name="some.deep.path" />
+        <Child name="some.array.0.path" />
+
+        <span data-testid="is-valid">{{ isValid }}</span>
+        <span data-testid="e1">{{ getError('some.deep.path') }}</span>
+        <span data-testid="e2">{{ getError('some.array.0.path') }}</span>
+      </form>
+    `,
+    });
+
+    await flush();
+    expect(screen.getByTestId('is-valid').textContent).toBe('false');
+    expect(screen.getByTestId('e1').textContent).toBe(requiredMessage('some.deep.path'));
+    expect(screen.getByTestId('e2').textContent).toBe(requiredMessage('some.array[0].path'));
+
+    await fireEvent.update(screen.getByTestId('some.deep.path'), 'test');
+    await fireEvent.update(screen.getByTestId('some.array.0.path'), 'test');
+    await fireEvent.blur(screen.getByTestId('some.deep.path'));
+    await fireEvent.blur(screen.getByTestId('some.array.0.path'));
+    await flush();
+    expect(screen.getByTestId('is-valid').textContent).toBe('true');
+    expect(screen.getByTestId('e1').textContent).toBe('');
+    expect(screen.getByTestId('e2').textContent).toBe('');
   });
 
   test('prevents submission if the form is not valid', async () => {

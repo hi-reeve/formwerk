@@ -5,7 +5,7 @@ import { defineSchema } from '.';
 import { z } from 'zod';
 import flush from 'flush-promises';
 
-describe('schema-yup', () => {
+describe('schema-zod', () => {
   function createInputComponent(): Component {
     return {
       inheritAttrs: false,
@@ -152,5 +152,59 @@ describe('schema-yup', () => {
     await flush();
     await expect(screen.getByDisplayValue('default-test')).toBeDefined();
     await expect(screen.getByDisplayValue('22')).toBeDefined();
+  });
+
+  test('validates nested paths', async () => {
+    await render({
+      components: { Child: createInputComponent() },
+      setup() {
+        const { getError, isValid, values } = useForm({
+          schema: defineSchema(
+            z.object({
+              some: z.object({
+                deep: z.object({
+                  path: z.string().min(1, 'Required'),
+                }),
+                array: z.array(
+                  z.object({
+                    path: z.string().min(1, 'Required'),
+                  }),
+                ),
+              }),
+            }),
+          ),
+        });
+
+        return { getError, isValid, values };
+      },
+      template: `
+      <form>
+        <Child name="some.deep.path" />
+        <Child name="some.array.0.path" />
+        {{values}}
+
+        <span data-testid="is-valid">{{ isValid }}</span>
+        <span data-testid="e1">{{ getError('some.deep.path') }}</span>
+        <span data-testid="e2">{{ getError('some.array.0.path') }}</span>
+      </form>
+    `,
+    });
+
+    await flush();
+    vi.advanceTimersByTime(1000);
+    await flush();
+    expect(screen.getByTestId('is-valid').textContent).toBe('false');
+    expect(screen.getByTestId('e1').textContent).toBe('Required');
+    expect(screen.getByTestId('e2').textContent).toBe('Required');
+
+    await fireEvent.update(screen.getByTestId('some.deep.path'), 'test');
+    await fireEvent.update(screen.getByTestId('some.array.0.path'), 'test');
+    await fireEvent.blur(screen.getByTestId('some.deep.path'));
+    await fireEvent.blur(screen.getByTestId('some.array.0.path'));
+    vi.advanceTimersByTime(1000);
+    await flush();
+    expect(screen.getByTestId('is-valid').textContent).toBe('true');
+    expect(screen.getByTestId('e1').textContent).toBe('');
+    expect(screen.getByTestId('e2').textContent).toBe('');
   });
 });

@@ -1,6 +1,6 @@
 import { InferType, Schema, ValidateOptions, ValidationError } from 'yup';
 import type { PartialDeep } from 'type-fest';
-import { TypedSchema, TypedSchemaError } from '@formwerk/core';
+import { TypedSchema, TypedSchemaError, normalizePath } from '@formwerk/core';
 import { isObject, merge } from '../../shared/src';
 
 export function defineSchema<TSchema extends Schema, TOutput = InferType<TSchema>, TInput = PartialDeep<TOutput>>(
@@ -26,12 +26,12 @@ export function defineSchema<TSchema extends Schema, TOutput = InferType<TSchema
         }
 
         if (!error.inner?.length && error.errors.length) {
-          return { errors: [{ path: error.path as string, messages: error.errors }] };
+          return { errors: [{ path: normalizePath(error.path as string), messages: error.errors }] };
         }
 
         const errors: Record<string, TypedSchemaError> = error.inner.reduce(
           (acc, curr) => {
-            const path = curr.path || '';
+            const path = normalizePath(curr.path || '');
             if (!acc[path]) {
               acc[path] = { messages: [], path };
             }
