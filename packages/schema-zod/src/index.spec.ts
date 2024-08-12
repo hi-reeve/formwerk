@@ -22,7 +22,7 @@ describe('schema-zod', () => {
     };
   }
 
-  test('validates initially with yup schema', async () => {
+  test('initial validation', async () => {
     await render({
       components: { Child: createInputComponent() },
       setup() {
@@ -46,6 +46,8 @@ describe('schema-zod', () => {
     `,
     });
 
+    await flush();
+    vi.advanceTimersByTime(1000);
     await flush();
     expect(screen.getByTestId('form-valid').textContent).toBe('false');
     expect(screen.getByTestId('err').textContent).toBe('Required');
