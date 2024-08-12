@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/vue';
 import { useForm, useTextField } from '@formwerk/core';
 import { defineSchema } from '.';
 import { z } from 'zod';
-import flush from 'flush-promises';
+import { flush } from '@test-utils/index';
 
 describe('schema-zod', () => {
   function createInputComponent(): Component {
@@ -46,8 +46,6 @@ describe('schema-zod', () => {
     `,
     });
 
-    await flush();
-    vi.advanceTimersByTime(1000);
     await flush();
     expect(screen.getByTestId('form-valid').textContent).toBe('false');
     expect(screen.getByTestId('err').textContent).toBe('Required');
@@ -193,8 +191,6 @@ describe('schema-zod', () => {
     });
 
     await flush();
-    vi.advanceTimersByTime(1000);
-    await flush();
     expect(screen.getByTestId('is-valid').textContent).toBe('false');
     expect(screen.getByTestId('e1').textContent).toBe('Required');
     expect(screen.getByTestId('e2').textContent).toBe('Required');
@@ -203,7 +199,6 @@ describe('schema-zod', () => {
     await fireEvent.update(screen.getByTestId('some.array.0.path'), 'test');
     await fireEvent.blur(screen.getByTestId('some.deep.path'));
     await fireEvent.blur(screen.getByTestId('some.array.0.path'));
-    vi.advanceTimersByTime(1000);
     await flush();
     expect(screen.getByTestId('is-valid').textContent).toBe('true');
     expect(screen.getByTestId('e1').textContent).toBe('');
