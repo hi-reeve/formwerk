@@ -9,12 +9,13 @@ import {
   Direction,
   Reactivify,
   Arrayable,
+  TypedSchema,
 } from '../types';
 import { useUniqId, createDescribedByProps, getNextCycleArrIdx, normalizeProps, isEmpty } from '../utils/common';
 import { useLocale } from '../i18n/useLocale';
-import { useFormField } from '../form/useFormField';
+import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
-import { useErrorDisplay } from '../form/useErrorDisplay';
+import { useErrorDisplay } from '../useFormField/useErrorDisplay';
 
 export interface RadioGroupContext<TValue> {
   name: string;
@@ -49,6 +50,8 @@ export interface RadioGroupProps<TValue = string> {
   disabled?: boolean;
   readonly?: boolean;
   required?: boolean;
+
+  schema?: TypedSchema<TValue>;
 }
 
 interface RadioGroupDomProps extends AriaLabelableProps, AriaDescribableProps, AriaValidatableProps {
@@ -74,8 +77,8 @@ function getOrientationArrows(dir: Direction | undefined) {
   return { prev: prevKeys, next: nextKeys };
 }
 
-export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProps<TValue>>) {
-  const props = normalizeProps(_props);
+export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProps<TValue>, 'schema'>) {
+  const props = normalizeProps(_props, ['schema']);
   const groupId = useUniqId(FieldTypePrefixes.RadioButtonGroup);
   const { direction } = useLocale();
 
@@ -89,6 +92,7 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
     path: props.name,
     initialValue: toValue(props.modelValue) as TValue,
     disabled: props.disabled,
+    schema: props.schema,
   });
 
   const { validityDetails } = useInputValidity({ field });

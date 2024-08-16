@@ -89,7 +89,7 @@ export function normalizeProps<TProps extends Record<string, unknown>, Exclude e
         return [key, (...args: any[]) => (props[key] as any)(...args)];
       }
 
-      return [key, () => props[key]];
+      return [key, props[key]];
     }),
   ) as NormalizedProps<TProps, Exclude>;
 }
@@ -277,4 +277,10 @@ export function batchAsync<TFunction extends (...args: any) => Promise<any>, TRe
 
     return new Promise<TResult>(resolve => resolves.push(resolve));
   };
+}
+
+export function warn(message: string) {
+  if (__DEV__) {
+    console.warn(`[Formwerk]: ${message}`);
+  }
 }

@@ -7,13 +7,14 @@ import {
   Numberish,
   Reactivify,
   TextInputBaseAttributes,
+  TypedSchema,
 } from '../types';
 import { createDescribedByProps, normalizeProps, propsToValues, useUniqId, withRefCapture } from '../utils/common';
 import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel } from '../a11y/useLabel';
-import { useFormField } from '../form/useFormField';
+import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
-import { useErrorDisplay } from '../form/useErrorDisplay';
+import { useErrorDisplay } from '../useFormField/useErrorDisplay';
 
 export interface SearchInputDOMAttributes extends TextInputBaseAttributes {
   type?: 'search';
@@ -44,17 +45,23 @@ export interface SearchFieldProps {
   readonly?: boolean;
   disabled?: boolean;
 
+  schema?: TypedSchema<string>;
+
   onSubmit?: (value: string) => void;
 }
 
-export function useSearchField(_props: Reactivify<SearchFieldProps, 'onSubmit'>, elementRef?: Ref<HTMLInputElement>) {
-  const props = normalizeProps(_props, ['onSubmit']);
+export function useSearchField(
+  _props: Reactivify<SearchFieldProps, 'onSubmit' | 'schema'>,
+  elementRef?: Ref<HTMLInputElement>,
+) {
+  const props = normalizeProps(_props, ['onSubmit', 'schema']);
   const inputId = useUniqId(FieldTypePrefixes.SearchField);
   const inputRef = elementRef || ref<HTMLInputElement>();
   const field = useFormField<string | undefined>({
     path: props.name,
     initialValue: toValue(props.modelValue),
     disabled: props.disabled,
+    schema: props.schema,
   });
 
   const { validityDetails, updateValidity } = useInputValidity({ inputRef, field });
