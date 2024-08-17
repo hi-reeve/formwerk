@@ -3,7 +3,24 @@ name: Main CI
 on: [push]
 
 jobs:
-  ts-lint-test:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm build
+      - name: Lint
+        run: pnpm lint
+
+  typecheck:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,7 +36,20 @@ jobs:
         run: pnpm build
       - name: Type Check
         run: pnpm typecheck
-      - name: Lint
-        run: pnpm lint
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm build
       - name: Test
         run: pnpm test
