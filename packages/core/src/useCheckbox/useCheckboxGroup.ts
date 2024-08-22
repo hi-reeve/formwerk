@@ -1,4 +1,4 @@
-import { InjectionKey, toValue, computed, onBeforeUnmount, reactive, provide } from 'vue';
+import { InjectionKey, toValue, computed, onBeforeUnmount, reactive, provide, markRaw } from 'vue';
 import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel } from '../a11y/useLabel';
 import {
@@ -11,9 +11,15 @@ import {
   Arrayable,
   TypedSchema,
 } from '../types';
-import { useUniqId, createDescribedByProps, normalizeProps, isEqual } from '../utils/common';
+import {
+  useUniqId,
+  createDescribedByProps,
+  normalizeProps,
+  isEqual,
+  createAccessibleErrorMessageProps,
+} from '../utils/common';
 import { useLocale } from '../i18n/useLocale';
-import { useFormField } from '../useFormField';
+import { FormField, useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { useErrorDisplay } from '../useFormField/useErrorDisplay';
 
@@ -26,6 +32,7 @@ export interface CheckboxGroupContext<TCheckbox> {
   disabled: boolean;
   readonly: boolean;
   required: boolean;
+  field: FormField<CheckboxGroupValue<TCheckbox>>;
   groupState: CheckboxGroupState;
 
   readonly modelValue: CheckboxGroupValue<TCheckbox> | undefined;
@@ -88,19 +95,22 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
   const { displayError } = useErrorDisplay(field);
   const { validityDetails } = useInputValidity({ field });
   const { fieldValue, setValue, isTouched, setTouched, errorMessage } = field;
-  const { describedBy, descriptionProps, errorMessageProps } = createDescribedByProps({
+  const { describedByProps, descriptionProps } = createDescribedByProps({
     inputId: groupId,
-    errorMessage,
     description: props.description,
   });
+  const { accessibleErrorProps, errorMessageProps } = createAccessibleErrorMessageProps({
+    inputId: groupId,
+    errorMessage,
+  });
 
-  const checkboxGroupProps = computed<CheckboxGroupDomProps>(() => {
+  const groupProps = computed<CheckboxGroupDomProps>(() => {
     return {
       ...labelledByProps.value,
+      ...describedByProps.value,
+      ...accessibleErrorProps.value,
       dir: toValue(props.dir) ?? direction.value,
       role: 'group',
-      'aria-describedby': describedBy(),
-      'aria-invalid': errorMessage.value ? true : undefined,
     };
   });
 
@@ -157,6 +167,7 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
     disabled: computed(() => toValue(props.disabled) ?? false),
     readonly: computed(() => toValue(props.readonly) ?? false),
     required: computed(() => toValue(props.required) ?? false),
+    field: markRaw(field),
     groupState,
     modelValue: fieldValue,
     isTouched,
@@ -176,7 +187,7 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
     groupState,
     errorMessageProps,
     fieldValue,
-    checkboxGroupProps,
+    groupProps,
     errorMessage,
     isTouched,
     errors: field.errors,

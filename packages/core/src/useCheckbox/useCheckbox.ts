@@ -1,18 +1,38 @@
-import { Ref, computed, inject, nextTick, ref, toValue } from 'vue';
-import { isEqual, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
-import { AriaLabelableProps, Reactivify, InputBaseAttributes, RovingTabIndex, TypedSchema } from '../types';
+import { computed, inject, nextTick, Ref, ref, toValue } from 'vue';
+import {
+  createAccessibleErrorMessageProps,
+  isEqual,
+  isInputElement,
+  normalizeProps,
+  useUniqId,
+  withRefCapture,
+} from '../utils/common';
+import {
+  AriaLabelableProps,
+  InputBaseAttributes,
+  NormalizedProps,
+  Reactivify,
+  RovingTabIndex,
+  TypedSchema,
+} from '../types';
 import { useLabel } from '../a11y/useLabel';
 import { CheckboxGroupContext, CheckboxGroupKey } from './useCheckboxGroup';
 import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
+import { useInputValidity } from '../validation';
 
 export interface CheckboxProps<TValue = string> {
   name?: string;
   label?: string;
   modelValue?: TValue;
-  disabled?: boolean;
+
+  value?: TValue;
   trueValue?: TValue;
   falseValue?: TValue;
+
+  required?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
   indeterminate?: boolean;
 
   schema?: TypedSchema<TValue>;
@@ -35,22 +55,17 @@ export interface CheckboxDomProps extends AriaLabelableProps {
 
 export function useCheckbox<TValue = string>(
   _props: Reactivify<CheckboxProps<TValue>, 'schema'>,
-  elementRef?: Ref<HTMLInputElement | undefined>,
+  elementRef?: Ref<HTMLElement | undefined>,
 ) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.Checkbox);
-  const getTrueValue = () => (toValue(props.trueValue) as TValue) ?? (true as TValue);
+  const getTrueValue = createTrueValueGetter(props);
   const getFalseValue = () => (toValue(props.falseValue) as TValue) ?? (false as TValue);
   const group: CheckboxGroupContext<TValue> | null = inject(CheckboxGroupKey, null);
-  const inputRef = elementRef || ref<HTMLInputElement>();
-  const { fieldValue, setValue, isTouched, setTouched } = group
-    ? createGroupField(group, getTrueValue)
-    : useFormField<TValue>({
-        path: props.name,
-        initialValue: toValue(props.modelValue) as TValue,
-        disabled: props.disabled,
-        schema: props.schema,
-      });
+  const inputRef = elementRef || ref<HTMLElement>();
+  const field = useCheckboxField(props);
+  useInputValidity({ inputRef, field });
+  const { fieldValue, isTouched, setTouched, setValue, errorMessage, setErrors } = field;
 
   const checked = computed({
     get() {
@@ -69,6 +84,11 @@ export function useCheckbox<TValue = string>(
     for: inputId,
     label: props.label,
     targetRef: inputRef,
+  });
+
+  const { errorMessageProps, accessibleErrorProps } = createAccessibleErrorMessageProps({
+    inputId,
+    errorMessage,
   });
 
   function createHandlers(isInput: boolean) {
@@ -104,9 +124,6 @@ export function useCheckbox<TValue = string>(
     if (isInput) {
       return {
         ...baseHandlers,
-        onInvalid() {
-          group?.setErrors(inputRef.value?.validationMessage ?? '');
-        },
       };
     }
 
@@ -129,9 +146,14 @@ export function useCheckbox<TValue = string>(
       ...createHandlers(isInput),
       id: inputId,
       [isInput ? 'checked' : 'aria-checked']: checked.value,
-      [isInput ? 'readonly' : 'aria-readonly']: group?.readonly || undefined,
+      [isInput ? 'required' : 'aria-required']: (group ? group.required : toValue(props.required)) || undefined,
+      [isInput ? 'readonly' : 'aria-readonly']: (group ? group.readonly : toValue(props.readonly)) || undefined,
       [isInput ? 'disabled' : 'aria-disabled']: isDisabled() || undefined,
-      [isInput ? 'required' : 'aria-required']: group?.required,
+      ...(group
+        ? {}
+        : {
+            ...accessibleErrorProps.value,
+          }),
     };
 
     if (isInput) {
@@ -157,7 +179,9 @@ export function useCheckbox<TValue = string>(
       focus();
       group?.toggleValue(getTrueValue(), force);
       nextTick(() => {
-        group?.setErrors(inputRef.value?.validationMessage ?? '');
+        if (isInputElement(inputRef.value)) {
+          setErrors(inputRef.value?.validationMessage ?? '');
+        }
       });
 
       return true;
@@ -165,7 +189,7 @@ export function useCheckbox<TValue = string>(
   });
 
   const inputProps = computed(() =>
-    withRefCapture(createBindings(inputRef.value?.tagName === 'INPUT'), inputRef, elementRef),
+    withRefCapture(createBindings(isInputElement(inputRef.value)), inputRef, elementRef),
   );
 
   function setChecked(force?: boolean) {
@@ -174,7 +198,13 @@ export function useCheckbox<TValue = string>(
       return;
     }
 
-    group?.toggleValue(getTrueValue(), force);
+    if (group) {
+      group?.toggleValue(getTrueValue(), force);
+
+      return;
+    }
+
+    setValue(force ? getTrueValue() : getFalseValue());
   }
 
   function toggleValue(force?: boolean) {
@@ -193,6 +223,8 @@ export function useCheckbox<TValue = string>(
     labelProps,
     inputProps,
     isChecked: checked,
+    errorMessageProps,
+    errorMessage,
     isTouched,
     setChecked,
     toggleValue,
@@ -200,21 +232,36 @@ export function useCheckbox<TValue = string>(
   };
 }
 
+function useCheckboxField<TValue = string>(
+  props: NormalizedProps<Reactivify<CheckboxProps<TValue>, 'schema'>, 'schema'>,
+) {
+  const group: CheckboxGroupContext<TValue> | null = inject(CheckboxGroupKey, null);
+
+  if (group) {
+    const getTrueValue = createTrueValueGetter(props);
+
+    return createGroupField(group, getTrueValue);
+  }
+
+  return useFormField<TValue>({
+    path: props.name,
+    initialValue: toValue(props.modelValue) as TValue,
+    disabled: props.disabled,
+    schema: props.schema,
+  });
+}
+
 function createGroupField<TValue = unknown>(group: CheckboxGroupContext<TValue>, getTrueValue: () => TValue) {
-  const fieldValue = computed(() => group.modelValue as TValue);
-  const isTouched = computed(() => group.isTouched);
   function setValue() {
     group.toggleValue(getTrueValue());
   }
 
-  function setTouched(touched: boolean) {
-    group.setTouched(touched);
-  }
-
   return {
-    fieldValue: fieldValue as Ref<TValue | undefined>,
-    isTouched: isTouched as Ref<boolean>,
+    ...group.field,
     setValue,
-    setTouched,
   };
+}
+
+function createTrueValueGetter<TValue>(props: NormalizedProps<Reactivify<CheckboxProps<TValue>, 'schema'>, 'schema'>) {
+  return () => (toValue(props.trueValue) as TValue) ?? (toValue(props.value) as TValue) ?? (true as TValue);
 }

@@ -9,7 +9,18 @@ export default defineConfig({
     globals: true,
     exclude: ['docs/*', ...configDefaults.exclude],
     coverage: {
-      exclude: ['**/*/devtools.ts', 'packages/**/dist/**', 'docs/*', ...(configDefaults.coverage.exclude || [])],
+      reporter: ['html', 'json'],
+      exclude: [
+        '**/*/devtools.ts',
+        'packages/**/dist/**',
+        'packages/playground/**',
+        'packages/test-utils/**',
+        './*.ts',
+        './*.js',
+        'docs/*',
+        'scripts/**',
+        ...(configDefaults.coverage.exclude || []),
+      ],
     },
   },
   define: {
