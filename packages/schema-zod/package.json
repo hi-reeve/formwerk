@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "@formwerk/core": "workspace:*",
-    "type-fest": "^4.24.0",
+    "type-fest": "^4.25.0",
     "zod": "^3.23.8"
   },
   "author": "",
