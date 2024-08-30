@@ -1,4 +1,4 @@
-import { computed, MaybeRefOrGetter, Ref, shallowRef, toValue, useId } from 'vue';
+import { computed, getCurrentScope, MaybeRefOrGetter, onScopeDispose, Ref, shallowRef, toValue, useId } from 'vue';
 import { klona } from 'klona/full';
 import { AriaDescriptionProps, Arrayable, Maybe, NormalizedProps } from '../types';
 import { AsyncReturnType } from 'type-fest';
@@ -65,7 +65,7 @@ export function createAccessibleErrorMessageProps({ inputId, errorMessage }: Cre
   };
 }
 
-export function createRefCapture<TEl extends HTMLElement>(elRef: Ref<TEl | undefined>) {
+export function createRefCapture<TEl extends HTMLElement>(elRef: Ref<Maybe<TEl>>) {
   return function captureRef(el: HTMLElement) {
     elRef.value = el as TEl;
   };
@@ -101,9 +101,13 @@ export function normalizeProps<TProps extends Record<string, unknown>, Exclude e
   props: TProps,
   exclude?: Exclude[],
 ): NormalizedProps<TProps, Exclude> {
+  if ('__isFwNormalized__' in props) {
+    return props as NormalizedProps<TProps, Exclude>;
+  }
+
   const excludeDict = exclude ? arrayToKeys(exclude) : ({} as Record<string, true>);
 
-  return Object.fromEntries(
+  const normalized = Object.fromEntries(
     Object.keys(props).map(key => {
       // Existing getters are kept as is
       if (!excludeDict[key]) {
@@ -117,6 +121,10 @@ export function normalizeProps<TProps extends Record<string, unknown>, Exclude e
       return [key, props[key]];
     }),
   ) as NormalizedProps<TProps, Exclude>;
+
+  normalized.__isFwNormalized__ = true;
+
+  return normalized;
 }
 
 export function getNextCycleArrIdx(idx: number, arr: unknown[]): number {
@@ -130,8 +138,8 @@ export function getNextCycleArrIdx(idx: number, arr: unknown[]): number {
  */
 export function withRefCapture<TProps>(
   props: TProps,
-  inputRef: Ref<HTMLElement | undefined>,
-  elementRef?: Ref<HTMLElement | undefined>,
+  inputRef: Ref<Maybe<HTMLElement>>,
+  elementRef?: Ref<Maybe<HTMLElement>>,
 ): TProps {
   if (!elementRef) {
     (props as any).ref = createRefCapture(inputRef);
@@ -316,4 +324,44 @@ export function isInputElement(el: Maybe<HTMLElement>): el is HTMLInputElement {
   }
 
   return ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName);
+}
+
+export function toggleValueSelection<TValue>(current: Arrayable<TValue>, value: TValue, force?: boolean): TValue[] {
+  const nextValue = normalizeArrayable(current);
+  const idx = nextValue.findIndex(v => isEqual(v, value));
+  const shouldAdd = force ?? idx === -1;
+
+  if (!shouldAdd) {
+    nextValue.splice(idx, 1);
+
+    return nextValue;
+  }
+
+  // If it doesn't exist add it
+  if (idx === -1) {
+    nextValue.push(value);
+  }
+
+  return nextValue;
+}
+
+export function removeFirst<TItem>(items: TItem[], predicate: (item: TItem) => boolean) {
+  const idx = items.findIndex(predicate);
+  if (idx >= 0) {
+    items.splice(idx, 1);
+    return;
+  }
+}
+
+/**
+ * VueUse uses this to dispose of watchers/events in composable hooks.
+ * https://vueuse.org/shared/tryOnScopeDispose/
+ */
+export function tryOnScopeDispose(fn: () => void) {
+  if (getCurrentScope()) {
+    onScopeDispose(fn);
+    return true;
+  }
+
+  return false;
 }

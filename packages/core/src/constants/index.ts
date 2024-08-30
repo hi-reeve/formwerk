@@ -9,6 +9,9 @@ export const FieldTypePrefixes = {
   Slider: 'sl',
   SearchField: 'sf',
   FormGroup: 'fg',
+  Select: 'se',
+  Option: 'opt',
+  OptionGroup: 'og',
 } as const;
 
 export const NOOP = () => {};
