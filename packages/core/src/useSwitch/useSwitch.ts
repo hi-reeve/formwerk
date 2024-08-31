@@ -20,6 +20,7 @@ import { useLabel } from '../a11y/useLabel';
 import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { useInputValidity } from '../validation';
+import { exposeField } from '../utils/exposers';
 
 export interface SwitchDomInputProps
   extends InputBaseAttributes,
@@ -75,7 +76,7 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
   });
 
   useInputValidity({ field, inputEl, disableHtmlValidation: props.disableHtmlValidation });
-  const { fieldValue, setValue, isTouched, setTouched, errorMessage } = field;
+  const { fieldValue, setValue, setTouched, errorMessage } = field;
   const { errorMessageProps, accessibleErrorProps } = createAccessibleErrorMessageProps({
     inputId,
     errorMessage,
@@ -173,14 +174,12 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
   }
 
   return {
-    fieldValue,
-    isPressed,
-    inputEl,
-    labelProps,
-    inputProps,
-    togglePressed,
-    isTouched,
-    errorMessage,
     errorMessageProps,
+    inputEl,
+    inputProps,
+    isPressed,
+    labelProps,
+    togglePressed,
+    ...exposeField(field),
   };
 }

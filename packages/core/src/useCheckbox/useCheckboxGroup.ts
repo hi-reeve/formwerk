@@ -22,7 +22,7 @@ import {
 import { useLocale } from '../i18n/useLocale';
 import { FormField, useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
-import { useErrorDisplay } from '../useFormField/useErrorDisplay';
+import { exposeField } from '../utils/exposers';
 
 export type CheckboxGroupValue<TCheckbox> = TCheckbox[];
 
@@ -93,9 +93,8 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
     schema: props.schema,
   });
 
-  const { displayError } = useErrorDisplay(field);
   const { validityDetails } = useInputValidity({ field });
-  const { fieldValue, setValue, isTouched, setTouched, errorMessage, isDirty, isValid } = field;
+  const { fieldValue, setValue, isTouched, setTouched, errorMessage } = field;
   const { describedByProps, descriptionProps } = createDescribedByProps({
     inputId: groupId,
     description: props.description,
@@ -176,21 +175,11 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
 
   return {
     descriptionProps,
-    displayError,
-    errorMessage,
     errorMessageProps,
-    errors: field.errors,
-    fieldValue,
     groupProps,
     groupState,
-    isDirty,
-    isTouched,
-    isValid,
     labelProps,
-    setErrors: field.setErrors,
-    setTouched,
     validityDetails,
-
-    setValue,
+    ...exposeField(field),
   };
 }

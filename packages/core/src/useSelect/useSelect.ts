@@ -14,7 +14,7 @@ import { useInputValidity } from '../validation';
 import { useListBox } from './useListBox';
 import { useLabel } from '../a11y/useLabel';
 import { FieldTypePrefixes } from '../constants';
-import { useErrorDisplay } from '../useFormField/useErrorDisplay';
+import { exposeField } from '../utils/exposers';
 
 export interface SelectProps<TOption, TValue = TOption> {
   label: string;
@@ -75,8 +75,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
   });
 
   const { updateValidity } = useInputValidity({ field });
-  const { fieldValue, setValue, isTouched, errorMessage } = field;
-  const { displayError } = useErrorDisplay(field);
+  const { fieldValue, setValue, errorMessage } = field;
   const { descriptionProps, describedByProps } = createDescribedByProps({
     inputId,
     description: props.description,
@@ -212,11 +211,8 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
     triggerProps,
     labelProps,
     listBoxProps,
-    fieldValue,
-    errorMessage,
-    isTouched,
     errorMessageProps,
     descriptionProps,
-    displayError,
+    ...exposeField(field),
   };
 }

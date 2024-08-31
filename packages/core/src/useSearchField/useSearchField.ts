@@ -21,7 +21,7 @@ import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel } from '../a11y/useLabel';
 import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
-import { useErrorDisplay } from '../useFormField/useErrorDisplay';
+import { exposeField } from '../utils/exposers';
 
 export interface SearchInputDOMAttributes extends TextInputBaseAttributes {
   type?: 'search';
@@ -78,8 +78,7 @@ export function useSearchField(
     field,
     disableHtmlValidation: props.disableHtmlValidation,
   });
-  const { displayError } = useErrorDisplay(field);
-  const { fieldValue, setValue, isTouched, setTouched, errorMessage, isValid, errors } = field;
+  const { fieldValue, setValue, setTouched, errorMessage, isValid } = field;
 
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
@@ -159,19 +158,10 @@ export function useSearchField(
     inputEl,
     inputProps,
     labelProps,
-    fieldValue,
-    errorMessage,
     errorMessageProps,
     descriptionProps,
     clearBtnProps,
     validityDetails,
-    isValid,
-    isTouched,
-    errors,
-
-    setErrors: field.setErrors,
-    setValue: field.setValue,
-    setTouched: field.setTouched,
-    displayError,
+    ...exposeField(field),
   };
 }

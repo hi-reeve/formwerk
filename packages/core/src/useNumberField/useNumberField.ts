@@ -24,8 +24,8 @@ import { useSpinButton } from '../useSpinButton';
 import { useLocale } from '../i18n/useLocale';
 import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
-import { useErrorDisplay } from '../useFormField/useErrorDisplay';
 import { TypedSchema } from '../types';
+import { exposeField } from '../utils/exposers';
 
 export interface NumberInputDOMAttributes {
   name?: string;
@@ -84,8 +84,7 @@ export function useNumberField(
   });
 
   const { validityDetails } = useInputValidity({ inputEl, field, disableHtmlValidation: props.disableHtmlValidation });
-  const { displayError } = useErrorDisplay(field);
-  const { fieldValue, setValue, setTouched, isTouched, isDirty, isValid, errors, errorMessage } = field;
+  const { fieldValue, setValue, setTouched, errorMessage } = field;
   const formattedText = computed<string>(() => {
     if (Number.isNaN(fieldValue.value) || isEmpty(fieldValue.value)) {
       return '';
@@ -197,25 +196,16 @@ export function useNumberField(
   });
 
   return {
+    ...exposeField(field),
     decrement,
     decrementButtonProps,
     descriptionProps,
-    displayError,
-    errorMessage,
     errorMessageProps,
-    errors,
-    fieldValue,
     increment,
     incrementButtonProps,
     inputEl,
     inputProps,
-    isDirty,
-    isTouched,
-    isValid,
     labelProps,
-    setErrors: field.setErrors,
-    setTouched,
-    setValue,
     validityDetails,
   };
 }

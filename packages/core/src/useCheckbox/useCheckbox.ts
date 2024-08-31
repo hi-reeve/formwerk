@@ -17,10 +17,10 @@ import {
 } from '../types';
 import { useLabel } from '../a11y/useLabel';
 import { CheckboxGroupContext, CheckboxGroupKey } from './useCheckboxGroup';
-import { useFormField } from '../useFormField';
+import { FormField, useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { useInputValidity } from '../validation';
-import { useErrorDisplay } from '../useFormField/useErrorDisplay';
+import { exposeField } from '../utils/exposers';
 
 export interface CheckboxProps<TValue = string> {
   name?: string;
@@ -67,9 +67,8 @@ export function useCheckbox<TValue = string>(
   const group: CheckboxGroupContext<TValue> | null = inject(CheckboxGroupKey, null);
   const inputEl = elementRef || ref<HTMLElement>();
   const field = useCheckboxField(props);
-  const { displayError } = useErrorDisplay(field);
   useInputValidity({ inputEl, field, disableHtmlValidation: props.disableHtmlValidation });
-  const { fieldValue, isTouched, setTouched, setValue, errorMessage, setErrors, errors, isValid, isDirty } = field;
+  const { fieldValue, setTouched, setValue, errorMessage, setErrors } = field;
 
   const checked = computed({
     get() {
@@ -220,21 +219,13 @@ export function useCheckbox<TValue = string>(
   }
 
   return {
-    displayError,
-    errorMessage,
     errorMessageProps,
-    errors,
-    fieldValue,
     inputEl,
     inputProps,
     isChecked: checked,
-    isDirty,
-    isTouched,
-    isValid,
     labelProps,
-    setErrors,
-    setTouched,
     toggle: toggleValue,
+    ...exposeField(field as FormField<TValue>),
   };
 }
 

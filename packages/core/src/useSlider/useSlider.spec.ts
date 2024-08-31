@@ -24,12 +24,12 @@ function createThumbComponent(props: SliderThumbProps): Component {
 function createSliderComponent(props: SliderProps): Component {
   return {
     setup() {
-      const { sliderValue, labelProps, trackProps, groupProps, outputProps, trackRef } = useSlider(props);
+      const { fieldValue, labelProps, trackProps, groupProps, outputProps, trackRef } = useSlider(props);
 
       onMounted(() => setUpRect(trackRef.value));
 
       return {
-        sliderValue,
+        fieldValue,
         labelProps,
         trackProps,
         groupProps,
@@ -42,8 +42,8 @@ function createSliderComponent(props: SliderProps): Component {
       <div data-testid="track" v-bind="trackProps" :style="{ 'width': '100px' }">
         <slot />
       </div>
-      
-      <span v-bind="outputProps" data-testid="slider-value">{{ sliderValue }}</span>
+
+      <span v-bind="outputProps" data-testid="slider-value">{{ fieldValue }}</span>
     </div>
     `,
   };

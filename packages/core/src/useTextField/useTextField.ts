@@ -20,8 +20,8 @@ import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel } from '../a11y/useLabel';
 import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
-import { useErrorDisplay } from '../useFormField/useErrorDisplay';
 import { TypedSchema } from '../types';
+import { exposeField } from '../utils/exposers';
 
 export type TextInputDOMType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'url';
 
@@ -76,8 +76,7 @@ export function useTextField(
   });
 
   const { validityDetails } = useInputValidity({ inputEl, field, disableHtmlValidation: props.disableHtmlValidation });
-  const { displayError } = useErrorDisplay(field);
-  const { fieldValue, setValue, isTouched, setTouched, errorMessage, isValid, errors, setErrors } = field;
+  const { fieldValue, setValue, setTouched, errorMessage } = field;
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
@@ -126,21 +125,12 @@ export function useTextField(
   });
 
   return {
+    descriptionProps,
+    errorMessageProps,
     inputEl,
     inputProps,
     labelProps,
-    fieldValue,
-    errorMessage,
-    errorMessageProps,
-    descriptionProps,
     validityDetails,
-    isTouched,
-    isValid,
-    errors,
-
-    setErrors,
-    setValue,
-    setTouched,
-    displayError,
+    ...exposeField(field),
   };
 }

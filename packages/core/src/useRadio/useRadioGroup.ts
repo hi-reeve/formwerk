@@ -22,7 +22,7 @@ import {
 import { useLocale } from '../i18n/useLocale';
 import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
-import { useErrorDisplay } from '../useFormField/useErrorDisplay';
+import { exposeField } from '../utils/exposers';
 
 export interface RadioGroupContext<TValue> {
   name: string;
@@ -106,8 +106,7 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
   });
 
   const { validityDetails } = useInputValidity({ field });
-  const { displayError } = useErrorDisplay(field);
-  const { fieldValue, setValue, isTouched, setTouched, errorMessage, errors, isDirty, isValid } = field;
+  const { fieldValue, setValue, setTouched, errorMessage } = field;
 
   const { descriptionProps, describedByProps } = createDescribedByProps({
     inputId: groupId,
@@ -217,19 +216,10 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
 
   return {
     descriptionProps,
-    displayError,
-    errorMessage,
     errorMessageProps,
-    errors,
-    fieldValue,
     groupProps,
-    isDirty,
-    isTouched,
-    isValid,
     labelProps,
-    setErrors: field.setErrors,
-    setTouched,
-    setValue,
     validityDetails,
+    ...exposeField(field),
   };
 }

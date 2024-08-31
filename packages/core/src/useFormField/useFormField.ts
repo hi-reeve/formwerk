@@ -4,6 +4,7 @@ import { Arrayable, Getter, TypedSchema, ValidationResult } from '../types';
 import { useSyncModel } from '../reactivity/useModelSync';
 import { cloneDeep, isEqual, normalizeArrayable, tryOnScopeDispose } from '../utils/common';
 import { FormGroupKey } from '../useFormGroup';
+import { useErrorDisplay } from './useErrorDisplay';
 
 interface FormFieldOptions<TValue = unknown> {
   path: MaybeRefOrGetter<string | undefined> | undefined;
@@ -29,6 +30,7 @@ export type FormField<TValue> = {
   setValue: (value: TValue | undefined) => void;
   setTouched: (touched: boolean) => void;
   setErrors: (messages: Arrayable<string>) => void;
+  displayError: () => string | undefined;
 };
 
 export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<TValue>>): FormField<TValue> {
@@ -43,6 +45,7 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
   const { fieldValue, pathlessValue, setValue } = useFieldValue(getPath, form, initialValue);
   const { isTouched, pathlessTouched, setTouched } = useFieldTouched(getPath, form);
   const { errors, setErrors, isValid, errorMessage, pathlessValidity } = useFieldValidity(getPath, form);
+  const { displayError } = useErrorDisplay(errorMessage, isTouched);
 
   const isDirty = computed(() => {
     if (!form) {
@@ -107,6 +110,7 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
     setValue,
     setTouched,
     setErrors,
+    displayError,
   };
 
   if (!form) {

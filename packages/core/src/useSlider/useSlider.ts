@@ -6,6 +6,7 @@ import { toNearestMultipleOf } from '../utils/math';
 import { useLocale } from '../i18n/useLocale';
 import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
+import { exposeField } from '../utils/exposers';
 
 export interface SliderProps {
   label?: string;
@@ -103,13 +104,14 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
   const thumbs = ref<ThumbContext[]>([]);
   const isDisabled = () => toValue(props.disabled) ?? false;
   const { direction } = useLocale();
-  const { fieldValue, setValue, isTouched, setTouched } = useFormField<Arrayable<number>>({
+  const field = useFormField<Arrayable<number>>({
     path: props.name,
     initialValue: toValue(props.modelValue),
     disabled: props.disabled,
     schema: props.schema,
   });
 
+  const { fieldValue, setValue, setTouched } = field;
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
@@ -285,7 +287,6 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
     groupProps,
     outputProps,
     trackProps,
-    sliderValue: fieldValue,
-    isTouched,
+    ...exposeField(field),
   };
 }

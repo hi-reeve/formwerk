@@ -1,10 +1,10 @@
-import { FormField } from './useFormField';
+import { Ref } from 'vue';
 
-export function useErrorDisplay(field: FormField<any>) {
+export function useErrorDisplay(errorMessage: Ref<string | undefined>, isTouched: Ref<boolean>) {
   function displayError(msg?: string) {
-    const error = msg || field.errorMessage.value;
+    const error = msg || errorMessage.value;
 
-    return field.isTouched.value ? error : '';
+    return isTouched.value ? error : '';
   }
 
   return { displayError };
