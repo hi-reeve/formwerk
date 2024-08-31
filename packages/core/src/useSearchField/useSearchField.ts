@@ -65,7 +65,7 @@ export function useSearchField(
 ) {
   const props = normalizeProps(_props, ['onSubmit', 'schema']);
   const inputId = useUniqId(FieldTypePrefixes.SearchField);
-  const inputRef = elementRef || ref<HTMLInputElement>();
+  const inputEl = elementRef || ref<HTMLInputElement>();
   const field = useFormField<string | undefined>({
     path: props.name,
     initialValue: toValue(props.modelValue),
@@ -74,7 +74,7 @@ export function useSearchField(
   });
 
   const { validityDetails, updateValidity } = useInputValidity({
-    inputRef,
+    inputEl,
     field,
     disableHtmlValidation: props.disableHtmlValidation,
   });
@@ -84,7 +84,7 @@ export function useSearchField(
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
-    targetRef: inputRef,
+    targetRef: inputEl,
   });
 
   const { descriptionProps, describedByProps } = createDescribedByProps({
@@ -126,7 +126,7 @@ export function useSearchField(
         return;
       }
 
-      if (e.code === 'Enter' && !inputRef.value?.form && props.onSubmit) {
+      if (e.code === 'Enter' && !inputEl.value?.form && props.onSubmit) {
         e.preventDefault();
         setTouched(true);
         if (isValid.value) {
@@ -150,13 +150,13 @@ export function useSearchField(
         minlength: toValue(props.minLength),
         ...handlers,
       },
-      inputRef,
+      inputEl,
       elementRef,
     ),
   );
 
   return {
-    inputRef,
+    inputEl,
     inputProps,
     labelProps,
     fieldValue,

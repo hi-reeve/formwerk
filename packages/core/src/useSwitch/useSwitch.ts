@@ -60,11 +60,11 @@ export type SwitchProps = {
 export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?: Ref<HTMLInputElement>) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.Switch);
-  const inputRef = elementRef || shallowRef<HTMLInputElement>();
+  const inputEl = elementRef || shallowRef<HTMLInputElement>();
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
-    targetRef: inputRef,
+    targetRef: inputEl,
   });
 
   const field = useFormField<unknown>({
@@ -74,7 +74,7 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
     schema: props.schema,
   });
 
-  useInputValidity({ field, inputRef, disableHtmlValidation: props.disableHtmlValidation });
+  useInputValidity({ field, inputEl, disableHtmlValidation: props.disableHtmlValidation });
   const { fieldValue, setValue, isTouched, setTouched, errorMessage } = field;
   const { errorMessageProps, accessibleErrorProps } = createAccessibleErrorMessageProps({
     inputId,
@@ -166,9 +166,7 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
   /**
    * Use this if you are using a native input[type=checkbox] element.
    */
-  const inputProps = computed(() =>
-    withRefCapture(createBindings(isInputElement(inputRef.value)), inputRef, elementRef),
-  );
+  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl, elementRef));
 
   function togglePressed(force?: boolean) {
     isPressed.value = force ?? !isPressed.value;
@@ -177,7 +175,7 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
   return {
     fieldValue,
     isPressed,
-    inputRef,
+    inputEl,
     labelProps,
     inputProps,
     togglePressed,

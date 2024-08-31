@@ -8,7 +8,7 @@ import { FormGroupKey } from '../useFormGroup';
 import { getConfig } from '../config';
 
 interface InputValidityOptions {
-  inputRef?: Ref<Maybe<HTMLElement>>;
+  inputEl?: Ref<Maybe<HTMLElement>>;
   disableHtmlValidation?: MaybeRefOrGetter<boolean | undefined>;
   field: FormField<any>;
   events?: string[];
@@ -19,7 +19,7 @@ export function useInputValidity(opts: InputValidityOptions) {
   const formGroup = inject(FormGroupKey, null);
   const { setErrors, errorMessage, schema, validate: validateField, getPath } = opts.field;
   const validityDetails = shallowRef<ValidityState>();
-  useMessageCustomValiditySync(errorMessage, opts.inputRef);
+  useMessageCustomValiditySync(errorMessage, opts.inputEl);
   const isHtmlValidationDisabled = () =>
     toValue(opts.disableHtmlValidation) ??
     (formGroup || form)?.isHtmlValidationDisabled() ??
@@ -31,7 +31,7 @@ export function useInputValidity(opts: InputValidityOptions) {
       path: getPath() || '',
     };
 
-    const inputEl = opts.inputRef?.value;
+    const inputEl = opts.inputEl?.value;
     if (!isInputElement(inputEl) || isHtmlValidationDisabled()) {
       return {
         ...baseReturns,
@@ -73,7 +73,7 @@ export function useInputValidity(opts: InputValidityOptions) {
     _updateValidity();
   }
 
-  useEventListener(opts.inputRef, opts?.events || ['change', 'blur'], updateValidity);
+  useEventListener(opts.inputEl, opts?.events || ['change', 'blur'], updateValidity);
 
   // It shouldn't mutate the field if the validation is sourced by the form.
   // The form will handle the mutation later once it aggregates all the results.
@@ -89,7 +89,7 @@ export function useInputValidity(opts: InputValidityOptions) {
 
   if (!schema) {
     // It should self-mutate the field errors because this is fired by a native validation and not sourced by the form.
-    useEventListener(opts.inputRef, opts?.events || ['invalid'], () => validateNative(true));
+    useEventListener(opts.inputEl, opts?.events || ['invalid'], () => validateNative(true));
   }
 
   /**

@@ -9,7 +9,7 @@ test('updates the validity state on blur events', async () => {
   await render({
     setup: () => {
       const field = useFormField();
-      useInputValidity({ inputRef: input, field });
+      useInputValidity({ inputEl: input, field });
 
       return { input, errorMessage: field.errorMessage };
     },
@@ -31,7 +31,7 @@ test('updates the validity state on change events', async () => {
   await render({
     setup: () => {
       const field = useFormField();
-      useInputValidity({ inputRef: input, field });
+      useInputValidity({ inputEl: input, field });
 
       return { input, errorMessage: field.errorMessage };
     },
@@ -55,7 +55,7 @@ test('updates the validity on specified events', async () => {
   await render({
     setup: () => {
       const field = useFormField();
-      useInputValidity({ inputRef: input, field, events: ['input'] });
+      useInputValidity({ inputEl: input, field, events: ['input'] });
 
       return { input, errorMessage: field.errorMessage };
     },
@@ -79,7 +79,7 @@ test('updates the input native validity with custom validity errors', async () =
   await render({
     setup: () => {
       field = useFormField();
-      useInputValidity({ inputRef: input, field, events: ['input'] });
+      useInputValidity({ inputEl: input, field, events: ['input'] });
 
       return { input, errorMessage: field.errorMessage };
     },

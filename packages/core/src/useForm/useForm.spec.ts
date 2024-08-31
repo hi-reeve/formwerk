@@ -315,13 +315,13 @@ describe('form dirty state', () => {
 
 describe('form validation', () => {
   describe('constraints API', () => {
-    function createInputComponent(inputRef: Ref<HTMLInputElement | undefined>): Component {
+    function createInputComponent(inputEl: Ref<HTMLInputElement | undefined>): Component {
       return {
         setup: () => {
           const field = useFormField({ path: 'test' });
-          useInputValidity({ inputRef, field });
+          useInputValidity({ inputEl, field });
 
-          return { input: inputRef, errorMessage: field.errorMessage };
+          return { input: inputEl, errorMessage: field.errorMessage };
         },
         template: `
           <input ref="input" data-testid="input" required />

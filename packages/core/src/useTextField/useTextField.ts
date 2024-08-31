@@ -67,7 +67,7 @@ export function useTextField(
 ) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.TextField);
-  const inputRef = elementRef || shallowRef<HTMLInputElement>();
+  const inputEl = elementRef || shallowRef<HTMLInputElement>();
   const field = useFormField<string | undefined>({
     path: props.name,
     initialValue: toValue(props.modelValue),
@@ -75,13 +75,13 @@ export function useTextField(
     schema: props.schema,
   });
 
-  const { validityDetails } = useInputValidity({ inputRef, field, disableHtmlValidation: props.disableHtmlValidation });
+  const { validityDetails } = useInputValidity({ inputEl, field, disableHtmlValidation: props.disableHtmlValidation });
   const { displayError } = useErrorDisplay(field);
   const { fieldValue, setValue, isTouched, setTouched, errorMessage, isValid, errors, setErrors } = field;
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
-    targetRef: inputRef,
+    targetRef: inputEl,
   });
 
   const { descriptionProps, describedByProps } = createDescribedByProps({
@@ -118,15 +118,15 @@ export function useTextField(
         value: fieldValue.value,
         maxlength: toValue(props.maxLength),
         minlength: toValue(props.minLength),
-        pattern: inputRef.value?.tagName === 'TEXTAREA' ? undefined : toValue(props.pattern),
+        pattern: inputEl.value?.tagName === 'TEXTAREA' ? undefined : toValue(props.pattern),
       },
-      inputRef,
+      inputEl,
       elementRef,
     );
   });
 
   return {
-    inputRef,
+    inputEl,
     inputProps,
     labelProps,
     fieldValue,

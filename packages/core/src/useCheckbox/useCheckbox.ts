@@ -64,9 +64,9 @@ export function useCheckbox<TValue = string>(
   const getTrueValue = createTrueValueGetter(props);
   const getFalseValue = () => (toValue(props.falseValue) as TValue) ?? (false as TValue);
   const group: CheckboxGroupContext<TValue> | null = inject(CheckboxGroupKey, null);
-  const inputRef = elementRef || ref<HTMLElement>();
+  const inputEl = elementRef || ref<HTMLElement>();
   const field = useCheckboxField(props);
-  useInputValidity({ inputRef, field, disableHtmlValidation: props.disableHtmlValidation });
+  useInputValidity({ inputEl, field, disableHtmlValidation: props.disableHtmlValidation });
   const { fieldValue, isTouched, setTouched, setValue, errorMessage, setErrors } = field;
 
   const checked = computed({
@@ -85,7 +85,7 @@ export function useCheckbox<TValue = string>(
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
-    targetRef: inputRef,
+    targetRef: inputEl,
   });
 
   const { errorMessageProps, accessibleErrorProps } = createAccessibleErrorMessageProps({
@@ -139,7 +139,7 @@ export function useCheckbox<TValue = string>(
       return;
     }
 
-    inputRef.value?.focus();
+    inputEl.value?.focus();
   }
 
   function createBindings(isInput: boolean): CheckboxDomProps | CheckboxDomInputProps {
@@ -181,8 +181,8 @@ export function useCheckbox<TValue = string>(
       focus();
       group?.toggleValue(getTrueValue(), force);
       nextTick(() => {
-        if (isInputElement(inputRef.value)) {
-          setErrors(inputRef.value?.validationMessage ?? '');
+        if (isInputElement(inputEl.value)) {
+          setErrors(inputEl.value?.validationMessage ?? '');
         }
       });
 
@@ -190,9 +190,7 @@ export function useCheckbox<TValue = string>(
     },
   });
 
-  const inputProps = computed(() =>
-    withRefCapture(createBindings(isInputElement(inputRef.value)), inputRef, elementRef),
-  );
+  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl, elementRef));
 
   function setChecked(force?: boolean) {
     // Unless this is set to false, you cannot change the value of the checkbox
@@ -220,17 +218,16 @@ export function useCheckbox<TValue = string>(
   }
 
   return {
-    fieldValue,
-    inputRef,
-    labelProps,
-    inputProps,
-    isChecked: checked,
-    errorMessageProps,
     errorMessage,
+    errorMessageProps,
+    fieldValue,
+    inputProps,
+    inputEl,
+    isChecked: checked,
     isTouched,
+    labelProps,
     setChecked,
     toggleValue,
-    focus,
   };
 }
 

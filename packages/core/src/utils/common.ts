@@ -138,11 +138,11 @@ export function getNextCycleArrIdx(idx: number, arr: unknown[]): number {
  */
 export function withRefCapture<TProps>(
   props: TProps,
-  inputRef: Ref<Maybe<HTMLElement>>,
+  inputEl: Ref<Maybe<HTMLElement>>,
   elementRef?: Ref<Maybe<HTMLElement>>,
 ): TProps {
   if (!elementRef) {
-    (props as any).ref = createRefCapture(inputRef);
+    (props as any).ref = createRefCapture(inputEl);
   }
 
   return props;

@@ -73,7 +73,7 @@ export function useNumberField(
 ) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.NumberField);
-  const inputRef = elementRef || shallowRef<HTMLInputElement>();
+  const inputEl = elementRef || shallowRef<HTMLInputElement>();
   const { locale } = useLocale();
   const parser = useNumberParser(() => toValue(props.locale) ?? locale.value, props.formatOptions);
   const field = useFormField<number>({
@@ -83,7 +83,7 @@ export function useNumberField(
     schema: props.schema,
   });
 
-  const { validityDetails } = useInputValidity({ inputRef, field, disableHtmlValidation: props.disableHtmlValidation });
+  const { validityDetails } = useInputValidity({ inputEl, field, disableHtmlValidation: props.disableHtmlValidation });
   const { displayError } = useErrorDisplay(field);
   const { fieldValue, setValue, setTouched, isTouched, errorMessage } = field;
   const formattedText = computed<string>(() => {
@@ -97,7 +97,7 @@ export function useNumberField(
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
-    targetRef: inputRef,
+    targetRef: inputEl,
   });
 
   const { descriptionProps, describedByProps } = createDescribedByProps({
@@ -152,8 +152,8 @@ export function useNumberField(
     onChange: (event: Event) => {
       setValue(applyClamp(parser.parse((event.target as HTMLInputElement).value)));
       nextTick(() => {
-        if (inputRef.value && inputRef.value?.value !== formattedText.value) {
-          inputRef.value.value = formattedText.value;
+        if (inputEl.value && inputEl.value?.value !== formattedText.value) {
+          inputEl.value.value = formattedText.value;
         }
       });
     },
@@ -191,13 +191,13 @@ export function useNumberField(
         type: 'text',
         spellcheck: false,
       },
-      inputRef,
+      inputEl,
       elementRef,
     );
   });
 
   return {
-    inputRef,
+    inputEl,
     inputProps,
     labelProps,
     fieldValue,

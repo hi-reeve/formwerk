@@ -28,12 +28,12 @@ export function useRadio<TValue = string>(
   const props = normalizeProps(_props);
   const inputId = useUniqId(FieldTypePrefixes.RadioButton);
   const group: RadioGroupContext<TValue> | null = inject(RadioGroupKey, null);
-  const inputRef = elementRef || ref<HTMLInputElement>();
+  const inputEl = elementRef || ref<HTMLInputElement>();
   const checked = computed(() => isEqual(group?.modelValue, toValue(props.value)));
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
-    targetRef: inputRef,
+    targetRef: inputEl,
   });
 
   if (!group) {
@@ -72,10 +72,10 @@ export function useRadio<TValue = string>(
       return {
         ...baseHandlers,
         onChange() {
-          group?.setErrors(inputRef.value?.validationMessage ?? '');
+          group?.setErrors(inputEl.value?.validationMessage ?? '');
         },
         onInvalid() {
-          group?.setErrors(inputRef.value?.validationMessage ?? '');
+          group?.setErrors(inputEl.value?.validationMessage ?? '');
         },
       };
     }
@@ -86,7 +86,7 @@ export function useRadio<TValue = string>(
   const isDisabled = () => toValue(props.disabled || group?.disabled) ?? false;
 
   function focus() {
-    inputRef.value?.focus();
+    inputEl.value?.focus();
   }
 
   function createBindings(isInput: boolean): RadioDomInputProps | RadioDomProps {
@@ -122,19 +122,17 @@ export function useRadio<TValue = string>(
       group?.setValue(toValue(props.value) as TValue);
       focus();
       nextTick(() => {
-        group?.setErrors(inputRef.value?.validationMessage ?? '');
+        group?.setErrors(inputEl.value?.validationMessage ?? '');
       });
 
       return true;
     },
   });
 
-  const inputProps = computed(() =>
-    withRefCapture(createBindings(isInputElement(inputRef.value)), inputRef, elementRef),
-  );
+  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl, elementRef));
 
   return {
-    inputRef,
+    inputEl,
     labelProps,
     inputProps,
     isChecked: checked,
