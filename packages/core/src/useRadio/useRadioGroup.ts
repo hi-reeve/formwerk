@@ -107,7 +107,7 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
 
   const { validityDetails } = useInputValidity({ field });
   const { displayError } = useErrorDisplay(field);
-  const { fieldValue, setValue, isTouched, setTouched, errorMessage, errors } = field;
+  const { fieldValue, setValue, isTouched, setTouched, errorMessage, errors, isDirty, isValid } = field;
 
   const { descriptionProps, describedByProps } = createDescribedByProps({
     inputId: groupId,
@@ -216,19 +216,20 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
   provide(RadioGroupKey, context);
 
   return {
-    labelProps,
     descriptionProps,
+    displayError,
+    errorMessage,
     errorMessageProps,
+    errors,
     fieldValue,
     groupProps,
-    errorMessage,
+    isDirty,
     isTouched,
-    errors,
-    validityDetails,
-
-    setValue,
-    setTouched,
+    isValid,
+    labelProps,
     setErrors: field.setErrors,
-    displayError,
+    setTouched,
+    setValue,
+    validityDetails,
   };
 }

@@ -95,7 +95,7 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
 
   const { displayError } = useErrorDisplay(field);
   const { validityDetails } = useInputValidity({ field });
-  const { fieldValue, setValue, isTouched, setTouched, errorMessage } = field;
+  const { fieldValue, setValue, isTouched, setTouched, errorMessage, isDirty, isValid } = field;
   const { describedByProps, descriptionProps } = createDescribedByProps({
     inputId: groupId,
     description: props.description,
@@ -183,8 +183,9 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
     fieldValue,
     groupProps,
     groupState,
+    isDirty,
     isTouched,
-    isValid: field.isValid,
+    isValid,
     labelProps,
     setErrors: field.setErrors,
     setTouched,

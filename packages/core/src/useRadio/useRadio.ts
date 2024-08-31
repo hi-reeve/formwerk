@@ -133,8 +133,9 @@ export function useRadio<TValue = string>(
 
   return {
     inputEl,
-    labelProps,
     inputProps,
     isChecked: checked,
+    isDisabled: computed(() => isDisabled()),
+    labelProps,
   };
 }
