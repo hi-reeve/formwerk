@@ -49,7 +49,7 @@ export interface TextFieldProps {
   type?: TextInputDOMType;
   maxLength?: Numberish;
   minLength?: Numberish;
-  pattern?: string | undefined;
+  pattern?: string | RegExp | undefined;
   placeholder?: string | undefined;
 
   required?: boolean;
@@ -117,7 +117,8 @@ export function useTextField(
         value: fieldValue.value,
         maxlength: toValue(props.maxLength),
         minlength: toValue(props.minLength),
-        pattern: inputEl.value?.tagName === 'TEXTAREA' ? undefined : toValue(props.pattern),
+        // Maybe we need to find a better way to serialize RegExp to a pattern string
+        pattern: inputEl.value?.tagName === 'TEXTAREA' ? undefined : toValue(props.pattern)?.toString(),
       },
       inputEl,
       elementRef,
