@@ -85,7 +85,7 @@ export function useNumberField(
 
   const { validityDetails } = useInputValidity({ inputEl, field, disableHtmlValidation: props.disableHtmlValidation });
   const { displayError } = useErrorDisplay(field);
-  const { fieldValue, setValue, setTouched, isTouched, errorMessage } = field;
+  const { fieldValue, setValue, setTouched, isTouched, isDirty, isValid, errors, errorMessage } = field;
   const formattedText = computed<string>(() => {
     if (Number.isNaN(fieldValue.value) || isEmpty(fieldValue.value)) {
       return '';
@@ -197,25 +197,25 @@ export function useNumberField(
   });
 
   return {
-    inputEl,
-    inputProps,
-    labelProps,
-    fieldValue,
+    decrement,
+    decrementButtonProps,
+    descriptionProps,
+    displayError,
     errorMessage,
     errorMessageProps,
-    descriptionProps,
-    validityDetails,
-    isValid: field.isValid,
-    incrementButtonProps,
-    decrementButtonProps,
-    isTouched,
-    errors: field.errors,
-
-    setValue,
+    errors,
+    fieldValue,
     increment,
-    decrement,
-    setTouched,
+    incrementButtonProps,
+    inputEl,
+    inputProps,
+    isDirty,
+    isTouched,
+    isValid,
+    labelProps,
     setErrors: field.setErrors,
-    displayError,
+    setTouched,
+    setValue,
+    validityDetails,
   };
 }
