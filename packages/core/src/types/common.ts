@@ -11,6 +11,13 @@ export type AriaDescriptionProps = {
   id: string;
 };
 
+export type WithId<TProps extends object> = TProps & { id: string };
+
+export type AriaErrorMessageProps = {
+  'aria-live': 'polite';
+  'aria-atomic': boolean;
+};
+
 export type AriaLabelableProps = {
   'aria-label'?: string;
   'aria-labelledby'?: string;

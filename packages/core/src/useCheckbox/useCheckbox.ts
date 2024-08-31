@@ -20,6 +20,7 @@ import { CheckboxGroupContext, CheckboxGroupKey } from './useCheckboxGroup';
 import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { useInputValidity } from '../validation';
+import { useErrorDisplay } from '../useFormField/useErrorDisplay';
 
 export interface CheckboxProps<TValue = string> {
   name?: string;
@@ -66,8 +67,9 @@ export function useCheckbox<TValue = string>(
   const group: CheckboxGroupContext<TValue> | null = inject(CheckboxGroupKey, null);
   const inputEl = elementRef || ref<HTMLElement>();
   const field = useCheckboxField(props);
+  const { displayError } = useErrorDisplay(field);
   useInputValidity({ inputEl, field, disableHtmlValidation: props.disableHtmlValidation });
-  const { fieldValue, isTouched, setTouched, setValue, errorMessage, setErrors } = field;
+  const { fieldValue, isTouched, setTouched, setValue, errorMessage, setErrors, errors, isValid, isDirty } = field;
 
   const checked = computed({
     get() {
@@ -218,16 +220,21 @@ export function useCheckbox<TValue = string>(
   }
 
   return {
+    displayError,
     errorMessage,
     errorMessageProps,
+    errors,
     fieldValue,
-    inputProps,
     inputEl,
+    inputProps,
     isChecked: checked,
+    isDirty,
     isTouched,
+    isValid,
     labelProps,
-    setChecked,
-    toggleValue,
+    setErrors,
+    setTouched,
+    toggle: toggleValue,
   };
 }
 

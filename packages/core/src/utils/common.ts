@@ -1,6 +1,6 @@
 import { computed, getCurrentScope, MaybeRefOrGetter, onScopeDispose, Ref, shallowRef, toValue, useId } from 'vue';
 import { klona } from 'klona/full';
-import { AriaDescriptionProps, Arrayable, Maybe, NormalizedProps } from '../types';
+import { AriaDescriptionProps, AriaErrorMessageProps, Arrayable, Maybe, NormalizedProps, WithId } from '../types';
 import { AsyncReturnType } from 'type-fest';
 
 export function useUniqId(prefix?: string) {
@@ -13,7 +13,7 @@ export function createDescriptionProps(inputId: string): AriaDescriptionProps {
   };
 }
 
-export function createErrorProps(inputId: string) {
+export function createErrorProps(inputId: string): WithId<AriaErrorMessageProps> {
   return {
     id: `${inputId}-r`,
     'aria-live': 'polite',

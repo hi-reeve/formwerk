@@ -175,21 +175,21 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
   provide(CheckboxGroupKey, context);
 
   return {
-    labelProps,
     descriptionProps,
-    groupState,
+    displayError,
+    errorMessage,
     errorMessageProps,
+    errors: field.errors,
     fieldValue,
     groupProps,
-    errorMessage,
+    groupState,
     isTouched,
-    errors: field.errors,
     isValid: field.isValid,
+    labelProps,
+    setErrors: field.setErrors,
+    setTouched,
     validityDetails,
 
     setValue,
-    setTouched,
-    setErrors: field.setErrors,
-    displayError,
   };
 }
