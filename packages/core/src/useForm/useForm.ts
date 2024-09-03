@@ -19,6 +19,8 @@ import { useFormActions } from './useFormActions';
 import { useFormSnapshots } from './formSnapshot';
 import { findLeaf } from '../utils/path';
 import { getConfig } from '../config';
+import { FieldTypePrefixes } from '../constants';
+import { appendToFormData } from '../utils/formData';
 
 export interface FormOptions<TForm extends FormObject = FormObject, TOutput extends FormObject = TForm> {
   id: string;
@@ -39,6 +41,10 @@ export interface FormContext<TForm extends FormObject = FormObject, TOutput exte
   ): void;
 }
 
+export interface FormDomProps {
+  id: string;
+}
+
 export const FormKey: InjectionKey<FormContext<any>> = Symbol('Formwerk FormKey');
 
 export function useForm<TForm extends FormObject = FormObject, TOutput extends FormObject = TForm>(
@@ -50,6 +56,7 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
     schema: opts?.schema,
   });
 
+  const id = opts?.id || useUniqId(FieldTypePrefixes.Form);
   const isHtmlValidationDisabled = () => opts?.disableHtmlValidation ?? getConfig().validation.disableHtmlValidation;
   const values = reactive(cloneDeep(valuesSnapshot.originals.value)) as TForm;
   const touched = reactive(cloneDeep(touchedSnapshot.originals.value)) as TouchedSchema<TForm>;
@@ -57,7 +64,7 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
   const errors = ref({}) as Ref<ErrorsSchema<TForm>>;
 
   const ctx = createFormContext({
-    id: opts?.id || useUniqId('form'),
+    id,
     values,
     touched,
     disabled,
@@ -114,6 +121,24 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
     onMounted(privateActions.requestValidation);
   }
 
+  function onFormdata(e: FormDataEvent) {
+    const form = e.target as HTMLFormElement;
+    appendToFormData(form.__formOut || values, e.formData);
+  }
+
+  const onSubmit = actions.handleSubmit((output, { form }) => {
+    if (form) {
+      form.__formOut = output.toJSON();
+      form.submit();
+    }
+  });
+
+  const formProps = {
+    id,
+    onSubmit,
+    onFormdata,
+  };
+
   return {
     values: readonly(values),
     context: ctx,
@@ -130,6 +155,7 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
     getError,
     displayError,
     getErrors,
+    formProps,
     ...actions,
   };
 }

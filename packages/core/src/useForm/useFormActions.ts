@@ -13,6 +13,7 @@ import { createEventDispatcher } from '../utils/events';
 import { BaseFormContext, SetValueOptions } from './formContext';
 import { unsetPath } from '../utils/path';
 import { useValidationProvider } from '../validation/useValidationProvider';
+import { appendToFormData } from '../utils/formData';
 
 export interface ResetState<TForm extends FormObject> {
   values: Partial<TForm>;
@@ -23,6 +24,16 @@ export interface ResetState<TForm extends FormObject> {
 export interface FormActionsOptions<TForm extends FormObject = FormObject, TOutput extends FormObject = TForm> {
   schema: TypedSchema<TForm, TOutput> | undefined;
   disabled: DisabledSchema<TForm>;
+}
+
+export type ConsumableData<TOutput extends FormObject> = {
+  toFormData: () => FormData;
+  toJSON: () => TOutput;
+};
+
+export interface SubmitContext {
+  form?: HTMLFormElement;
+  event?: Event | SubmitEvent;
 }
 
 export function useFormActions<TForm extends FormObject = FormObject, TOutput extends FormObject = TForm>(
@@ -38,9 +49,11 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
   } = useValidationProvider({ schema, getValues: () => form.getValues(), type: 'FORM' });
   const requestValidation = defineValidationRequest(updateValidationStateFromResult);
 
-  function handleSubmit<TReturns>(onSuccess: (values: TOutput) => MaybeAsync<TReturns>) {
-    return async function onSubmit(e: Event) {
-      e.preventDefault();
+  function handleSubmit<TReturns>(
+    onSuccess: (payload: ConsumableData<TOutput>, ctx: SubmitContext) => MaybeAsync<TReturns>,
+  ) {
+    return async function onSubmit(e?: Event) {
+      e?.preventDefault();
       isSubmitting.value = true;
 
       // No need to wait for this event to propagate, it is used for non-validation stuff like setting touched state.
@@ -62,7 +75,7 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
         unsetPath(output, path, true);
       }
 
-      const result = await onSuccess(output);
+      const result = await onSuccess(withConsumers(output), { event: e, form: e?.target as HTMLFormElement });
       isSubmitting.value = false;
 
       return result;
@@ -120,5 +133,20 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     onSubmitAttempt,
     onValidationDispatch,
     isSubmitting,
+  };
+}
+
+function withConsumers<TData extends FormObject>(data: TData): ConsumableData<TData> {
+  const toJSON = () => data;
+  const toFormData = () => {
+    const formData = new FormData();
+    appendToFormData(data, formData);
+
+    return formData;
+  };
+
+  return {
+    toJSON,
+    toFormData,
   };
 }
