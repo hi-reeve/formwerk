@@ -40,3 +40,11 @@ export function appendToFormData(jsonObject: Record<string, any>, formData: Form
 
   return formData;
 }
+
+export function clearFormData(formData: FormData): FormData {
+  formData.forEach((_, key) => {
+    formData.delete(key);
+  });
+
+  return formData;
+}

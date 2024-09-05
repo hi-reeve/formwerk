@@ -20,7 +20,7 @@ import { useFormSnapshots } from './formSnapshot';
 import { findLeaf } from '../utils/path';
 import { getConfig } from '../config';
 import { FieldTypePrefixes } from '../constants';
-import { appendToFormData } from '../utils/formData';
+import { appendToFormData, clearFormData } from '../utils/formData';
 
 export interface FormOptions<TForm extends FormObject = FormObject, TOutput extends FormObject = TForm> {
   id: string;
@@ -123,6 +123,7 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
 
   function onFormdata(e: FormDataEvent) {
     const form = e.target as HTMLFormElement;
+    clearFormData(e.formData);
     appendToFormData(form.__formOut || values, e.formData);
   }
 

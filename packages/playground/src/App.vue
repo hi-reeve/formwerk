@@ -1,14 +1,19 @@
 <template>
   <div class="flex gap-4 relative p-8">
     <form class="w-full" v-bind="formProps">
-      {{ model }}
       <InputSelect
-        name="select"
+        name="country"
         v-model="model"
         label="Select Input"
         :get-option-value="t => t.code"
         :groups="continents"
       />
+
+      <Slider name="amount" />
+
+      <CheckboxItem name="terms" />
+
+      <input type="text" name="test" value="test" />
 
       <button>Submit lets gooo</button>
     </form>
