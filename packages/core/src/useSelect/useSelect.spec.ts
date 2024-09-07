@@ -45,7 +45,7 @@ function createSelect() {
     components: { OptionItem: Option, OptionGroup },
     setup(props, { attrs }) {
       const all = { ...attrs, ...props } as any;
-      const { labelProps, triggerProps, listBoxProps, errorMessageProps, descriptionProps, displayError, fieldValue } =
+      const { labelProps, triggerProps, popupProps, errorMessageProps, descriptionProps, displayError, fieldValue } =
         useSelect(all);
 
       const groups = all.groups || null;
@@ -58,7 +58,7 @@ function createSelect() {
         fieldValue,
         labelProps,
         triggerProps,
-        listBoxProps,
+        popupProps,
         errorMessageProps,
         descriptionProps,
         displayError,
@@ -75,7 +75,7 @@ function createSelect() {
             {{ fieldValue || 'Select here' }}
           </div>
 
-          <div v-bind="listBoxProps" popover>
+          <div v-bind="popupProps" popover>
             <slot>
               <template v-if="groups">
                 <OptionGroup v-for="group in groups" :key="group.label" :label="group.label">

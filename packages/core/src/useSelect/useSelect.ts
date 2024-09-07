@@ -210,7 +210,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
     isOpen,
     triggerProps,
     labelProps,
-    listBoxProps,
+    popupProps: listBoxProps,
     errorMessageProps,
     descriptionProps,
     ...exposeField(field),
