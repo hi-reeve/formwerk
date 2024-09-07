@@ -41,9 +41,7 @@ const createPlugins = ({ version, format, pkg }) => {
       },
     }),
     tsPlugin,
-    resolve({
-      dedupe: ['klona', 'klona/full'],
-    }),
+    resolve(),
     commonjs(),
   ];
 };
