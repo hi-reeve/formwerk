@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.1.2
+
+### Patch Changes
+
+- 056fda1: fix: include klona in output
+
 ## 0.1.1
 
 ### Patch Changes
