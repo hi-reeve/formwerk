@@ -18,3 +18,5 @@ export const FieldTypePrefixes = {
 export const NOOP = () => {};
 
 export const SCHEMA_BATCH_MS = 10;
+
+export const version = '__VERSION__';

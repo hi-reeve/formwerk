@@ -11,6 +11,7 @@ export * from './config';
 export * from './useForm';
 export * from './useFormGroup';
 export * from './validation';
+export { version } from './constants';
 export { normalizePath } from './utils/path';
 
 // Internals should export types only
