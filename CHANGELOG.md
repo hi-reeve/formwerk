@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.1.4
+
+### Patch Changes
+
+- 2ebb2b7: fix: radio items no validating on multiple interactions
+
 ## 0.1.3
 
 ### Patch Changes
