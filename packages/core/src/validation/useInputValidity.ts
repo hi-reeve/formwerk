@@ -25,13 +25,13 @@ export function useInputValidity(opts: InputValidityOptions) {
     (formGroup || form)?.isHtmlValidationDisabled() ??
     getConfig().validation.disableHtmlValidation;
 
-  function validateNative(mutate?: boolean): ValidationResult {
+  function validateNative(mutate?: boolean, el?: HTMLElement): ValidationResult {
     const baseReturns: Omit<ValidationResult, 'errors' | 'isValid'> = {
       type: 'FIELD',
       path: getPath() || '',
     };
 
-    const inputEl = opts.inputEl?.value;
+    const inputEl = el ?? opts.inputEl?.value;
     if (!isInputElement(inputEl) || isHtmlValidationDisabled()) {
       return {
         ...baseReturns,
@@ -55,8 +55,8 @@ export function useInputValidity(opts: InputValidityOptions) {
     };
   }
 
-  async function _updateValidity() {
-    let result = validateNative(true);
+  async function _updateValidity(el?: HTMLElement) {
+    let result = validateNative(true, el);
     if (schema && result.isValid) {
       result = await validateField(true);
     }
@@ -92,16 +92,22 @@ export function useInputValidity(opts: InputValidityOptions) {
     useEventListener(opts.inputEl, opts?.events || ['invalid'], () => validateNative(true));
   }
 
+  async function updateValidityWithElem(element?: HTMLElement) {
+    await nextTick();
+    _updateValidity(element);
+  }
+
   /**
    * Validity is always updated on mount.
    */
   onMounted(() => {
-    nextTick(_updateValidity);
+    nextTick(() => _updateValidity());
   });
 
   return {
     validityDetails,
     updateValidity,
+    updateValidityWithElem,
   };
 }
 

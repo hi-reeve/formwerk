@@ -398,7 +398,7 @@ describe('validation', () => {
     vi.useFakeTimers();
   });
 
-  test('should revalidate when value changes', async () => {
+  test('should revalidate when value changes via arrow keys', async () => {
     const schema: TypedSchema<string> = {
       parse: value => {
         return Number(value) > 2
@@ -424,6 +424,36 @@ describe('validation', () => {
     await flush();
     expect(screen.getByLabelText('Group')).toHaveErrorMessage('Value must be greater than 2');
     await fireEvent.keyDown(screen.getByRole('radiogroup'), { code: 'ArrowDown' });
+    await flush();
+    expect(screen.getByLabelText('Group')).not.toHaveErrorMessage();
+  });
+
+  test('should revalidate when value changes via clicks', async () => {
+    const schema: TypedSchema<string> = {
+      parse: value => {
+        return Number(value) > 2
+          ? Promise.resolve({ output: value, errors: [] })
+          : Promise.resolve({ output: value, errors: [{ messages: ['Value must be greater than 2'], path: '' }] });
+      },
+    };
+    const RadioGroup = createGroup({ label: 'Group', required: true, schema });
+    const RadioInput = createRadio(CustomBase);
+
+    await render({
+      components: { RadioGroup, RadioInput },
+      template: `
+        <RadioGroup data-testid="fixture">
+          <RadioInput label="First" value="1" />
+          <RadioInput label="Second" value="2" />
+          <RadioInput label="Third"  value="3" />
+        </RadioGroup>
+      `,
+    });
+
+    await fireEvent.click(screen.getByLabelText('First'));
+    await flush();
+    expect(screen.getByLabelText('Group')).toHaveErrorMessage('Value must be greater than 2');
+    await fireEvent.click(screen.getByLabelText('Third'));
     await flush();
     expect(screen.getByLabelText('Group')).not.toHaveErrorMessage();
   });

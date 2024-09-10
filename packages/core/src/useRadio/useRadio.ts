@@ -1,4 +1,4 @@
-import { Ref, computed, inject, nextTick, ref, toValue } from 'vue';
+import { Ref, computed, inject, ref, toValue } from 'vue';
 import { isEqual, isInputElement, normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
 import { AriaInputProps, AriaLabelableProps, InputBaseAttributes, Reactivify, RovingTabIndex } from '../types';
 import { useLabel } from '../a11y/useLabel';
@@ -42,6 +42,26 @@ export function useRadio<TValue = string>(
     );
   }
 
+  const isDisabled = () => toValue(props.disabled || group?.disabled) ?? false;
+
+  function focus() {
+    inputEl.value?.focus();
+  }
+
+  function setChecked() {
+    group?.setGroupValue(toValue(props.value) as TValue, inputEl.value);
+    group?.setTouched(true);
+    focus();
+
+    return true;
+  }
+
+  const registration = group?.useRadioRegistration({
+    isChecked: () => checked.value,
+    isDisabled,
+    setChecked,
+  });
+
   function createHandlers(isInput: boolean) {
     const baseHandlers = {
       onClick() {
@@ -49,8 +69,7 @@ export function useRadio<TValue = string>(
           return;
         }
 
-        group?.setValue(toValue(props.value) as TValue);
-        group?.setTouched(true);
+        setChecked();
       },
       onKeydown(e: KeyboardEvent) {
         if (toValue(props.disabled)) {
@@ -59,8 +78,7 @@ export function useRadio<TValue = string>(
 
         if (e.code === 'Space') {
           e.preventDefault();
-          group?.setValue(toValue(props.value) as TValue);
-          group?.setTouched(true);
+          setChecked();
         }
       },
       onBlur() {
@@ -71,22 +89,13 @@ export function useRadio<TValue = string>(
     if (isInput) {
       return {
         ...baseHandlers,
-        onChange() {
-          group?.setErrors(inputEl.value?.validationMessage ?? '');
-        },
         onInvalid() {
-          group?.setErrors(inputEl.value?.validationMessage ?? '');
+          group?.updateValidityWithElem(inputEl.value);
         },
       };
     }
 
     return baseHandlers;
-  }
-
-  const isDisabled = () => toValue(props.disabled || group?.disabled) ?? false;
-
-  function focus() {
-    inputEl.value?.focus();
   }
 
   function createBindings(isInput: boolean): RadioDomInputProps | RadioDomProps {
@@ -114,20 +123,6 @@ export function useRadio<TValue = string>(
       tabindex: checked.value ? '0' : registration?.canReceiveFocus() ? '0' : '-1',
     };
   }
-
-  const registration = group?.useRadioRegistration({
-    isChecked: () => checked.value,
-    isDisabled,
-    setChecked: () => {
-      group?.setValue(toValue(props.value) as TValue);
-      focus();
-      nextTick(() => {
-        group?.setErrors(inputEl.value?.validationMessage ?? '');
-      });
-
-      return true;
-    },
-  });
 
   const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl, elementRef));
 

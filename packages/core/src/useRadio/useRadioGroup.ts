@@ -8,7 +8,6 @@ import {
   AriaValidatableProps,
   Direction,
   Reactivify,
-  Arrayable,
   TypedSchema,
 } from '../types';
 import {
@@ -32,8 +31,8 @@ export interface RadioGroupContext<TValue> {
 
   readonly modelValue: TValue | undefined;
 
-  setErrors(message: Arrayable<string>): void;
-  setValue(value: TValue): void;
+  setGroupValue(value: TValue, element?: HTMLElement): void;
+  updateValidityWithElem(el?: HTMLElement): void;
   setTouched(touched: boolean): void;
   useRadioRegistration(radio: RadioItemContext): { canReceiveFocus(): boolean };
 }
@@ -105,7 +104,7 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
     schema: props.schema,
   });
 
-  const { validityDetails } = useInputValidity({ field });
+  const { validityDetails, updateValidityWithElem } = useInputValidity({ field });
   const { fieldValue, setValue, setTouched, errorMessage } = field;
 
   const { descriptionProps, describedByProps } = createDescribedByProps({
@@ -200,6 +199,11 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
     };
   }
 
+  function setGroupValue(value: TValue, el?: HTMLElement) {
+    setValue(value);
+    updateValidityWithElem(el);
+  }
+
   const context: RadioGroupContext<any> = reactive({
     name: computed(() => toValue(props.name) ?? groupId),
     disabled: computed(() => toValue(props.disabled) ?? false),
@@ -207,7 +211,8 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
     required: computed(() => toValue(props.required) ?? false),
     modelValue: fieldValue,
     setErrors: field.setErrors,
-    setValue,
+    setGroupValue,
+    updateValidityWithElem,
     setTouched,
     useRadioRegistration,
   });
