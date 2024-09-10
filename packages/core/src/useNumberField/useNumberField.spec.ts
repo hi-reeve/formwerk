@@ -4,6 +4,7 @@ import { NumberFieldProps, useNumberField } from './useNumberField';
 import { type Component } from 'vue';
 import { flush } from '@test-utils/flush';
 import { SetOptional } from 'type-fest';
+import { TypedSchema } from '../types';
 
 const label = 'Amount';
 const description = 'Enter a valid amount';
@@ -113,14 +114,55 @@ test('Applies decimal inputmode if the step contains decimals', async () => {
   expect(screen.getByLabelText(label)).toHaveAttribute('inputmode', 'decimal');
 });
 
-test('picks up native error messages', async () => {
-  await render(makeTest({ required: true }));
+describe('validation', () => {
+  test('picks up native error messages', async () => {
+    await render(makeTest({ required: true }));
 
-  await fireEvent.invalid(screen.getByLabelText(label));
-  await flush();
-  expect(screen.getByLabelText(label)).toHaveErrorMessage('Constraints not satisfied');
+    await fireEvent.invalid(screen.getByLabelText(label));
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveErrorMessage('Constraints not satisfied');
 
-  vi.useRealTimers();
-  expect(await axe(screen.getByTestId('fixture'))).toHaveNoViolations();
-  vi.useFakeTimers();
+    vi.useRealTimers();
+    expect(await axe(screen.getByTestId('fixture'))).toHaveNoViolations();
+    vi.useFakeTimers();
+  });
+
+  test('should revalidate when increment/decrement buttons', async () => {
+    const schema: TypedSchema<number> = {
+      parse: value => {
+        return Number(value) > 1
+          ? Promise.resolve({ errors: [] })
+          : Promise.resolve({ errors: [{ messages: ['Value must be greater than 1'], path: '' }] });
+      },
+    };
+
+    await render(makeTest({ schema }));
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveErrorMessage();
+    await fireEvent.mouseDown(screen.getByLabelText('Increment'));
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('1');
+    expect(screen.getByLabelText(label)).toHaveErrorMessage();
+    await fireEvent.mouseDown(screen.getByLabelText('Increment'));
+    await flush();
+    expect(screen.getByLabelText(label)).not.toHaveErrorMessage();
+  });
+
+  test('should revalidate when increment/decrement with arrows', async () => {
+    const schema: TypedSchema<number> = {
+      parse: value => {
+        return Number(value) > 1
+          ? Promise.resolve({ output: value, errors: [] })
+          : Promise.resolve({ output: value, errors: [{ messages: ['Value must be greater than 1'], path: '' }] });
+      },
+    };
+
+    await render(makeTest({ schema }));
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'ArrowUp' });
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveErrorMessage('Value must be greater than 1');
+
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'ArrowUp' });
+    await flush();
+    expect(screen.getByLabelText(label)).not.toHaveErrorMessage();
+  });
 });

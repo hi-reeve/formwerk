@@ -5,6 +5,7 @@ import { fireEvent, render, screen } from '@testing-library/vue';
 import { axe } from 'vitest-axe';
 import { describe } from 'vitest';
 import { flush } from '@test-utils/flush';
+import { TypedSchema } from '../types';
 
 const createGroup = (props: CheckboxGroupProps): Component => {
   return defineComponent({
@@ -214,6 +215,40 @@ describe('validation', () => {
     vi.useRealTimers();
     expect(await axe(screen.getByTestId('fixture'))).toHaveNoViolations();
     vi.useFakeTimers();
+  });
+
+  test('should revalidate when value changes', async () => {
+    const schema: TypedSchema<string[]> = {
+      parse: value => {
+        return value?.length >= 2
+          ? Promise.resolve({ output: value, errors: [] })
+          : Promise.resolve({
+              output: value,
+              errors: [{ messages: ['You must select two or more options'], path: '' }],
+            });
+      },
+    };
+
+    const CheckboxGroup = createGroup({ label: 'Group', schema });
+    const Checkbox = createCheckbox(CustomBase);
+
+    await render({
+      components: { CheckboxGroup, Checkbox },
+      template: `
+        <CheckboxGroup data-testid="fixture">
+          <Checkbox label="First" value="1" />
+          <Checkbox label="Second" value="2" />
+          <Checkbox label="Third"  value="3" />
+        </CheckboxGroup>
+      `,
+    });
+
+    await fireEvent.click(screen.getByLabelText('First'));
+    await flush();
+    expect(screen.getByLabelText('Group')).toHaveErrorMessage('You must select two or more options');
+    await fireEvent.click(screen.getByLabelText('Second'));
+    await flush();
+    expect(screen.getByLabelText('Group')).not.toHaveErrorMessage();
   });
 });
 

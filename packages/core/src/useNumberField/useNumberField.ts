@@ -83,7 +83,11 @@ export function useNumberField(
     schema: props.schema,
   });
 
-  const { validityDetails } = useInputValidity({ inputEl, field, disableHtmlValidation: props.disableHtmlValidation });
+  const { validityDetails, updateValidity } = useInputValidity({
+    inputEl,
+    field,
+    disableHtmlValidation: props.disableHtmlValidation,
+  });
   const { fieldValue, setValue, setTouched, errorMessage } = field;
   const formattedText = computed<string>(() => {
     if (Number.isNaN(fieldValue.value) || isEmpty(fieldValue.value)) {
@@ -126,6 +130,7 @@ export function useNumberField(
       onChange: value => {
         setValue(value);
         setTouched(true);
+        updateValidity();
       },
     });
 
