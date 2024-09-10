@@ -1,5 +1,14 @@
 # @formwerk/schema-yup
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [be87654]
+- Updated dependencies [ff28d3d]
+- Updated dependencies [c680f7f]
+  - @formwerk/core@0.1.3
+
 ## 0.1.2
 
 ### Patch Changes
