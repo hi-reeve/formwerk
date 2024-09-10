@@ -32,7 +32,7 @@ export function createDescribedByProps({ inputId, description }: CreateDescribed
 
   const describedByProps = computed(() => {
     return {
-      'aria-describedby': descriptionRef.value ? toValue(description) : undefined,
+      'aria-describedby': descriptionRef.value && toValue(description) ? descriptionProps.id : undefined,
     };
   });
 
