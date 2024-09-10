@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-  "packageManager": "pnpm@9.8.0",
+  "packageManager": "pnpm@9.10.0+sha256.355a8ab8dbb6ad41befbef39bc4fd6b5df85e12761d2724bd01f13e878de4b13",
   "homepage": "https://formwerk.dev",
   "repository": "https://github.com/formwerkjs/formwerk",
   "scripts": {
@@ -37,7 +37,7 @@
     "@types/node": "^22.5.4",
     "@vitest/coverage-v8": "^2.0.5",
     "@vitest/ui": "^2.0.5",
-    "@vue/compiler-dom": "^3.5.3",
+    "@vue/compiler-dom": "^3.5.4",
     "consola": "^3.2.3",
     "eslint": "^9.10.0",
     "eslint-config-prettier": "^9.1.0",
@@ -57,16 +57,16 @@
     "prettier": "^3.3.3",
     "rollup": "^4.21.2",
     "rollup-plugin-dts": "^6.1.1",
-    "terser": "^5.31.6",
+    "terser": "^5.32.0",
     "tslint-config-prettier": "^1.18.0",
     "tsx": "^4.19.0",
-    "typescript": "5.5.4",
-    "typescript-eslint": "^8.4.0",
+    "typescript": "5.6.2",
+    "typescript-eslint": "^8.5.0",
     "vite-tsconfig-paths": "^5.0.1",
     "vitest": "^2.0.5",
     "vitest-axe": "1.0.0-pre.3",
     "vitest-dom": "^0.1.1",
-    "vue": "^3.5.3"
+    "vue": "^3.5.4"
   },
   "lint-staged": {
     "*.ts": [
