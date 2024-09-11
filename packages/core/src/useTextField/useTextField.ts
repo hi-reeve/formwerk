@@ -70,7 +70,7 @@ export function useTextField(
   const inputEl = elementRef || shallowRef<HTMLInputElement>();
   const field = useFormField<string | undefined>({
     path: props.name,
-    initialValue: toValue(props.modelValue),
+    initialValue: toValue(props.modelValue) ?? toValue(props.value),
     disabled: props.disabled,
     schema: props.schema,
   });

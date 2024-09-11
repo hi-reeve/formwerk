@@ -166,3 +166,61 @@ describe('validation', () => {
     expect(screen.getByLabelText(label)).not.toHaveErrorMessage();
   });
 });
+
+describe('sets initial value', () => {
+  test('with value prop', async () => {
+    const label = 'Field';
+
+    await render({
+      setup() {
+        const { inputProps, labelProps } = useNumberField({
+          label,
+          value: '55',
+        });
+
+        return {
+          inputProps,
+          labelProps,
+          label,
+        };
+      },
+      template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <input v-bind="inputProps" />
+      </div>
+    `,
+    });
+
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('55');
+  });
+
+  test('with modelValue prop', async () => {
+    const label = 'Field';
+
+    await render({
+      setup() {
+        const { inputProps, labelProps } = useNumberField({
+          label,
+          modelValue: 55,
+        });
+
+        return {
+          inputProps,
+          labelProps,
+          label,
+        };
+      },
+      template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <input v-bind="inputProps" />
+      </div>
+    `,
+    });
+
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('55');
+  });
+});

@@ -68,7 +68,7 @@ export function useSearchField(
   const inputEl = elementRef || ref<HTMLInputElement>();
   const field = useFormField<string | undefined>({
     path: props.name,
-    initialValue: toValue(props.modelValue),
+    initialValue: toValue(props.modelValue) ?? toValue(props.value),
     disabled: props.disabled,
     schema: props.schema,
   });

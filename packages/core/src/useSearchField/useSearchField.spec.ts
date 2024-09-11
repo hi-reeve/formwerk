@@ -258,3 +258,59 @@ test('picks up native error messages', async () => {
   expect(await axe(screen.getByTestId('fixture'))).toHaveNoViolations();
   vi.useFakeTimers();
 });
+
+test('value prop sets the initial value', async () => {
+  const label = 'Field';
+
+  await render({
+    setup() {
+      const { inputProps, labelProps } = useSearchField({
+        label,
+        value: 'Initial value',
+      });
+
+      return {
+        inputProps,
+        labelProps,
+        label,
+      };
+    },
+    template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <input v-bind="inputProps" />
+      </div>
+    `,
+  });
+
+  await flush();
+  expect(screen.getByLabelText(label)).toHaveDisplayValue('Initial value');
+});
+
+test('modelValue prop sets the initial value', async () => {
+  const label = 'Field';
+
+  await render({
+    setup() {
+      const { inputProps, labelProps } = useSearchField({
+        label,
+        modelValue: 'Initial value',
+      });
+
+      return {
+        inputProps,
+        labelProps,
+        label,
+      };
+    },
+    template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <input v-bind="inputProps" />
+      </div>
+    `,
+  });
+
+  await flush();
+  expect(screen.getByLabelText(label)).toHaveDisplayValue('Initial value');
+});

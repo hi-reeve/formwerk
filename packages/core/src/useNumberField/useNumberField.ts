@@ -50,7 +50,7 @@ export interface NumberFieldProps {
   decrementLabel?: string;
 
   name?: string;
-  value?: number;
+  value?: Numberish;
   min?: Numberish;
   max?: Numberish;
   step?: Numberish;
@@ -78,7 +78,7 @@ export function useNumberField(
   const parser = useNumberParser(() => toValue(props.locale) ?? locale.value, props.formatOptions);
   const field = useFormField<number>({
     path: props.name,
-    initialValue: toValue(props.modelValue),
+    initialValue: toValue(props.modelValue) ?? Number(toValue(props.value)),
     disabled: props.disabled,
     schema: props.schema,
   });

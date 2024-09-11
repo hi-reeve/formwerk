@@ -212,3 +212,89 @@ test('picks up native error messages', async () => {
   expect(await axe(screen.getByTestId('fixture'))).toHaveNoViolations();
   vi.useFakeTimers();
 });
+
+describe('sets initial value', () => {
+  test('with value prop', async () => {
+    const label = 'Field';
+
+    await render({
+      setup() {
+        const { inputProps, labelProps } = useTextField({
+          label,
+          value: 'Initial value',
+        });
+
+        return {
+          inputProps,
+          labelProps,
+          label,
+        };
+      },
+      template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <input v-bind="inputProps" />
+      </div>
+    `,
+    });
+
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('Initial value');
+  });
+
+  test('with modelValue prop', async () => {
+    const label = 'Field';
+
+    await render({
+      setup() {
+        const { inputProps, labelProps } = useTextField({
+          label,
+          modelValue: 'Initial value',
+        });
+
+        return {
+          inputProps,
+          labelProps,
+          label,
+        };
+      },
+      template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <input v-bind="inputProps" />
+      </div>
+    `,
+    });
+
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('Initial value');
+  });
+
+  test('for textarea', async () => {
+    const label = 'Field';
+
+    await render({
+      setup() {
+        const { inputProps, labelProps } = useTextField({
+          label,
+          value: 'Initial value',
+        });
+
+        return {
+          inputProps,
+          labelProps,
+          label,
+        };
+      },
+      template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <textarea v-bind="inputProps"></textarea>
+      </div>
+    `,
+    });
+
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('Initial value');
+  });
+});
