@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.1.5
+
+### Patch Changes
+
+- 0ce56e1: chore: upgrade dependencies and reduce vue minimum version
+- f89c2c5: fix: use value prop to init textual fields values
+
 ## 0.1.4
 
 ### Patch Changes
