@@ -1,6 +1,6 @@
-name: Main CI
+name: Release
 
-on: [push]
+on: workflow_dispatch
 
 jobs:
   lint:
@@ -53,3 +53,25 @@ jobs:
         run: pnpm build
       - name: Test
         run: pnpm test
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: create and publish versions
+        uses: changesets/action@v1
+        with:
+          version: pnpm ci:version
+          commit: 'chore(release): update versions'
+          publish: pnpm ci:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

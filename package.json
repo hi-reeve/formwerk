@@ -13,14 +13,15 @@
     "format": "prettier \"./**/*.ts\" --write",
     "build": "tsx scripts/build.ts",
     "cover": "vitest run --coverage",
-    "postversion": "pnpm build",
     "typecheck": "pnpm tsc --noEmit --project ./tsconfig.json --skipLibCheck",
     "docs:dev": "cd ./docs && pnpm dev && cd -",
     "postinstall": "husky install",
     "release": "./scripts/release.sh",
     "play:dev": "cd ./packages/playground && pnpm dev && cd -",
     "dev": "tsx scripts/watch.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "ci:publish": "pnpm build && pnpm publish --provenance --access public -r",
+    "ci:version": "pnpm changeset version && cp ./packages/core/CHANGELOG.md ./CHANGELOG.md"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.8",
