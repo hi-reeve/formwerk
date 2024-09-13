@@ -1,8 +1,8 @@
-import { computed, toValue } from 'vue';
-import { Direction, Numberish, Orientation2D, Reactivify } from '../types';
+import { computed, shallowRef, toValue } from 'vue';
+import { Direction, Maybe, Numberish, Orientation2D, Reactivify } from '../types';
 import { toNearestMultipleOf } from '../utils/math';
 import { useButtonHold } from '../helpers/useButtonHold';
-import { normalizeProps } from '../utils/common';
+import { isButtonElement, normalizeProps, withRefCapture } from '../utils/common';
 import { useLocale } from '../i18n/useLocale';
 
 export interface SpinButtonProps {
@@ -56,6 +56,8 @@ export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
   const getStep = () => Number(toValue(props.step) || 1);
   const getMin = () => Number(toValue(props.min) ?? undefined);
   const getMax = () => Number(toValue(props.max) ?? undefined);
+  const incrBtnEl = shallowRef<HTMLElement>();
+  const decrBtnEl = shallowRef<HTMLElement>();
 
   /**
    * Dynamically calculate the multiplier for the page up/down keys.
@@ -198,22 +200,48 @@ export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
     disabled: isDecrementDisabled,
   });
 
-  const incrementButtonProps = computed(() => {
+  interface BaseButtonProps {
+    disabled: boolean;
+  }
+
+  function getButtonProps(btnEl: Maybe<HTMLElement>, baseProps: BaseButtonProps) {
+    const isBtn = isButtonElement(btnEl);
+
+    if (!isBtn) {
+      return {
+        role: 'button',
+        ['aria-disabled']: baseProps.disabled || undefined,
+      };
+    }
+
     return {
-      ...incrementHoldProps,
-      disabled: toValue(props.disabled) || isIncrementDisabled.value,
-      'aria-label': toValue(props.incrementLabel) || 'Increment',
-      tabindex: toValue(props.preventTabIndex) ? '-1' : undefined,
+      type: 'button',
+      disabled: baseProps.disabled,
     };
+  }
+
+  const incrementButtonProps = computed(() => {
+    return withRefCapture(
+      {
+        ...incrementHoldProps,
+        ...getButtonProps(incrBtnEl.value, { disabled: toValue(props.disabled) || isIncrementDisabled.value }),
+        'aria-label': toValue(props.incrementLabel) || 'Increment',
+        tabindex: toValue(props.preventTabIndex) ? '-1' : undefined,
+      },
+      incrBtnEl,
+    );
   });
 
   const decrementButtonProps = computed(() => {
-    return {
-      ...decrementHoldProps,
-      disabled: toValue(props.disabled) || isDecrementDisabled.value,
-      'aria-label': toValue(props.decrementLabel) || 'Decrement',
-      tabindex: toValue(props.preventTabIndex) ? '-1' : undefined,
-    };
+    return withRefCapture(
+      {
+        ...decrementHoldProps,
+        ...getButtonProps(decrBtnEl.value, { disabled: toValue(props.disabled) || isDecrementDisabled.value }),
+        'aria-label': toValue(props.decrementLabel) || 'Decrement',
+        tabindex: toValue(props.preventTabIndex) ? '-1' : undefined,
+      },
+      decrBtnEl,
+    );
   });
 
   const spinButtonProps = computed(() => {

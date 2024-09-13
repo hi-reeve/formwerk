@@ -326,6 +326,14 @@ export function isInputElement(el: Maybe<HTMLElement>): el is HTMLInputElement {
   return ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName);
 }
 
+export function isButtonElement(el: Maybe<HTMLElement>): el is HTMLButtonElement {
+  if (!el) {
+    return false;
+  }
+
+  return ['BUTTON'].includes(el.tagName);
+}
+
 export function toggleValueSelection<TValue>(current: Arrayable<TValue>, value: TValue, force?: boolean): TValue[] {
   const nextValue = normalizeArrayable(current);
   const idx = nextValue.findIndex(v => isEqual(v, value));
