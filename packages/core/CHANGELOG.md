@@ -1,5 +1,13 @@
 # @formwerk/core
 
+## 0.1.6
+
+### Patch Changes
+
+- 7dc0e69: feat: allow non-button elements for spin buttons
+- 1f9f28f: fix: disable number spin buttons if it is either disabled or readonly
+- 2017403: fix: multi-input validity support for radio
+
 ## 0.1.5
 
 ### Patch Changes
