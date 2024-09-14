@@ -1,19 +1,63 @@
 <script setup lang="ts">
-import { RadioProps, useRadio } from '@formwerk/core';
+import { type RadioProps, useRadio } from '@formwerk/core';
 
 const props = defineProps<RadioProps>();
 
-const { labelProps, radioProps, isChecked } = useRadio(props);
+const { labelProps, inputProps } = useRadio(props);
 </script>
 
 <template>
-  <div v-bind="radioProps" class="flex items-center">
-    <div
-      class="w-5 h-5 rounded-full flex-shrink-0 border border-gray-600 flex items-center justify-center focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-    >
-      <div class="w-3 h-3 rounded-full flex-shrink-0" :class="{ 'bg-blue-500': isChecked }" />
+  <div class="radio-item" v-bind="inputProps">
+    <div v-bind="labelProps">
+      {{ label }}
     </div>
-
-    <span v-bind="labelProps" class="ml-1">{{ label }}</span>
   </div>
 </template>
+
+<style>
+:root {
+  --color-text: #333;
+  --color-hint: #666;
+  --color-border: #ccc;
+  --color-focus: #0056b3;
+  --color-error: #f00;
+  --color-valid: #059669;
+  --color-hover: #eee;
+}
+</style>
+
+<style scoped>
+.radio-item {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 99999px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  font-size: 13px;
+  font-weight: 500;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+
+  &:focus {
+    border: 1px solid var(--color-focus);
+  }
+
+  &[aria-checked='true'] {
+    background-color: var(--color-focus);
+    color: #fff;
+  }
+}
+
+/** This is a common utility CSS class, you can find it in your CSS framework of choice */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+</style>

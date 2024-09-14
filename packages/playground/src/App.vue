@@ -1,31 +1,20 @@
 <template>
-  <div class="flex gap-4 relative p-8">
-    <form class="w-full" v-bind="formProps">
-      <InputSelect
-        name="country"
-        v-model="model"
-        label="Select Input"
-        :get-option-value="t => t.code"
-        :groups="continents"
-      />
+  <RadioGroup label="Radio Group" description="There is only one right answer" :schema="schema">
+    <InputRadioItem label="Tea 🍵" value="🍵" />
+    <InputRadioItem label="Coffee ☕️" value="☕️" />
+    <InputRadioItem label="Milk 🥛" value="🥛" />
+  </RadioGroup>
 
-      <Slider name="amount" />
-
-      <CheckboxItem name="terms" />
-
-      <input type="text" name="test" value="test" />
-
-      <button>Submit lets gooo</button>
-    </form>
-
-    <div class="w-1/3 relative">
-      <pre class="max-h-[95vh] overflow-y-auto bg-gray-200 rounded-lg p-4 sticky top-4">{{ values }}</pre>
-    </div>
-  </div>
+  <RadioGroup label="Radio Group" description="There is only one right answer" :schema="schema">
+    <RadioItem label="Tea 🍵" value="🍵" />
+    <RadioItem label="Coffee ☕️" value="☕️" />
+    <RadioItem label="Milk 🥛" value="🥛" />
+  </RadioGroup>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { z } from 'zod';
 import InputText from '@/components/InputText.vue';
 import InputNumber from '@/components/InputNumber.vue';
 import InputTextArea from '@/components/InputTextArea.vue';
@@ -44,9 +33,13 @@ import { useForm } from '@formwerk/core';
 import InputSelect from '@/components/InputSelect.vue';
 import OptionItem from './components/OptionItem.vue';
 
-const { values, formProps } = useForm({});
-
 const model = ref('');
+
+import { defineSchema } from '@formwerk/schema-zod';
+
+const schema = defineSchema(
+  z.string().min(1, { message: 'Please select a drink' }).endsWith('☕️', { message: 'WRONG ANSWER!' }),
+);
 
 const continents = [
   {
