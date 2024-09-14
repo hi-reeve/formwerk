@@ -1,6 +1,6 @@
-name: Main CI
+name: CI
 
-on: [push]
+on: [push, workflow_call]
 
 jobs:
   lint:
