@@ -21,6 +21,8 @@ jobs:
         run: pnpm install
       - name: Tag and Release
         run: |
+          git config --global user.email "github-action@users.noreply.github.com"
+          git config --global user.name "GitHub Action"
           pnpm ci:version
           git add .
           git commit -m "chore(release): publish"
