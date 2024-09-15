@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.1.7
+
+### Patch Changes
+
+- 33a630d: fix: readonly should prevent value mutation on radio and checkboxes
+- 44a0bcd: fix: radio and checkboxes isDisabled state
+
 ## 0.1.6
 
 ### Patch Changes
