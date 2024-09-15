@@ -75,7 +75,11 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
     schema: props.schema,
   });
 
-  useInputValidity({ field, inputEl, disableHtmlValidation: props.disableHtmlValidation });
+  const { updateValidity } = useInputValidity({
+    field,
+    inputEl,
+    disableHtmlValidation: props.disableHtmlValidation,
+  });
   const { fieldValue, setValue, setTouched, errorMessage } = field;
   const { errorMessageProps, accessibleErrorProps } = createAccessibleErrorMessageProps({
     inputId,
@@ -115,6 +119,10 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
         evt.preventDefault();
         togglePressed();
         setTouched(true);
+
+        if (!isInputElement(inputEl.value)) {
+          updateValidity();
+        }
       }
     },
     onChange: setValueFromEvent,
@@ -124,6 +132,7 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
   function onClick() {
     togglePressed();
     setTouched(true);
+    updateValidity();
   }
 
   const isPressed = computed({
