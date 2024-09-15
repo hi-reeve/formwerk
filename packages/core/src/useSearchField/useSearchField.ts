@@ -38,9 +38,10 @@ export interface SearchInputDOMProps
 
 export interface SearchFieldProps {
   label: string;
+  clearButtonLabel?: string;
   modelValue?: string;
   description?: string;
-  // TODO: Vue cannot resolve these types if they are mapped from up there
+
   name?: string;
   value?: string;
   maxLength?: Numberish;
@@ -96,15 +97,17 @@ export function useSearchField(
     errorMessage,
   });
 
-  const clearBtnProps = {
-    tabindex: '-1',
-    type: 'button' as const,
-    ariaLabel: 'Clear search',
-    onClick() {
-      setValue('');
-      updateValidity();
-    },
-  };
+  const clearBtnProps = computed(() => {
+    return {
+      tabindex: '-1',
+      type: 'button' as const,
+      ariaLabel: toValue(props.clearButtonLabel) ?? 'Clear search',
+      onClick() {
+        setValue('');
+        updateValidity();
+      },
+    };
+  });
 
   const handlers: InputEvents = {
     onInput: (event: Event) => {
