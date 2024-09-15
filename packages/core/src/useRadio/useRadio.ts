@@ -42,7 +42,7 @@ export function useRadio<TValue = string>(
     );
   }
 
-  const isDisabled = () => toValue(props.disabled || group?.disabled) ?? false;
+  const isDisabled = () => (toValue(props.disabled) || group?.disabled) ?? false;
 
   function focus() {
     inputEl.value?.focus();

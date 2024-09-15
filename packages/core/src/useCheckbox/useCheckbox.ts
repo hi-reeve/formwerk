@@ -133,7 +133,7 @@ export function useCheckbox<TValue = string>(
     return baseHandlers;
   }
 
-  const isDisabled = () => toValue(props.disabled || group?.disabled) ?? false;
+  const isDisabled = () => (toValue(props.disabled) || group?.disabled) ?? false;
 
   function focus() {
     if (toValue(props.disabled)) {
