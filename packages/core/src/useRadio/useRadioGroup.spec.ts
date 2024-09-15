@@ -371,6 +371,27 @@ describe('Arrow keys behavior', () => {
     await fireEvent.keyDown(screen.getByLabelText('Group'), { code: 'ArrowDown' });
     expect(screen.getByTestId('value')).toHaveTextContent('');
   });
+
+  test('does not affect readonly groups', async () => {
+    const RadioGroup = createGroup({ label: 'Group', readonly: true });
+    const RadioInput = createRadio();
+
+    await render({
+      components: { RadioGroup, RadioInput },
+      template: `
+        <RadioGroup data-testid="fixture">
+          <RadioInput label="First" value="1" />
+          <RadioInput label="Second" value="2" />
+          <RadioInput label="Third"  value="3" />
+        </RadioGroup>
+      `,
+    });
+
+    await fireEvent.keyDown(screen.getByLabelText('Group'), { code: 'ArrowDown' });
+    expect(screen.getByTestId('value')).toHaveTextContent('');
+    await fireEvent.keyDown(screen.getByLabelText('Group'), { code: 'ArrowDown' });
+    expect(screen.getByTestId('value')).toHaveTextContent('');
+  });
 });
 
 describe('validation', () => {

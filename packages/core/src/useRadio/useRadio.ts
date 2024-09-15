@@ -42,14 +42,16 @@ export function useRadio<TValue = string>(
     );
   }
 
+  const isReadOnly = () => group?.readonly ?? false;
   const isDisabled = () => (toValue(props.disabled) || group?.disabled) ?? false;
+  const isMutable = () => !isReadOnly() && !isDisabled();
 
   function focus() {
     inputEl.value?.focus();
   }
 
   function setChecked() {
-    if (isDisabled() || group?.readonly) {
+    if (!isMutable()) {
       return false;
     }
 
@@ -69,8 +71,12 @@ export function useRadio<TValue = string>(
   });
 
   const handlers = {
-    onClick(e: MouseEvent) {
-      e.preventDefault();
+    onClick(e: Event) {
+      if (!isMutable()) {
+        e.preventDefault();
+        return;
+      }
+
       setChecked();
     },
     onKeydown(e: KeyboardEvent) {
