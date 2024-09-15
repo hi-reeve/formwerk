@@ -127,35 +127,37 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
   function handleArrowNext() {
     let currentIdx = radios.value.findIndex(radio => radio.isChecked());
     if (currentIdx === -1 || radios.value.length <= 1) {
-      radios.value[0]?.setChecked();
+      radios.value.find(radio => !radio.isDisabled())?.setChecked();
       return;
     }
 
-    currentIdx = currentIdx === radios.value.length - 1 ? -1 : currentIdx;
-    for (let i = currentIdx + 1; i < radios.value.length; i++) {
-      const item = radios.value[getNextCycleArrIdx(i, radios.value)];
-      if (item && !item.isDisabled()) {
-        item.setChecked();
-        return;
-      }
+    const candidates = radios.value.filter(radio => !radio.isDisabled());
+    currentIdx = candidates.findIndex(radio => radio.isChecked());
+    if (currentIdx === -1) {
+      candidates[0].setChecked();
+      return;
     }
+
+    const nextIdx = getNextCycleArrIdx(currentIdx + 1, candidates);
+    candidates[nextIdx].setChecked();
   }
 
   function handleArrowPrevious() {
     let currentIdx = radios.value.findIndex(radio => radio.isChecked());
     if (currentIdx === -1 || radios.value.length <= 1) {
-      radios.value[0]?.setChecked();
+      radios.value.find(radio => !radio.isDisabled())?.setChecked();
       return;
     }
 
-    currentIdx = currentIdx === 0 ? radios.value.length : currentIdx;
-    for (let i = currentIdx - 1; i >= 0; i--) {
-      const item = radios.value[getNextCycleArrIdx(i, radios.value)];
-      if (item && !item.isDisabled()) {
-        item.setChecked();
-        return;
-      }
+    const candidates = radios.value.filter(radio => !radio.isDisabled());
+    currentIdx = candidates.findIndex(radio => radio.isChecked());
+    if (currentIdx === -1) {
+      candidates[0].setChecked();
+      return;
     }
+
+    const nextIdx = getNextCycleArrIdx(currentIdx - 1, candidates);
+    candidates[nextIdx].setChecked();
   }
 
   const groupProps = computed<RadioGroupDomProps>(() => {
@@ -165,6 +167,7 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
       ...accessibleErrorProps.value,
       dir: toValue(props.dir) ?? direction.value,
       role: 'radiogroup',
+      'aria-orientation': toValue(props.orientation) ?? undefined,
       onKeydown(e: KeyboardEvent) {
         if (toValue(props.disabled)) {
           return;

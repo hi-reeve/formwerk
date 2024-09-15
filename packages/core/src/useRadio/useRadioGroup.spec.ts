@@ -351,6 +351,29 @@ describe('Arrow keys behavior', () => {
     expect(screen.getByTestId('value')).toHaveTextContent('1');
   });
 
+  test('skips disabled buttons with first disabled', async () => {
+    const RadioGroup = createGroup({ label: 'Group' });
+    const RadioInput = createRadio();
+
+    await render({
+      components: { RadioGroup, RadioInput },
+      template: `
+        <RadioGroup data-testid="fixture">
+          <RadioInput label="First" value="1" :disabled="true" />
+          <RadioInput label="Second" value="2" />
+          <RadioInput label="Third"  value="3" />
+        </RadioGroup>
+      `,
+    });
+
+    await fireEvent.keyDown(screen.getByLabelText('Group'), { code: 'ArrowDown' });
+    expect(screen.getByTestId('value')).toHaveTextContent('2');
+    await fireEvent.keyDown(screen.getByLabelText('Group'), { code: 'ArrowDown' });
+    expect(screen.getByTestId('value')).toHaveTextContent('3');
+    await fireEvent.keyDown(screen.getByLabelText('Group'), { code: 'ArrowDown' });
+    expect(screen.getByTestId('value')).toHaveTextContent('2');
+  });
+
   test('does not affect disabled groups', async () => {
     const RadioGroup = createGroup({ label: 'Group', disabled: true });
     const RadioInput = createRadio();
