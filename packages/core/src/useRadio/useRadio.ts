@@ -49,6 +49,10 @@ export function useRadio<TValue = string>(
   }
 
   function setChecked() {
+    if (isDisabled() || group?.readonly) {
+      return false;
+    }
+
     group?.setGroupValue(toValue(props.value) as TValue, inputEl.value);
     group?.setTouched(true);
     focus();
@@ -66,17 +70,9 @@ export function useRadio<TValue = string>(
 
   const handlers = {
     onClick() {
-      if (toValue(props.disabled)) {
-        return;
-      }
-
       setChecked();
     },
     onKeydown(e: KeyboardEvent) {
-      if (toValue(props.disabled)) {
-        return;
-      }
-
       if (e.code === 'Space') {
         e.preventDefault();
         setChecked();

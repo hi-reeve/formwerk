@@ -192,6 +192,10 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
   }
 
   function setGroupValue(value: TValue) {
+    if (toValue(props.disabled) || toValue(props.readonly)) {
+      return;
+    }
+
     setValue(value);
   }
 

@@ -94,10 +94,15 @@ export function useCheckbox<TValue = string>(
     errorMessage,
   });
 
+  const isDisabled = () => (toValue(props.disabled) || group?.disabled) ?? false;
+  const isReadOnly = () => (toValue(props.readonly) || group?.readonly) ?? false;
+
+  const isMutable = () => !isDisabled() && !isReadOnly() && !toValue(props.indeterminate);
+
   function createHandlers(isInput: boolean) {
     const baseHandlers = {
       onClick(e: Event) {
-        if (toValue(props.disabled) || toValue(props.indeterminate)) {
+        if (!isMutable()) {
           if (isInput) {
             e.stopPropagation();
             e.preventDefault();
@@ -109,7 +114,7 @@ export function useCheckbox<TValue = string>(
         setTouched(true);
       },
       onKeydown(e: KeyboardEvent) {
-        if (toValue(props.disabled)) {
+        if (!isMutable()) {
           return;
         }
 
@@ -133,8 +138,6 @@ export function useCheckbox<TValue = string>(
     return baseHandlers;
   }
 
-  const isDisabled = () => (toValue(props.disabled) || group?.disabled) ?? false;
-
   function focus() {
     if (toValue(props.disabled)) {
       return;
@@ -150,7 +153,7 @@ export function useCheckbox<TValue = string>(
       id: inputId,
       [isInput ? 'checked' : 'aria-checked']: checked.value,
       [isInput ? 'required' : 'aria-required']: (group ? group.required : toValue(props.required)) || undefined,
-      [isInput ? 'readonly' : 'aria-readonly']: (group ? group.readonly : toValue(props.readonly)) || undefined,
+      [isInput ? 'readonly' : 'aria-readonly']: isReadOnly() || undefined,
       [isInput ? 'disabled' : 'aria-disabled']: isDisabled() || undefined,
       ...(group
         ? {}
@@ -181,6 +184,10 @@ export function useCheckbox<TValue = string>(
     isDisabled,
     isChecked: () => checked.value,
     setChecked: (force?: boolean) => {
+      if (!isMutable()) {
+        return false;
+      }
+
       focus();
       group?.toggleValue(getTrueValue(), force);
       nextTick(() => {
