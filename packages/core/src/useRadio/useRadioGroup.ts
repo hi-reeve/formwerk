@@ -125,27 +125,37 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
   });
 
   function handleArrowNext() {
-    const currentIdx = radios.value.findIndex(radio => radio.isChecked());
-    if (currentIdx < 0) {
+    let currentIdx = radios.value.findIndex(radio => radio.isChecked());
+    if (currentIdx === -1 || radios.value.length <= 1) {
       radios.value[0]?.setChecked();
       return;
     }
 
-    const availableCandidates = radios.value.filter(radio => !radio.isDisabled());
-    const nextCandidate = availableCandidates[getNextCycleArrIdx(currentIdx + 1, availableCandidates)];
-    nextCandidate?.setChecked();
+    currentIdx = currentIdx === radios.value.length - 1 ? -1 : currentIdx;
+    for (let i = currentIdx + 1; i < radios.value.length; i++) {
+      const item = radios.value[getNextCycleArrIdx(i, radios.value)];
+      if (item && !item.isDisabled()) {
+        item.setChecked();
+        return;
+      }
+    }
   }
 
   function handleArrowPrevious() {
-    const currentIdx = radios.value.findIndex(radio => radio.isChecked());
-    if (currentIdx === -1) {
+    let currentIdx = radios.value.findIndex(radio => radio.isChecked());
+    if (currentIdx === -1 || radios.value.length <= 1) {
       radios.value[0]?.setChecked();
       return;
     }
 
-    const availableCandidates = radios.value.filter(radio => !radio.isDisabled());
-    const prevCandidate = availableCandidates[getNextCycleArrIdx(currentIdx - 1, availableCandidates)];
-    prevCandidate?.setChecked();
+    currentIdx = currentIdx === 0 ? radios.value.length : currentIdx;
+    for (let i = currentIdx - 1; i >= 0; i--) {
+      const item = radios.value[getNextCycleArrIdx(i, radios.value)];
+      if (item && !item.isDisabled()) {
+        item.setChecked();
+        return;
+      }
+    }
   }
 
   const groupProps = computed<RadioGroupDomProps>(() => {
