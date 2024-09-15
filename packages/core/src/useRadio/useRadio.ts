@@ -53,7 +53,7 @@ export function useRadio<TValue = string>(
       return false;
     }
 
-    group?.setGroupValue(toValue(props.value) as TValue, inputEl.value);
+    group?.setGroupValue(toValue(props.value) as TValue);
     group?.setTouched(true);
     focus();
 
@@ -69,7 +69,8 @@ export function useRadio<TValue = string>(
   });
 
   const handlers = {
-    onClick() {
+    onClick(e: MouseEvent) {
+      e.preventDefault();
       setChecked();
     },
     onKeydown(e: KeyboardEvent) {

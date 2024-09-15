@@ -32,7 +32,7 @@ export interface RadioGroupContext<TValue> {
 
   readonly modelValue: TValue | undefined;
 
-  setGroupValue(value: TValue, element?: HTMLElement): void;
+  setGroupValue(value: TValue): void;
   setTouched(touched: boolean): void;
   useRadioRegistration(radio: RadioRegistration): { canReceiveFocus(): boolean };
 }
@@ -205,7 +205,6 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
     readonly: computed(() => toValue(props.readonly) ?? false),
     required: computed(() => toValue(props.required) ?? false),
     modelValue: fieldValue,
-    setErrors: field.setErrors,
     setGroupValue,
     setTouched,
     useRadioRegistration,
