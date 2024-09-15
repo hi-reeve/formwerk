@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.1.10
+
+### Patch Changes
+
+- 90baccc: fix: radio focus navigation not wrapping around edges
+
 ## 0.1.9
 
 ### Patch Changes
