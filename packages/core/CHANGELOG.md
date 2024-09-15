@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.1.8
+
+### Patch Changes
+
+- d3f51a7: fix: readonly should not allow selection for checked
+- b545643: fix: use click events to update validity for radios
+
 ## 0.1.7
 
 ### Patch Changes
