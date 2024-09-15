@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.1.9
+
+### Patch Changes
+
+- dc9cc4e: fix: navigating radios around disabled items
+
 ## 0.1.8
 
 ### Patch Changes
