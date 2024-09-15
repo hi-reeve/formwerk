@@ -67,7 +67,7 @@ export function useCheckbox<TValue = string>(
   const group: CheckboxGroupContext<TValue> | null = inject(CheckboxGroupKey, null);
   const inputEl = elementRef || ref<HTMLElement>();
   const field = useCheckboxField(props);
-  useInputValidity({ inputEl, field, disableHtmlValidation: props.disableHtmlValidation });
+  useInputValidity({ inputEl, field, events: ['blur', 'click'], disableHtmlValidation: props.disableHtmlValidation });
   const { fieldValue, setTouched, setValue, errorMessage, setErrors } = field;
 
   const checked = computed({

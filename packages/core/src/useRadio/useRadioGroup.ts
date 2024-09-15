@@ -106,7 +106,12 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
     schema: props.schema,
   });
 
-  const { validityDetails } = useInputValidity({ field, inputEl: computed(() => radios.value.map(r => r.getElem())) });
+  const { validityDetails } = useInputValidity({
+    field,
+    events: ['click', 'blur'],
+    inputEl: computed(() => radios.value.map(r => r.getElem())),
+  });
+
   const { fieldValue, setValue, setTouched, errorMessage } = field;
 
   const { descriptionProps, describedByProps } = createDescribedByProps({
