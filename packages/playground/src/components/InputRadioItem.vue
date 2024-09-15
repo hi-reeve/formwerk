@@ -47,6 +47,15 @@ const { labelProps, inputProps } = useRadio(props);
     background-color: var(--color-focus);
     color: #fff;
   }
+
+  &:has(:disabled),
+  &:has(:readonly) {
+    opacity: 0.5;
+  }
+
+  &:has(:disabled) {
+    cursor: not-allowed;
+  }
 }
 
 /** This is a common utility CSS class, you can find it in your CSS framework of choice */

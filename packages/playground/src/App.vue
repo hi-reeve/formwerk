@@ -2,7 +2,8 @@
   <RadioGroup label="Radio Group" description="There is only one right answer" :schema="schema">
     <InputRadioItem label="Tea 🍵" value="🍵" />
     <InputRadioItem label="Coffee ☕️" value="☕️" />
-    <InputRadioItem label="Milk 🥛" value="🥛" />
+    <InputRadioItem label="Milk 🥛" value="🥛" disabled />
+    <InputRadioItem label="Water 🫵" value="🫵" />
   </RadioGroup>
 
   <RadioGroup
