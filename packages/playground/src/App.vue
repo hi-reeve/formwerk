@@ -5,7 +5,13 @@
     <InputRadioItem label="Milk 🥛" value="🥛" />
   </RadioGroup>
 
-  <RadioGroup label="Radio Group" description="There is only one right answer" :schema="schema">
+  <RadioGroup
+    label="Radio Group"
+    :model-value="'☕️'"
+    description="There is only one right answer"
+    :schema="schema"
+    readonly
+  >
     <RadioItem label="Tea 🍵" value="🍵" />
     <RadioItem label="Coffee ☕️" value="☕️" />
     <RadioItem label="Milk 🥛" value="🥛" />

@@ -7,13 +7,11 @@ const { labelProps, inputProps } = useRadio(props);
 </script>
 
 <template>
-  <div class="radio-item">
-    <label v-bind="labelProps">
-      <input v-bind="inputProps" class="sr-only" />
+  <label v-bind="labelProps" class="radio-item">
+    <input v-bind="inputProps" class="sr-only" />
 
-      {{ label }}
-    </label>
-  </div>
+    {{ label }}
+  </label>
 </template>
 
 <style>

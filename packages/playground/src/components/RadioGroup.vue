@@ -77,7 +77,8 @@ const { groupProps, labelProps, descriptionProps, errorMessageProps, errorMessag
     }
   }
 
-  &:has(:invalid) {
+  &:has(:invalid),
+  &[aria-invalid='true'] {
     .error {
       display: block;
     }

@@ -47,6 +47,11 @@ const { labelProps, inputProps } = useRadio(props);
     background-color: var(--color-focus);
     color: #fff;
   }
+
+  &[aria-disabled='true'],
+  &[aria-readOnly='true'] {
+    opacity: 0.5;
+  }
 }
 
 /** This is a common utility CSS class, you can find it in your CSS framework of choice */
@@ -58,6 +63,7 @@ const { labelProps, inputProps } = useRadio(props);
   margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
-  border: 0;
+  white-space: nowrap;
+  border-width: 0;
 }
 </style>
