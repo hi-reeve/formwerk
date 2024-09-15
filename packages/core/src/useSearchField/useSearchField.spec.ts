@@ -109,63 +109,135 @@ test('blur sets touched to true', async () => {
   expect(screen.getByTestId('fixture').className).includes('touched');
 });
 
-test('Escape key clears the value', async () => {
+describe('Escape key', async () => {
   const label = 'Search';
+  const value = 'Best keyboard';
 
-  await render({
-    setup() {
-      const description = 'Search for the thing';
-      const { inputProps, descriptionProps, labelProps } = useSearchField({
-        label,
-        description,
-      });
+  test('clears the value', async () => {
+    await render({
+      setup() {
+        const description = 'Search for the thing';
+        const { inputProps, descriptionProps, labelProps } = useSearchField({
+          label,
+          description,
+        });
 
-      return {
-        inputProps,
-        descriptionProps,
-        labelProps,
-        label,
-        description,
-      };
-    },
-    template: `
+        return {
+          inputProps,
+          descriptionProps,
+          labelProps,
+          label,
+          description,
+        };
+      },
+      template: `
       <div data-testid="fixture">
         <label v-bind="labelProps">{{ label }}</label>
         <input v-bind="inputProps" />
         <span v-bind="descriptionProps">description</span>
       </div>
     `,
+    });
+
+    await flush();
+    await fireEvent.update(screen.getByLabelText(label), value);
+    expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Escape' });
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('');
   });
 
-  const value = 'Best keyboard';
-  await flush();
-  await fireEvent.update(screen.getByLabelText(label), value);
-  expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
-  await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Escape' });
-  expect(screen.getByLabelText(label)).toHaveDisplayValue('');
+  test('ignored when disabled', async () => {
+    await render({
+      setup() {
+        const description = 'Search for the thing';
+        const { inputProps, descriptionProps, labelProps } = useSearchField({
+          label,
+          description,
+          value,
+          disabled: true,
+        });
+
+        return {
+          inputProps,
+          descriptionProps,
+          labelProps,
+          label,
+          description,
+        };
+      },
+      template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <input v-bind="inputProps" />
+        <span v-bind="descriptionProps">description</span>
+      </div>
+    `,
+    });
+
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Escape' });
+    expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
+  });
+
+  test('ignored when readonly', async () => {
+    await render({
+      setup() {
+        const description = 'Search for the thing';
+        const { inputProps, descriptionProps, labelProps } = useSearchField({
+          label,
+          description,
+          value,
+          readonly: true,
+        });
+
+        return {
+          inputProps,
+          descriptionProps,
+          labelProps,
+          label,
+          description,
+        };
+      },
+      template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <input v-bind="inputProps" />
+        <span v-bind="descriptionProps">description</span>
+      </div>
+    `,
+    });
+
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Escape' });
+    expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
+  });
 });
 
-test('Can have a clear button that clears the value', async () => {
+describe('Clear button', () => {
   const label = 'Search';
+  const value = 'Best keyboard';
 
-  await render({
-    setup() {
-      const description = 'Search for the thing';
-      const { inputProps, descriptionProps, labelProps, clearBtnProps } = useSearchField({
-        label,
-        description,
-      });
+  test('clears the value', async () => {
+    await render({
+      setup() {
+        const description = 'Search for the thing';
+        const { inputProps, descriptionProps, labelProps, clearBtnProps } = useSearchField({
+          label,
+          description,
+        });
 
-      return {
-        inputProps,
-        descriptionProps,
-        labelProps,
-        label,
-        description,
-        clearBtnProps,
-      };
-    },
-    template: `
+        return {
+          inputProps,
+          descriptionProps,
+          labelProps,
+          label,
+          description,
+          clearBtnProps,
+        };
+      },
+      template: `
       <div data-testid="fixture">
         <label v-bind="labelProps">{{ label }}</label>
         <input v-bind="inputProps" />
@@ -173,14 +245,86 @@ test('Can have a clear button that clears the value', async () => {
         <button v-bind="clearBtnProps">Clear</button>
       </div>
     `,
+    });
+
+    await flush();
+    await fireEvent.update(screen.getByLabelText(label), value);
+    expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
+    await fireEvent.click(screen.getByLabelText('Clear search'));
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('');
   });
 
-  const value = 'Best keyboard';
-  await flush();
-  await fireEvent.update(screen.getByLabelText(label), value);
-  expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
-  await fireEvent.click(screen.getByLabelText('Clear search'));
-  expect(screen.getByLabelText(label)).toHaveDisplayValue('');
+  test('ignored when disabled', async () => {
+    await render({
+      setup() {
+        const description = 'Search for the thing';
+        const { inputProps, descriptionProps, labelProps, clearBtnProps } = useSearchField({
+          label,
+          description,
+          disabled: true,
+          value,
+        });
+
+        return {
+          inputProps,
+          descriptionProps,
+          labelProps,
+          label,
+          description,
+          clearBtnProps,
+        };
+      },
+      template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <input v-bind="inputProps" />
+        <span v-bind="descriptionProps">description</span>
+        <button v-bind="clearBtnProps">Clear</button>
+      </div>
+    `,
+    });
+
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
+    await fireEvent.click(screen.getByLabelText('Clear search'));
+    expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
+  });
+
+  test('ignored when readonly', async () => {
+    await render({
+      setup() {
+        const description = 'Search for the thing';
+        const { inputProps, descriptionProps, labelProps, clearBtnProps } = useSearchField({
+          label,
+          description,
+          readonly: true,
+          value,
+        });
+
+        return {
+          inputProps,
+          descriptionProps,
+          labelProps,
+          label,
+          description,
+          clearBtnProps,
+        };
+      },
+      template: `
+      <div data-testid="fixture">
+        <label v-bind="labelProps">{{ label }}</label>
+        <input v-bind="inputProps" />
+        <span v-bind="descriptionProps">description</span>
+        <button v-bind="clearBtnProps">Clear</button>
+      </div>
+    `,
+    });
+
+    await flush();
+    expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
+    await fireEvent.click(screen.getByLabelText('Clear search'));
+    expect(screen.getByLabelText(label)).toHaveDisplayValue(value);
+  });
 });
 
 test('change event updates the value', async () => {

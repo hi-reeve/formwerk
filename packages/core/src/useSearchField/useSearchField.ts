@@ -74,6 +74,8 @@ export function useSearchField(
     schema: props.schema,
   });
 
+  const isMutable = () => !toValue(props.readonly) && !toValue(props.disabled);
+
   const { validityDetails, updateValidity } = useInputValidity({
     inputEl,
     field,
@@ -103,6 +105,10 @@ export function useSearchField(
       type: 'button' as const,
       ariaLabel: toValue(props.clearButtonLabel) ?? 'Clear search',
       onClick() {
+        if (!isMutable()) {
+          return;
+        }
+
         setValue('');
         updateValidity();
       },
@@ -122,6 +128,10 @@ export function useSearchField(
     onKeydown(e: KeyboardEvent) {
       if (e.code === 'Escape') {
         e.preventDefault();
+        if (!isMutable()) {
+          return;
+        }
+
         setValue('');
         setTouched(true);
         updateValidity();
