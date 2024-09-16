@@ -1,16 +1,18 @@
 import { fireEvent, render, screen } from '@testing-library/vue';
 import { axe } from 'vitest-axe';
-import { useSwitch } from './useSwitch';
+import { SwitchProps, useSwitch } from './useSwitch';
 import { flush } from '@test-utils/flush';
 import { describe } from 'vitest';
 
 describe('with input as base element', () => {
-  test('should not have a11y errors', async () => {
+  const label = 'Subscribe to our newsletter';
+
+  async function renderSwitch(props: Partial<SwitchProps> = {}) {
     await render({
       setup() {
-        const label = 'Subscribe to our newsletter';
-        const { inputProps, labelProps, isPressed } = useSwitch({
+        const { inputProps, labelProps, isPressed, errorMessageProps, errorMessage, fieldValue } = useSwitch({
           label,
+          ...props,
         });
 
         return {
@@ -18,15 +20,24 @@ describe('with input as base element', () => {
           labelProps,
           isPressed,
           label,
+          errorMessageProps,
+          errorMessage,
+          fieldValue,
         };
       },
       template: `
       <div data-testid="fixture">
         <input v-bind="inputProps" type="checkbox" />
         <label class="ml-2" v-bind="labelProps">{{ label }}</label>
+        <div data-testid="value">{{ fieldValue }}</div>
+        <span v-bind="errorMessageProps">{{ errorMessage }}</span>
       </div>
     `,
     });
+  }
+
+  test('should not have a11y errors', async () => {
+    await renderSwitch();
 
     await flush();
     vi.useRealTimers();
@@ -35,29 +46,7 @@ describe('with input as base element', () => {
   });
 
   test('clicking toggles the value', async () => {
-    const label = 'Subscribe to our newsletter';
-    await render({
-      setup() {
-        const { inputProps, labelProps, isPressed, fieldValue } = useSwitch({
-          label,
-        });
-
-        return {
-          inputProps,
-          labelProps,
-          isPressed,
-          label,
-          fieldValue,
-        };
-      },
-      template: `
-      <div>
-        <input v-bind="inputProps" type="checkbox" />
-        <label class="ml-2" v-bind="labelProps">{{ label }}</label>
-        <div data-testid="value">{{ fieldValue }}</div>
-      </div>
-    `,
-    });
+    await renderSwitch();
 
     expect(screen.getByTestId('value')).toHaveTextContent('false');
     expect(screen.getByLabelText(label)).not.toBeChecked();
@@ -70,29 +59,7 @@ describe('with input as base element', () => {
   });
 
   test('Space key or Enter toggles the value', async () => {
-    const label = 'Subscribe to our newsletter';
-    await render({
-      setup() {
-        const { inputProps, labelProps, isPressed, fieldValue } = useSwitch({
-          label,
-        });
-
-        return {
-          inputProps,
-          labelProps,
-          isPressed,
-          label,
-          fieldValue,
-        };
-      },
-      template: `
-      <div>
-        <input v-bind="inputProps" type="checkbox" />
-        <label class="ml-2" v-bind="labelProps">{{ label }}</label>
-        <div data-testid="value">{{ fieldValue }}</div>
-      </div>
-    `,
-    });
+    await renderSwitch();
 
     expect(screen.getByTestId('value')).toHaveTextContent('false');
     expect(screen.getByLabelText(label)).not.toBeChecked();
@@ -108,30 +75,8 @@ describe('with input as base element', () => {
     const label = 'Subscribe to our newsletter';
     const trueValue = { yes: true };
     const falseValue = 'nay';
-    await render({
-      setup() {
-        const { inputProps, labelProps, isPressed, fieldValue } = useSwitch({
-          label,
-          trueValue,
-          falseValue,
-        });
 
-        return {
-          inputProps,
-          labelProps,
-          isPressed,
-          label,
-          fieldValue,
-        };
-      },
-      template: `
-      <div>
-        <input v-bind="inputProps" type="checkbox" />
-        <label class="ml-2" v-bind="labelProps">{{ label }}</label>
-        <div data-testid="value">{{ fieldValue }}</div>
-      </div>
-    `,
-    });
+    await renderSwitch({ trueValue, falseValue });
 
     expect(screen.getByTestId('value')).toHaveTextContent('nay');
     await fireEvent.click(screen.getByLabelText(label));
@@ -144,30 +89,7 @@ describe('with input as base element', () => {
 
   test('picks up native validation', async () => {
     const label = 'Subscribe to our newsletter';
-    await render({
-      setup() {
-        const { inputProps, labelProps, isPressed, errorMessage, errorMessageProps } = useSwitch({
-          label,
-          required: true,
-        });
-
-        return {
-          inputProps,
-          labelProps,
-          isPressed,
-          label,
-          errorMessage,
-          errorMessageProps,
-        };
-      },
-      template: `
-      <div data-testid="fixture">
-        <input v-bind="inputProps" type="checkbox" />
-        <label class="ml-2" v-bind="labelProps">{{ label }}</label>
-        <span v-bind="errorMessageProps">{{ errorMessage }}</span>
-      </div>
-    `,
-    });
+    await renderSwitch({ required: true });
 
     await fireEvent.invalid(screen.getByLabelText(label));
     await flush();
@@ -177,44 +99,49 @@ describe('with input as base element', () => {
     expect(await axe(screen.getByTestId('fixture'))).toHaveNoViolations();
     vi.useFakeTimers();
   });
+
+  test('Clicks, Space key, or Enter are ignored when disabled', async () => {
+    await renderSwitch({ disabled: true });
+
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).not.toBeChecked();
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Enter' });
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).not.toBeChecked();
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Space' });
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).not.toBeChecked();
+    await fireEvent.click(screen.getByLabelText(label));
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).not.toBeChecked();
+  });
+
+  test('Clicks, Space key, or Enter are ignored when readonly', async () => {
+    await renderSwitch({ readonly: true });
+
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).not.toBeChecked();
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Enter' });
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).not.toBeChecked();
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Space' });
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).not.toBeChecked();
+    await fireEvent.click(screen.getByLabelText(label));
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).not.toBeChecked();
+  });
 });
 
 describe('with custom base element', () => {
-  test('should not have a11y errors with custom base element implementation', async () => {
-    await render({
-      setup() {
-        const label = 'Subscribe to our newsletter';
-        const { inputProps, labelProps, isPressed } = useSwitch({
-          label,
-        });
+  const label = 'Subscribe to our newsletter';
 
-        return {
-          inputProps,
-          labelProps,
-          isPressed,
-          label,
-        };
-      },
-      template: `
-      <div data-testid="fixture">
-        <div v-bind="inputProps"></div>
-        <div class="ml-2" v-bind="labelProps">{{ label }}</div>
-      </div>
-    `,
-    });
-
-    await flush();
-    vi.useRealTimers();
-    expect(await axe(screen.getByTestId('fixture'))).toHaveNoViolations();
-    vi.useFakeTimers();
-  });
-
-  test('clicking toggles the value', async () => {
-    const label = 'Subscribe to our newsletter';
+  async function renderSwitch(props: Partial<SwitchProps> = {}) {
     await render({
       setup() {
         const { inputProps, labelProps, isPressed, fieldValue } = useSwitch({
           label,
+          ...props,
         });
 
         return {
@@ -226,13 +153,26 @@ describe('with custom base element', () => {
         };
       },
       template: `
-      <div>
-        <div v-bind="inputProps"></div>
-        <div class="ml-2" v-bind="labelProps">{{ label }}</div>
-        <div data-testid="value">{{ fieldValue }}</div>
-      </div>
-    `,
+        <div data-testid="fixture">
+          <div v-bind="inputProps"></div>
+          <div class="ml-2" v-bind="labelProps">{{ label }}</div>
+          <div data-testid="value">{{ fieldValue }}</div>
+        </div>
+      `,
     });
+  }
+
+  test('should not have a11y errors with custom base element implementation', async () => {
+    await renderSwitch();
+
+    await flush();
+    vi.useRealTimers();
+    expect(await axe(screen.getByTestId('fixture'))).toHaveNoViolations();
+    vi.useFakeTimers();
+  });
+
+  test('clicking toggles the value', async () => {
+    await renderSwitch();
 
     expect(screen.getByTestId('value')).toHaveTextContent('false');
     expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
@@ -245,29 +185,7 @@ describe('with custom base element', () => {
   });
 
   test('Space key or Enter toggles the value', async () => {
-    const label = 'Subscribe to our newsletter';
-    await render({
-      setup() {
-        const { inputProps, labelProps, isPressed, fieldValue } = useSwitch({
-          label,
-        });
-
-        return {
-          inputProps,
-          labelProps,
-          isPressed,
-          label,
-          fieldValue,
-        };
-      },
-      template: `
-        <div>
-          <div v-bind="inputProps"></div>
-          <div class="ml-2" v-bind="labelProps">{{ label }}</div>
-          <div data-testid="value">{{ fieldValue }}</div>
-        </div>
-      `,
-    });
+    await renderSwitch();
 
     expect(screen.getByTestId('value')).toHaveTextContent('false');
     expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
@@ -275,6 +193,38 @@ describe('with custom base element', () => {
     expect(screen.getByTestId('value')).toHaveTextContent('true');
     expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'true');
     await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Space' });
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('Clicks, Space key, or Enter are ignored when disabled', async () => {
+    await renderSwitch({ disabled: true });
+
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Enter' });
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Space' });
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
+    await fireEvent.click(screen.getByLabelText(label));
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
+  });
+
+  test('Clicks, Space key, or Enter are ignored when readonly', async () => {
+    await renderSwitch({ readonly: true });
+
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Enter' });
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
+    await fireEvent.keyDown(screen.getByLabelText(label), { code: 'Space' });
+    expect(screen.getByTestId('value')).toHaveTextContent('false');
+    expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
+    await fireEvent.click(screen.getByLabelText(label));
     expect(screen.getByTestId('value')).toHaveTextContent('false');
     expect(screen.getByLabelText(label)).toHaveAttribute('aria-checked', 'false');
   });

@@ -62,6 +62,7 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.Switch);
   const inputEl = elementRef || shallowRef<HTMLInputElement>();
+  const isMutable = () => !toValue(props.readonly) && !toValue(props.disabled);
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
@@ -109,14 +110,23 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
   }
 
   function setValueFromEvent(e: Event) {
+    if (!isMutable()) {
+      return;
+    }
+
     setValue(normalizeValue((e.target as HTMLInputElement).checked));
     setTouched(true);
   }
 
-  const handlers: InputEvents = {
+  const handlers: InputEvents & { onClick: (e: Event) => void } = {
     onKeydown: (evt: KeyboardEvent) => {
       if (evt.code === 'Space' || evt.code === 'Enter') {
         evt.preventDefault();
+
+        if (!isMutable()) {
+          return;
+        }
+
         togglePressed();
         setTouched(true);
 
@@ -127,9 +137,20 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
     },
     onChange: setValueFromEvent,
     onInput: setValueFromEvent,
+    onClick(e: Event) {
+      if (!isMutable()) {
+        e.preventDefault();
+        return;
+      }
+    },
   };
 
-  function onClick() {
+  function onClick(e: Event) {
+    if (!isMutable()) {
+      e.preventDefault();
+      return;
+    }
+
     togglePressed();
     setTouched(true);
     updateValidity();
