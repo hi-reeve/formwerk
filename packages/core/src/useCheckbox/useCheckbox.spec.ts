@@ -3,7 +3,8 @@ import { describe } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/vue';
 import { axe } from 'vitest-axe';
 import { Component, defineComponent } from 'vue';
-import { flush } from '@test-utils/flush';
+import { flush, renderSetup } from '@test-utils/index';
+import { useCheckboxGroup } from './useCheckboxGroup';
 
 const InputBase: string = `
    <div>
@@ -202,5 +203,27 @@ describe('validation', () => {
     vi.useRealTimers();
     expect(await axe(screen.getByLabelText('First'))).toHaveNoViolations();
     vi.useFakeTimers();
+  });
+});
+
+describe('isGrouped state', () => {
+  test('reports false if no group as a parent', async () => {
+    const { isGrouped } = await renderSetup(() => {
+      return useCheckbox({ label: 'First' });
+    });
+
+    expect(isGrouped).toBe(false);
+  });
+  test('reports true if there is a group as a parent', async () => {
+    const { isGrouped } = await renderSetup(
+      () => {
+        return useCheckboxGroup({ label: 'Group' });
+      },
+      () => {
+        return useCheckbox({ label: 'First' });
+      },
+    );
+
+    expect(isGrouped).toBe(true);
   });
 });

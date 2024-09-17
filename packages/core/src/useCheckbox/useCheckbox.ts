@@ -227,11 +227,14 @@ export function useCheckbox<TValue = string>(
     setValue(shouldTrue ? getTrueValue() : getFalseValue());
   }
 
+  const isGrouped = !!group;
+
   return {
     errorMessageProps,
     inputEl,
     inputProps,
     isChecked: checked,
+    isGrouped,
     labelProps,
     toggle: toggleValue,
     ...exposeField(field as FormField<TValue>),
