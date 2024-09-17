@@ -2,7 +2,6 @@ import { InjectionKey, toValue, computed, onBeforeUnmount, reactive, provide, ma
 import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel } from '../a11y/useLabel';
 import {
-  Orientation,
   AriaLabelableProps,
   AriaDescribableProps,
   AriaValidatableProps,
@@ -61,7 +60,6 @@ export interface CheckboxGroupContext<TCheckbox> {
 export const CheckboxGroupKey: InjectionKey<CheckboxGroupContext<any>> = Symbol('CheckboxGroupKey');
 
 export interface CheckboxGroupProps<TCheckbox = unknown> {
-  orientation?: Orientation;
   dir?: Direction;
   label: string;
   description?: string;
