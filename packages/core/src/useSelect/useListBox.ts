@@ -1,6 +1,6 @@
 import { AriaLabelableProps, Maybe, Orientation, Reactivify } from '../types';
 import { computed, InjectionKey, nextTick, onBeforeUnmount, provide, ref, Ref, shallowRef, toValue, watch } from 'vue';
-import { normalizeProps, removeFirst, withRefCapture } from '../utils/common';
+import { hasKeyCode, normalizeProps, removeFirst, withRefCapture } from '../utils/common';
 import { useKeyPressed } from '../helpers/useKeyPressed';
 import { isMac } from '../utils/platform';
 import { usePopoverController } from '../helpers/usePopoverController';
@@ -76,28 +76,28 @@ export function useListBox<TOption, TValue = TOption>(
 
   const handlers = {
     onKeydown(e: KeyboardEvent) {
-      if (e.code === 'ArrowDown') {
+      if (hasKeyCode(e, 'ArrowDown')) {
         e.preventDefault();
         e.stopPropagation();
         focusNext();
         return;
       }
 
-      if (e.code === 'ArrowUp') {
+      if (hasKeyCode(e, 'ArrowUp')) {
         e.preventDefault();
         e.stopPropagation();
         focusPrev();
         return;
       }
 
-      if (e.code === 'KeyA' && isMetaPressed.value) {
+      if (hasKeyCode(e, 'KeyA') && isMetaPressed.value) {
         e.preventDefault();
         e.stopPropagation();
         props.onToggleAll?.();
         return;
       }
 
-      if (e.code === 'Home' || e.code === 'PageUp') {
+      if (hasKeyCode(e, 'Home') || hasKeyCode(e, 'PageUp')) {
         e.preventDefault();
         e.stopPropagation();
         if (isShiftPressed.value) {
@@ -108,7 +108,7 @@ export function useListBox<TOption, TValue = TOption>(
         return;
       }
 
-      if (e.code === 'End' || e.code === 'PageDown') {
+      if (hasKeyCode(e, 'End') || hasKeyCode(e, 'PageDown')) {
         e.preventDefault();
         e.stopPropagation();
         if (isShiftPressed.value) {
@@ -119,7 +119,7 @@ export function useListBox<TOption, TValue = TOption>(
         return;
       }
 
-      if (e.code === 'Tab') {
+      if (hasKeyCode(e, 'Tab')) {
         isOpen.value = false;
         return;
       }

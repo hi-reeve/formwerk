@@ -1,5 +1,5 @@
 import { Ref, inject, nextTick, onMounted, shallowRef, watch, MaybeRefOrGetter, toValue } from 'vue';
-import { useEventListener } from '../helpers/useEventListener';
+import { EventExpression, useEventListener } from '../helpers/useEventListener';
 import { FormKey } from '../useForm';
 import { Arrayable, Maybe, ValidationResult } from '../types';
 import { FormField } from '../useFormField';
@@ -13,7 +13,7 @@ interface InputValidityOptions {
   inputEl?: ElementReference;
   disableHtmlValidation?: MaybeRefOrGetter<boolean | undefined>;
   field: FormField<any>;
-  events?: string[];
+  events?: EventExpression[];
 }
 
 export function useInputValidity(opts: InputValidityOptions) {

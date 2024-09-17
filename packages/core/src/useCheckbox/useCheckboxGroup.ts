@@ -20,6 +20,7 @@ import {
   toggleValueSelection,
   removeFirst,
   isInputElement,
+  hasKeyCode,
 } from '../utils/common';
 import { useLocale } from '../i18n/useLocale';
 import { FormField, useFormField } from '../useFormField';
@@ -96,7 +97,12 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
     schema: props.schema,
   });
 
-  const { validityDetails, updateValidity } = useInputValidity({ field });
+  const { validityDetails, updateValidity } = useInputValidity({
+    field,
+    inputEl: computed(() => checkboxes.value.map(v => v.getElem())),
+    events: ['blur', 'click', ['keydown', e => hasKeyCode(e, 'Space')]],
+  });
+
   const { fieldValue, setValue, isTouched, setTouched, errorMessage } = field;
   const { describedByProps, descriptionProps } = createDescribedByProps({
     inputId: groupId,

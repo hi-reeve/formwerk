@@ -12,6 +12,7 @@ import {
 import {
   createAccessibleErrorMessageProps,
   createDescribedByProps,
+  hasKeyCode,
   normalizeProps,
   propsToValues,
   useUniqId,
@@ -126,7 +127,7 @@ export function useSearchField(
       setTouched(true);
     },
     onKeydown(e: KeyboardEvent) {
-      if (e.code === 'Escape') {
+      if (hasKeyCode(e, 'Escape')) {
         e.preventDefault();
         if (!isMutable()) {
           return;
@@ -138,7 +139,7 @@ export function useSearchField(
         return;
       }
 
-      if (e.code === 'Enter' && !inputEl.value?.form && props.onSubmit) {
+      if (hasKeyCode(e, 'Enter') && !inputEl.value?.form && props.onSubmit) {
         e.preventDefault();
         setTouched(true);
         if (isValid.value) {

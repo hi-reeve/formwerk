@@ -1,7 +1,7 @@
 import { Maybe, Reactivify, RovingTabIndex } from '../types';
 import { computed, inject, nextTick, ref, Ref, shallowRef, toValue } from 'vue';
 import { SelectionContextKey } from './useSelect';
-import { normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
+import { hasKeyCode, normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
 import { ListManagerKey } from './useListBox';
 import { FieldTypePrefixes } from '../constants';
 
@@ -83,7 +83,7 @@ export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>, ele
         return;
       }
 
-      if (e.code === 'Space' || e.code === 'Enter') {
+      if (hasKeyCode(e, 'Space') || hasKeyCode(e, 'Enter')) {
         e.preventDefault();
         e.stopPropagation();
         toggleSelected();

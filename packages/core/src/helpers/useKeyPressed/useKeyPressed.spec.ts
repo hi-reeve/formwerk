@@ -2,6 +2,7 @@ import { renderSetup } from '@test-utils/index';
 import { useKeyPressed } from './useKeyPressed';
 import { fireEvent } from '@testing-library/vue';
 import { nextTick, ref } from 'vue';
+import { hasKeyCode } from '../../utils/common';
 
 describe('ref is true as long as the key is held', () => {
   test('accepts single key string', async () => {
@@ -35,7 +36,7 @@ describe('ref is true as long as the key is held', () => {
 
   test('accepts a predicate', async () => {
     const { isPressed } = await renderSetup(() => {
-      return { isPressed: useKeyPressed(e => e.code === 'KeyK') };
+      return { isPressed: useKeyPressed(e => hasKeyCode(e, 'KeyK')) };
     });
 
     expect(isPressed.value).toBe(false);

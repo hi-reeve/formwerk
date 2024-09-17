@@ -18,6 +18,7 @@ import {
   isEmpty,
   createAccessibleErrorMessageProps,
   removeFirst,
+  hasKeyCode,
 } from '../utils/common';
 import { useLocale } from '../i18n/useLocale';
 import { useFormField } from '../useFormField';
@@ -108,7 +109,7 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
 
   const { validityDetails } = useInputValidity({
     field,
-    events: ['click', 'blur'],
+    events: ['blur', 'click', ['keydown', e => hasKeyCode(e, 'Space')]],
     inputEl: computed(() => radios.value.map(r => r.getElem())),
   });
 

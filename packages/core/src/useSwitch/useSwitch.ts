@@ -10,6 +10,7 @@ import {
 } from '../types';
 import {
   createAccessibleErrorMessageProps,
+  hasKeyCode,
   isEqual,
   isInputElement,
   normalizeProps,
@@ -120,7 +121,7 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
 
   const handlers: InputEvents & { onClick: (e: Event) => void } = {
     onKeydown: (evt: KeyboardEvent) => {
-      if (evt.code === 'Space' || evt.code === 'Enter') {
+      if (hasKeyCode(evt, 'Space') || hasKeyCode(evt, 'Enter')) {
         evt.preventDefault();
 
         if (!isMutable()) {

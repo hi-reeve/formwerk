@@ -1,5 +1,5 @@
 import { Ref, computed, inject, ref, toValue } from 'vue';
-import { isEqual, isInputElement, normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
+import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
 import { AriaInputProps, AriaLabelableProps, InputBaseAttributes, Reactivify, RovingTabIndex } from '../types';
 import { useLabel } from '../a11y/useLabel';
 import { RadioGroupContext, RadioGroupKey } from './useRadioGroup';
@@ -80,7 +80,7 @@ export function useRadio<TValue = string>(
       setChecked();
     },
     onKeydown(e: KeyboardEvent) {
-      if (e.code === 'Space') {
+      if (hasKeyCode(e, 'Space')) {
         e.preventDefault();
         setChecked();
       }

@@ -2,7 +2,7 @@ import { computed, shallowRef, toValue } from 'vue';
 import { Direction, Maybe, Numberish, Orientation2D, Reactivify } from '../types';
 import { toNearestMultipleOf } from '../utils/math';
 import { useButtonHold } from '../helpers/useButtonHold';
-import { isButtonElement, normalizeProps, withRefCapture } from '../utils/common';
+import { hasKeyCode, isButtonElement, normalizeProps, withRefCapture } from '../utils/common';
 import { useLocale } from '../i18n/useLocale';
 
 export interface SpinButtonProps {
@@ -78,13 +78,13 @@ export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
       return;
     }
 
-    if (e.code === 'PageUp') {
+    if (hasKeyCode(e, 'PageUp')) {
       e.preventDefault();
       pageIncrement();
       return;
     }
 
-    if (e.code === 'PageDown') {
+    if (hasKeyCode(e, 'PageDown')) {
       e.preventDefault();
       pageDecrement();
       return;
@@ -107,14 +107,14 @@ export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
       return;
     }
 
-    if (e.code === 'Home') {
+    if (hasKeyCode(e, 'Home')) {
       e.preventDefault();
       incrementToMax();
 
       return;
     }
 
-    if (e.code === 'End') {
+    if (hasKeyCode(e, 'End')) {
       e.preventDefault();
       decrementToMin();
       return;

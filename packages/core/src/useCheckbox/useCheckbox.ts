@@ -1,6 +1,7 @@
 import { computed, inject, nextTick, Ref, ref, toValue } from 'vue';
 import {
   createAccessibleErrorMessageProps,
+  hasKeyCode,
   isEqual,
   isInputElement,
   normalizeProps,
@@ -67,7 +68,14 @@ export function useCheckbox<TValue = string>(
   const group: CheckboxGroupContext<TValue> | null = inject(CheckboxGroupKey, null);
   const inputEl = elementRef || ref<HTMLElement>();
   const field = useCheckboxField(props);
-  useInputValidity({ inputEl, field, events: ['blur', 'click'], disableHtmlValidation: props.disableHtmlValidation });
+  if (!group) {
+    useInputValidity({
+      inputEl,
+      field,
+      events: ['blur', 'click', ['keydown', e => hasKeyCode(e, 'Space')]],
+      disableHtmlValidation: props.disableHtmlValidation,
+    });
+  }
   const { fieldValue, setTouched, setValue, errorMessage, setErrors } = field;
 
   const checked = computed({
@@ -118,7 +126,7 @@ export function useCheckbox<TValue = string>(
           return;
         }
 
-        if (e.code === 'Space') {
+        if (hasKeyCode(e, 'Space')) {
           e.preventDefault();
           toggleValue();
           setTouched(true);
