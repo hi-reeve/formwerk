@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CheckboxGroupProps, useCheckboxGroup } from '@formwerk/core';
+import { type CheckboxGroupProps, useCheckboxGroup } from '@formwerk/core';
 
 const props = defineProps<CheckboxGroupProps>();
 
@@ -7,22 +7,88 @@ const { groupProps, labelProps, descriptionProps, errorMessageProps, errorMessag
 </script>
 
 <template>
-  <div
-    v-bind="groupProps"
-    class="flex border border-gray-200 rounded-md p-2"
-    :class="{ 'flex-col': orientation !== 'horizontal' }"
-  >
-    <span
-      v-bind="labelProps"
-      class="font-medium"
-      :class="{ 'mr-4': orientation === 'horizontal', 'mb-4': orientation !== 'horizontal' }"
-      >{{ label }}</span
-    >
+  <div v-bind="groupProps" class="checkbox-group">
+    <div v-bind="labelProps" class="group-label">{{ label }}</div>
 
-    <slot />
+    <div class="checkboxes-container">
+      <slot />
+    </div>
 
-    <div v-if="errorMessageProps" v-bind="errorMessageProps" class="text-red-500 text-xs">{{ errorMessage }}</div>
+    <div v-if="errorMessage" v-bind="errorMessageProps" class="error">
+      {{ errorMessage }}
+    </div>
 
-    <div v-else-if="description" v-bind="descriptionProps" class="text-gray-500 text-xs">{{ description }}</div>
+    <div v-if="description" v-bind="descriptionProps" class="hint">
+      {{ description }}
+    </div>
   </div>
 </template>
+
+<style scoped>
+.checkbox-group {
+  --color-text: #333;
+  --color-hint: #666;
+  --color-border: #ccc;
+  --color-focus: #007bff;
+  --color-error: #f00;
+  --color-valid: #059669;
+  --color-hover: #eee;
+
+  display: flex;
+  flex-direction: column;
+
+  .hint,
+  .error {
+    margin-top: 0.25rem;
+  }
+
+  .error {
+    color: var(--color-error);
+    display: none;
+    font-size: 13px;
+  }
+
+  .hint {
+    color: var(--color-hint);
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .checkboxes-container {
+    margin-top: 0.25rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .group-label {
+    color: var(--color-text);
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &:has(:focus) {
+    .hint {
+      opacity: 1;
+    }
+  }
+
+  &:has(:user-invalid) {
+    .error {
+      display: block;
+    }
+
+    .hint {
+      display: none;
+    }
+  }
+
+  &[aria-orientation='vertical'] {
+    .checkboxes-container {
+      flex-direction: column;
+    }
+  }
+}
+</style>
