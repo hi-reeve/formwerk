@@ -226,4 +226,17 @@ describe('isGrouped state', () => {
 
     expect(isGrouped).toBe(true);
   });
+
+  test('standalone prop overrides group context', async () => {
+    const { isGrouped } = await renderSetup(
+      () => {
+        return useCheckboxGroup({ label: 'Group' });
+      },
+      () => {
+        return useCheckbox({ label: 'First', standalone: true });
+      },
+    );
+
+    expect(isGrouped).toBe(false);
+  });
 });

@@ -36,6 +36,7 @@ export interface CheckboxProps<TValue = string> {
   readonly?: boolean;
   disabled?: boolean;
   indeterminate?: boolean;
+  standalone?: boolean;
 
   schema?: TypedSchema<TValue>;
 
@@ -65,7 +66,7 @@ export function useCheckbox<TValue = string>(
   const inputId = useUniqId(FieldTypePrefixes.Checkbox);
   const getTrueValue = createTrueValueGetter(props);
   const getFalseValue = () => (toValue(props.falseValue) as TValue) ?? (false as TValue);
-  const group: CheckboxGroupContext<TValue> | null = inject(CheckboxGroupKey, null);
+  const group: CheckboxGroupContext<TValue> | null = toValue(props.standalone) ? null : inject(CheckboxGroupKey, null);
   const inputEl = elementRef || ref<HTMLElement>();
   const field = useCheckboxField(props);
   if (!group) {
