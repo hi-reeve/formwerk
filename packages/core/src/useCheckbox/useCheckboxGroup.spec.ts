@@ -6,6 +6,7 @@ import { axe } from 'vitest-axe';
 import { describe } from 'vitest';
 import { flush } from '@test-utils/flush';
 import { TypedSchema } from '../types';
+import { renderSetup } from '../../../test-utils/src';
 
 const createGroup = (props: CheckboxGroupProps): Component => {
   return defineComponent({
@@ -249,6 +250,22 @@ describe('validation', () => {
     await fireEvent.click(screen.getByLabelText('Second'));
     await flush();
     expect(screen.getByLabelText('Group')).not.toHaveErrorMessage();
+  });
+
+  test('checkboxes do not report their error messages if part of a group', async () => {
+    const { group, field } = await renderSetup(
+      () => {
+        return { group: useCheckboxGroup({ label: 'Group' }) };
+      },
+      () => {
+        return { field: useCheckbox({ label: 'First' }) };
+      },
+    );
+
+    group.setErrors(['Error message']);
+    await flush();
+    expect(field.errorMessage.value).toBe('');
+    expect(group.errorMessage.value).toBe('Error message');
   });
 });
 
