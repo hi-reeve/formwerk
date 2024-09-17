@@ -1,5 +1,16 @@
 # @formwerk/core
 
+## 0.1.11
+
+### Patch Changes
+
+- c5ce5a1: fix: validate switches on click if custom
+- 68775ed: feat: individual checkboxes should not report error message if in group
+- 4cdde34: fix: readonly and disabled search fields are not clearable
+- 4d2efc6: feat: add isGrouped state for checkboxes
+- 16faf37: feat: add clear button label prop to useSearchField
+- 14425a9: fix: switches readonly and disabled interaction prevention
+
 ## 0.1.10
 
 ### Patch Changes
