@@ -73,6 +73,8 @@ export interface CheckboxGroupProps<TCheckbox = unknown> {
   required?: boolean;
 
   schema?: TypedSchema<CheckboxGroupValue<TCheckbox>>;
+
+  disableHtmlValidation?: boolean;
 }
 
 interface CheckboxGroupDomProps extends AriaLabelableProps, AriaDescribableProps, AriaValidatableProps {
@@ -100,6 +102,7 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
     field,
     inputEl: computed(() => checkboxes.value.map(v => v.getElem())),
     events: ['blur', 'click', ['keydown', e => hasKeyCode(e, 'Space')]],
+    disableHtmlValidation: props.disableHtmlValidation,
   });
 
   const { fieldValue, setValue, isTouched, setTouched, errorMessage } = field;
