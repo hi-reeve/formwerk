@@ -14,6 +14,7 @@ interface InputValidityOptions {
   disableHtmlValidation?: MaybeRefOrGetter<boolean | undefined>;
   field: FormField<any>;
   events?: EventExpression[];
+  groupValidityBehavior?: 'some' | 'every';
 }
 
 export function useInputValidity(opts: InputValidityOptions) {
@@ -42,13 +43,29 @@ export function useInputValidity(opts: InputValidityOptions) {
       };
     }
 
-    inputs.forEach(el => el.setCustomValidity(''));
-    validityDetails.value = inputs[0].validity;
-    const messages = normalizeArrayable(inputs.map(i => i.validationMessage) || ([] as string[])).filter(m => !!m);
+    let messages: string[] = [];
+    let validityIdx = -1;
+    for (let i = 0; i < inputs.length; i++) {
+      const input = inputs[i];
+      input.setCustomValidity('');
+      if (opts.groupValidityBehavior === 'some' && input.validity.valid) {
+        messages = [];
+        validityIdx = i;
+        break;
+      }
+
+      if (input.validationMessage) {
+        messages.push(input.validationMessage);
+        validityIdx = i;
+      }
+    }
 
     if (mutate) {
       setErrors(messages);
     }
+
+    validityIdx = validityIdx === -1 ? 0 : validityIdx;
+    validityDetails.value = inputs[validityIdx].validity;
 
     return {
       ...baseReturns,

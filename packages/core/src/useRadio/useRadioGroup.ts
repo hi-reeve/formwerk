@@ -110,7 +110,9 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
   const { validityDetails } = useInputValidity({
     field,
     events: ['blur', 'click', ['keydown', e => hasKeyCode(e, 'Space')]],
+    groupValidityBehavior: 'some',
     inputEl: computed(() => radios.value.map(r => r.getElem())),
+    disableHtmlValidation: props.disableHtmlValidation,
   });
 
   const { fieldValue, setValue, setTouched, errorMessage } = field;

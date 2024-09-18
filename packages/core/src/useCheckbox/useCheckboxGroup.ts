@@ -102,6 +102,7 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
     field,
     inputEl: computed(() => checkboxes.value.map(v => v.getElem())),
     events: ['blur', 'click', ['keydown', e => hasKeyCode(e, 'Space')]],
+    groupValidityBehavior: 'some',
     disableHtmlValidation: props.disableHtmlValidation,
   });
 
