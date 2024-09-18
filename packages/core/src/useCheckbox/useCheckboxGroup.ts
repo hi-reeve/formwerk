@@ -20,6 +20,7 @@ import {
   removeFirst,
   isInputElement,
   hasKeyCode,
+  warn,
 } from '../utils/common';
 import { useLocale } from '../i18n/useLocale';
 import { FormField, useFormField } from '../useFormField';
@@ -143,16 +144,28 @@ export function useCheckboxGroup<TCheckbox>(_props: Reactivify<CheckboxGroupProp
     return (fieldValue.value ?? []).some(v => isEqual(v, value));
   }
 
-  const groupState = computed<CheckboxGroupState>(() => {
-    if (!fieldValue.value || !fieldValue.value.length) {
-      return 'unchecked';
-    }
+  const groupState = computed<CheckboxGroupState>({
+    get() {
+      if (!fieldValue.value || !fieldValue.value.length) {
+        return 'unchecked';
+      }
 
-    if (fieldValue.value.length > 0 && fieldValue.value.length < checkboxes.value.length) {
-      return 'mixed';
-    }
+      if (fieldValue.value.length > 0 && fieldValue.value.length < checkboxes.value.length) {
+        return 'mixed';
+      }
 
-    return 'checked';
+      return 'checked';
+    },
+    set(value: CheckboxGroupState) {
+      if (value === 'mixed') {
+        if (__DEV__) {
+          warn('You cannot set the group state to "mixed"');
+        }
+        return;
+      }
+
+      checkboxes.value.forEach(c => c.setChecked(value === 'checked'));
+    },
   });
 
   const context: CheckboxGroupContext<TCheckbox> = reactive({

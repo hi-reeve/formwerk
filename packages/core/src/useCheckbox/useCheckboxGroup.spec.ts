@@ -8,10 +8,15 @@ import { flush } from '@test-utils/flush';
 import { TypedSchema } from '../types';
 import { renderSetup } from '../../../test-utils/src';
 
-const createGroup = (props: CheckboxGroupProps): Component => {
+const createGroup = (
+  props: CheckboxGroupProps,
+  onSetup?: (group: ReturnType<typeof useCheckboxGroup>) => void,
+): Component => {
   return defineComponent({
     setup() {
       const group = useCheckboxGroup(props);
+
+      onSetup?.(group);
 
       return {
         ...props,
@@ -269,26 +274,72 @@ describe('validation', () => {
   });
 });
 
-test('mixed state', async () => {
-  const CheckboxGroup = createGroup({ label: 'Group' });
-  const Checkbox = createCheckbox();
+describe('group state', () => {
+  test('reports checked state', async () => {
+    const CheckboxGroup = createGroup({ label: 'Group' });
+    const Checkbox = createCheckbox();
 
-  await render({
-    components: { CheckboxGroup, Checkbox },
-    template: `
+    await render({
+      components: { CheckboxGroup, Checkbox },
+      template: `
         <CheckboxGroup data-testid="fixture">
           <Checkbox label="First" value="1" />
           <Checkbox label="Second" value="2" />
           <Checkbox label="Third"  value="3" />
         </CheckboxGroup>
       `,
+    });
+
+    expect(screen.getByTestId('state')).toHaveTextContent('unchecked');
+    await fireEvent.click(screen.getByLabelText('First'));
+    expect(screen.getByTestId('state')).toHaveTextContent('mixed');
+    await fireEvent.click(screen.getByLabelText('Second'));
+    expect(screen.getByTestId('state')).toHaveTextContent('mixed');
+    await fireEvent.click(screen.getByLabelText('Third'));
+    expect(screen.getByTestId('state')).toHaveTextContent('checked');
   });
 
-  expect(screen.getByTestId('state')).toHaveTextContent('unchecked');
-  await fireEvent.click(screen.getByLabelText('First'));
-  expect(screen.getByTestId('state')).toHaveTextContent('mixed');
-  await fireEvent.click(screen.getByLabelText('Second'));
-  expect(screen.getByTestId('state')).toHaveTextContent('mixed');
-  await fireEvent.click(screen.getByLabelText('Third'));
-  expect(screen.getByTestId('state')).toHaveTextContent('checked');
+  test('can set to checked or unchecked', async () => {
+    let group!: ReturnType<typeof useCheckboxGroup>;
+    const CheckboxGroup = createGroup({ label: 'Group' }, g => {
+      group = g;
+    });
+
+    const Checkbox = createCheckbox();
+
+    await render({
+      components: { CheckboxGroup, Checkbox },
+      template: `
+        <CheckboxGroup data-testid="fixture">
+          <Checkbox label="First" value="1" />
+          <Checkbox label="Second" value="2" />
+          <Checkbox label="Third"  value="3" />
+        </CheckboxGroup>
+      `,
+    });
+    const warn = vi.spyOn(console, 'warn');
+    expect(screen.getByTestId('state')).toHaveTextContent('unchecked');
+    group.groupState.value = 'checked';
+    await flush();
+    expect(screen.getByTestId('state')).toHaveTextContent('checked');
+    expect(screen.getByLabelText('First')).toBeChecked();
+    expect(screen.getByLabelText('Second')).toBeChecked();
+    expect(screen.getByLabelText('Third')).toBeChecked();
+    expect(screen.getByTestId('value')).toHaveTextContent('[ "1", "2", "3" ]');
+
+    group.groupState.value = 'unchecked';
+    await flush();
+    expect(screen.getByTestId('state')).toHaveTextContent('unchecked');
+    expect(screen.getByLabelText('First')).not.toBeChecked();
+    expect(screen.getByLabelText('Second')).not.toBeChecked();
+    expect(screen.getByLabelText('Third')).not.toBeChecked();
+    expect(screen.getByTestId('value')).toHaveTextContent('[]');
+
+    expect(warn).not.toHaveBeenCalled();
+
+    group.groupState.value = 'mixed';
+    await flush();
+    expect(warn).toHaveBeenCalledTimes(1);
+    warn.mockRestore();
+  });
 });
