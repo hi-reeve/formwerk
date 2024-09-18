@@ -1,5 +1,14 @@
 # @formwerk/core
 
+## 0.1.12
+
+### Patch Changes
+
+- 0274c1f: fix: ensure validation is run on keydown for radios and checkboxes
+- 59de4fd: feat(checkboxes): add ability to change group state
+- 8a4aae1: fix: remove orientation prop from checkboxes
+- 7a7c226: feat: add standalone prop to opt checkboxes out of the group
+
 ## 0.1.11
 
 ### Patch Changes
