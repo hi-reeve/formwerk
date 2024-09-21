@@ -50,6 +50,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
 
   const slider = inject(SliderInjectionKey, mockSlider, true).useSliderThumbRegistration(thumbContext);
   const thumbValue = computed(() => slider.getThumbValue());
+  const isDisabled = () => toValue(props.disabled) || slider.isDisabled();
 
   if ('__isMock' in slider) {
     warn(
@@ -59,7 +60,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
 
   const { spinButtonProps, applyClamp } = useSpinButton({
     current: thumbValue,
-    disabled: () => toValue(props.disabled) || slider.isDisabled(),
+    disabled: isDisabled,
     orientation: 'both',
     min: () => slider.getThumbRange().min,
     max: () => slider.getThumbRange().max,
@@ -80,7 +81,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
 
     return withRefCapture(
       {
-        tabindex: '0',
+        tabindex: isDisabled() ? '-1' : '0',
         role: 'slider',
         ...slider.getAccessibleErrorProps(),
         'aria-orientation': slider.getOrientation(),
