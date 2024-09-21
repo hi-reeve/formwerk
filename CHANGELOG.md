@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.1.14
+
+### Patch Changes
+
+- 0dd3d8e: fix: prevent thumb focus if disabled
+- 2fb6f90: fix: slider vertical orientation thumb positioning
+
 ## 0.1.13
 
 ### Patch Changes
