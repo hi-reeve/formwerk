@@ -304,6 +304,29 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
 
   provide(SliderInjectionKey, { useSliderThumbRegistration });
 
+  function useThumbMetadata(idx: number) {
+    return computed(() => {
+      const value = getThumbValue(idx);
+      if (isNullOrUndefined(value)) {
+        return undefined;
+      }
+
+      const { min, max, absoluteMax, absoluteMin } = getThumbRange(thumbs.value[idx]);
+      const absolutePercent = (value - absoluteMin) / (absoluteMax - absoluteMin);
+      const percent = (value - min) / (max - min);
+
+      return {
+        value,
+        percent,
+        min,
+        max,
+        sliderPercent: absolutePercent,
+        sliderMin: absoluteMin,
+        sliderMax: absoluteMax,
+      };
+    });
+  }
+
   return {
     trackRef,
     labelProps,
@@ -312,5 +335,6 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
     trackProps,
     errorMessageProps,
     ...exposeField(field),
+    useThumbMetadata,
   };
 }
