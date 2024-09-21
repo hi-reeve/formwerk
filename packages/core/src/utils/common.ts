@@ -13,12 +13,12 @@ export function createDescriptionProps(inputId: string): AriaDescriptionProps {
   };
 }
 
-export function createErrorProps(inputId: string): WithId<AriaErrorMessageProps> {
-  return {
-    id: `${inputId}-r`,
+export function createErrorProps(inputId: MaybeRefOrGetter<string>): Ref<WithId<AriaErrorMessageProps>> {
+  return computed(() => ({
+    id: `${toValue(inputId)}-r`,
     'aria-live': 'polite',
     'aria-atomic': true,
-  };
+  }));
 }
 
 interface CreateDescribedByInit {
@@ -43,19 +43,25 @@ export function createDescribedByProps({ inputId, description }: CreateDescribed
 }
 
 interface CreateAccessibleErrorMessageInit {
-  inputId: string;
+  inputId: MaybeRefOrGetter<string>;
   errorMessage: MaybeRefOrGetter<string | undefined>;
+}
+
+export interface ErrorableAttributes {
+  'aria-invalid': boolean;
+  'aria-errormessage': string | undefined;
 }
 
 export function createAccessibleErrorMessageProps({ inputId, errorMessage }: CreateAccessibleErrorMessageInit) {
   const errorMessageRef = shallowRef<HTMLElement>();
   const errorMessageProps = withRefCapture(createErrorProps(inputId), errorMessageRef);
 
-  const accessibleErrorProps = computed(() => {
+  const accessibleErrorProps = computed<ErrorableAttributes>(() => {
     const isInvalid = !!toValue(errorMessage);
+
     return {
       'aria-invalid': isInvalid,
-      'aria-errormessage': isInvalid ? errorMessageProps.id : undefined,
+      'aria-errormessage': isInvalid ? errorMessageProps.value.id : undefined,
     };
   });
 

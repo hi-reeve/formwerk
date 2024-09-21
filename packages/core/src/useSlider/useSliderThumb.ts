@@ -40,6 +40,10 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
       setThumbValue: NOOP,
       setTouched: NOOP,
       isDisabled: () => false,
+      getAccessibleErrorProps: () => ({
+        'aria-invalid': false,
+        'aria-errormessage': undefined,
+      }),
       __isMock: true,
     }),
   });
@@ -78,6 +82,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
       {
         tabindex: '0',
         role: 'slider',
+        ...slider.getAccessibleErrorProps(),
         'aria-orientation': slider.getOrientation(),
         'aria-label': ownLabel ?? undefined,
         ...(ownLabel ? {} : slider.getSliderLabelProps()),

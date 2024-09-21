@@ -2,6 +2,8 @@ import { InjectionKey, computed, onBeforeUnmount, provide, ref, toValue } from '
 import { useLabel } from '../a11y/useLabel';
 import { AriaLabelableProps, Arrayable, Direction, Orientation, Reactivify, TypedSchema } from '../types';
 import {
+  createAccessibleErrorMessageProps,
+  ErrorableAttributes,
   isNullOrUndefined,
   normalizeArrayable,
   normalizeProps,
@@ -99,6 +101,8 @@ export interface SliderRegistration {
   setTouched(value: boolean): void;
 
   isDisabled(): boolean;
+
+  getAccessibleErrorProps(): ErrorableAttributes;
 }
 
 export interface SliderContext {
@@ -128,6 +132,11 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
     label: props.label,
     targetRef: trackRef,
     handleClick: () => thumbs.value[0]?.focus(),
+  });
+
+  const { errorMessageProps, accessibleErrorProps } = createAccessibleErrorMessageProps({
+    inputId,
+    errorMessage: field.errorMessage,
   });
 
   const groupProps = computed(() => ({
@@ -280,16 +289,10 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
       },
       setTouched,
       isDisabled,
+      getAccessibleErrorProps: () => accessibleErrorProps.value,
     };
 
-    onBeforeUnmount(() => unregisterThumb(ctx));
-
     return reg;
-  }
-
-  function unregisterThumb(ctx: ThumbContext) {
-    // TODO: Not very efficient
-    thumbs.value = thumbs.value.filter(t => t !== ctx);
   }
 
   // TODO: IDK what this does
@@ -305,6 +308,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
     groupProps,
     outputProps,
     trackProps,
+    errorMessageProps,
     ...exposeField(field),
   };
 }
