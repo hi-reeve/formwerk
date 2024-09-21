@@ -1,12 +1,20 @@
 import { InjectionKey, computed, onBeforeUnmount, provide, ref, toValue } from 'vue';
 import { useLabel } from '../a11y/useLabel';
 import { AriaLabelableProps, Arrayable, Direction, Orientation, Reactivify, TypedSchema } from '../types';
-import { isNullOrUndefined, normalizeArrayable, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
+import {
+  isNullOrUndefined,
+  normalizeArrayable,
+  normalizeProps,
+  removeFirst,
+  useUniqId,
+  withRefCapture,
+} from '../utils/common';
 import { toNearestMultipleOf } from '../utils/math';
 import { useLocale } from '../i18n/useLocale';
 import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { exposeField } from '../utils/exposers';
+import { useInputValidity } from '../validation';
 
 export interface SliderProps {
   label?: string;
@@ -20,13 +28,15 @@ export interface SliderProps {
   step?: number;
 
   disabled?: boolean;
+  readonly?: boolean;
 
   schema?: TypedSchema<number>;
 }
 
 export type Coordinate = { x: number; y: number };
 
-export interface ThumbContext {
+export interface ThumbRegistration {
+  id: string;
   focus(): void;
 }
 
@@ -92,7 +102,7 @@ export interface SliderRegistration {
 }
 
 export interface SliderContext {
-  registerThumb(ctx: ThumbContext): SliderRegistration;
+  useSliderThumbRegistration(ctx: ThumbRegistration): SliderRegistration;
 }
 
 export const SliderInjectionKey: InjectionKey<SliderContext> = Symbol('Slider');
@@ -101,7 +111,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.Slider);
   const trackRef = ref<HTMLElement>();
-  const thumbs = ref<ThumbContext[]>([]);
+  const thumbs = ref<ThumbRegistration[]>([]);
   const isDisabled = () => toValue(props.disabled) ?? false;
   const { direction } = useLocale();
   const field = useFormField<Arrayable<number>>({
@@ -216,7 +226,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
     return { min: toValue(props.min) || 0, max: toValue(props.max) || 100 };
   }
 
-  function getThumbRange(thumbCtx: ThumbContext) {
+  function getThumbRange(thumbCtx: ThumbRegistration) {
     const { min: absoluteMin, max: absoluteMax } = getSliderRange();
 
     const idx = thumbs.value.indexOf(thumbCtx);
@@ -229,11 +239,16 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
     return { min, max, absoluteMin, absoluteMax };
   }
 
-  function registerThumb(ctx: ThumbContext) {
+  function useSliderThumbRegistration(ctx: ThumbRegistration) {
+    const id = ctx.id;
     thumbs.value.push(ctx);
 
+    onBeforeUnmount(() => {
+      removeFirst(thumbs.value, reg => reg.id === id);
+    });
+
     function getThumbIndex() {
-      return thumbs.value.indexOf(ctx);
+      return thumbs.value.findIndex(t => t.id === id);
     }
 
     // Each thumb range is dependent on the previous and next thumb
@@ -279,7 +294,8 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
     'aria-live': 'off',
   };
 
-  provide(SliderInjectionKey, { registerThumb });
+  provide(SliderInjectionKey, { useSliderThumbRegistration });
+
 
   return {
     trackRef,

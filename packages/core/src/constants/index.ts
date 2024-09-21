@@ -13,6 +13,7 @@ export const FieldTypePrefixes = {
   Option: 'opt',
   OptionGroup: 'og',
   Form: 'f',
+  SliderThumb: 'st',
 } as const;
 
 export const NOOP = () => {};

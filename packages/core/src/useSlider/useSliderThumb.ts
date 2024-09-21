@@ -1,10 +1,10 @@
 import { Ref, computed, inject, ref, toValue } from 'vue';
-import { SliderContext, SliderInjectionKey, ThumbContext } from './useSlider';
-import { normalizeProps, warn, withRefCapture } from '../utils/common';
+import { SliderContext, SliderInjectionKey, ThumbRegistration } from './useSlider';
+import { normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
 import { Reactivify } from '../types';
 import { useSpinButton } from '../useSpinButton';
 import { useLocale } from '../i18n/useLocale';
-import { NOOP } from '../constants';
+import { FieldTypePrefixes, NOOP } from '../constants';
 
 export interface SliderThumbProps {
   label?: string;
@@ -17,15 +17,17 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
   const thumbRef = elementRef || ref<HTMLElement>();
   const isDragging = ref(false);
   const { direction } = useLocale();
+  const id = useUniqId(FieldTypePrefixes.SliderThumb);
 
-  const thumbContext: ThumbContext = {
+  const thumbContext: ThumbRegistration = {
+    id,
     focus() {
       thumbRef.value?.focus();
     },
   };
 
   const mockSlider: () => SliderContext = () => ({
-    registerThumb: () => ({
+    useSliderThumbRegistration: () => ({
       getThumbRange: () => ({ min: 0, max: 100 }),
       getSliderRange: () => ({ min: 0, max: 100 }),
       getSliderStep: () => 1,
@@ -42,7 +44,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
     }),
   });
 
-  const slider = inject(SliderInjectionKey, mockSlider, true).registerThumb(thumbContext);
+  const slider = inject(SliderInjectionKey, mockSlider, true).useSliderThumbRegistration(thumbContext);
   const thumbValue = computed(() => slider.getThumbValue());
 
   if ('__isMock' in slider) {
