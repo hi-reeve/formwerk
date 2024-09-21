@@ -109,7 +109,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
 
     const positionProp = orientation === 'vertical' ? 'bottom' : inlineBound;
     const translateX = orientation === 'vertical' ? '0' : `calc(${percent}cqw ${dir === 'rtl' ? '+' : '-'} 50%)`;
-    const translateY = orientation === 'vertical' ? `calc(${percent}cqh - 50%)` : '0';
+    const translateY = orientation === 'vertical' ? `calc(${percent}cqh + 50%)` : '0';
 
     return {
       position: 'absolute',
