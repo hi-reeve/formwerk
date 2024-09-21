@@ -117,6 +117,8 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
   const trackRef = ref<HTMLElement>();
   const thumbs = ref<ThumbRegistration[]>([]);
   const isDisabled = () => toValue(props.disabled) ?? false;
+  const isReadonly = () => toValue(props.readonly) ?? false;
+  const isMutable = () => !isDisabled() && !isReadonly();
   const { direction } = useLocale();
   const field = useFormField<Arrayable<number>>({
     path: props.name,
@@ -159,7 +161,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
   }
 
   function setThumbValue(idx: number, value: number) {
-    if (isDisabled()) {
+    if (!isMutable()) {
       return;
     }
 
@@ -182,7 +184,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
       {
         style: { 'container-type': isVertical ? 'size' : 'inline-size', position: 'relative' },
         onMousedown(e: MouseEvent) {
-          if (!trackRef.value || isDisabled()) {
+          if (!trackRef.value || !isMutable()) {
             return;
           }
 
