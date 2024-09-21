@@ -1,5 +1,17 @@
 # @formwerk/core
 
+## 0.1.13
+
+### Patch Changes
+
+- 61a0ec0: feat: expose error message props on slider ecosystem
+- 6523ba9: fix: run validation when thumb value changes
+- 4205a69: fix: avoid reading validation state from grouped checkboxes or radios if a sibling is valid
+- 90b0102: feat: add useThumbMetadata composable
+- 419eeff: fix: adjust how thumbs are being registered in sliders
+- ba4e329: fix: disable slider value changes when readonly or disabled
+- 9d612aa: fix: add disableHtmlValidation on checkbox groups
+
 ## 0.1.12
 
 ### Patch Changes
