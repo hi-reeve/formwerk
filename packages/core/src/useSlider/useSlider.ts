@@ -122,6 +122,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
   });
 
   const { fieldValue, setValue, setTouched } = field;
+  const { updateValidity } = useInputValidity({ field });
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
@@ -155,12 +156,14 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
 
     if (thumbs.value.length <= 1) {
       setValue(value);
+      updateValidity();
       return;
     }
 
     const nextValue = normalizeArrayable(fieldValue.value).filter(v => !isNullOrUndefined(v));
     nextValue[idx] = value;
     setValue(nextValue);
+    updateValidity();
   }
 
   const trackProps = computed(() => {
@@ -295,7 +298,6 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
   };
 
   provide(SliderInjectionKey, { useSliderThumbRegistration });
-
 
   return {
     trackRef,
