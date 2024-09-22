@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.1.16
+
+### Patch Changes
+
+- 23c2f6d: fix: prevent popup opening when disabled
+
 ## 0.1.15
 
 ### Patch Changes
