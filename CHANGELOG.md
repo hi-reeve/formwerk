@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.1.15
+
+### Patch Changes
+
+- 68b4d97: fix: handle disabled and readonly select states
+
 ## 0.1.14
 
 ### Patch Changes
