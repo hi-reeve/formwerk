@@ -1,13 +1,17 @@
-import { Ref, shallowRef, watch } from 'vue';
+import { MaybeRefOrGetter, Ref, shallowRef, toValue, watch } from 'vue';
 import { useEventListener } from '../useEventListener';
 import { Maybe } from '../../types';
 
-export function usePopoverController(popoverEl: Ref<Maybe<HTMLElement>>) {
+interface ControllerInit {
+  disabled?: MaybeRefOrGetter<boolean | undefined>;
+}
+
+export function usePopoverController(popoverEl: Ref<Maybe<HTMLElement>>, opts?: ControllerInit) {
   const isOpen = shallowRef(false);
 
   watch(isOpen, value => {
     const el = popoverEl.value;
-    if (!el || !el.popover) {
+    if (!el || !el.popover || toValue(opts?.disabled)) {
       return;
     }
 
@@ -23,14 +27,21 @@ export function usePopoverController(popoverEl: Ref<Maybe<HTMLElement>>) {
     el.hidePopover();
   });
 
-  useEventListener(popoverEl, 'toggle', (e: ToggleEvent) => {
-    const shouldBeOpen = e.newState === 'open';
-    if (isOpen.value === shouldBeOpen) {
-      return;
-    }
+  useEventListener(
+    popoverEl,
+    'toggle',
+    (e: ToggleEvent) => {
+      const shouldBeOpen = e.newState === 'open';
+      if (isOpen.value === shouldBeOpen) {
+        return;
+      }
 
-    isOpen.value = shouldBeOpen;
-  });
+      isOpen.value = shouldBeOpen;
+    },
+    {
+      disabled: opts?.disabled,
+    },
+  );
 
   return {
     isOpen,

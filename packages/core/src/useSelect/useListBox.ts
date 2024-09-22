@@ -13,6 +13,7 @@ export interface ListBoxProps {
   labeledBy?: string;
   multiple?: boolean;
   orientation?: Orientation;
+  disabled?: boolean;
 
   onToggleAll?(): void;
   onToggleBefore?(): void;
@@ -54,7 +55,7 @@ export function useListBox<TOption, TValue = TOption>(
   const listBoxRef = elementRef || ref<HTMLElement>();
   const options = shallowRef<OptionRegistrationWithId<TValue>[]>([]);
   // Initialize popover controller, NO-OP if the element is not a popover-enabled element.
-  const { isOpen } = usePopoverController(listBoxRef);
+  const { isOpen } = usePopoverController(listBoxRef, { disabled: props.disabled });
   const finder = useOptionFinder(options);
   const isShiftPressed = useKeyPressed(['ShiftLeft', 'ShiftRight'], () => !isOpen.value);
   const isMetaPressed = useKeyPressed(
@@ -76,6 +77,10 @@ export function useListBox<TOption, TValue = TOption>(
 
   const handlers = {
     onKeydown(e: KeyboardEvent) {
+      if (toValue(props.disabled)) {
+        return;
+      }
+
       if (hasKeyCode(e, 'ArrowDown')) {
         e.preventDefault();
         e.stopPropagation();
@@ -183,7 +188,7 @@ export function useListBox<TOption, TValue = TOption>(
   });
 
   watch(isOpen, async value => {
-    if (!value) {
+    if (!value || toValue(props.disabled)) {
       return;
     }
 

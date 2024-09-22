@@ -3,7 +3,7 @@ import { Arrayable, Maybe } from '../../types';
 import { normalizeArrayable, tryOnScopeDispose } from '../../utils/common';
 
 interface ListenerOptions {
-  disabled?: MaybeRefOrGetter<boolean>;
+  disabled?: MaybeRefOrGetter<boolean | undefined>;
 }
 
 export type EventExpression = string | [string, (e: Event) => boolean];

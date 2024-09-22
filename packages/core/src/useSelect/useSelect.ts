@@ -24,6 +24,7 @@ export interface SelectProps<TOption, TValue = TOption> {
   modelValue?: Arrayable<TValue>;
 
   disabled?: boolean;
+  readonly?: boolean;
   multiple?: boolean;
   orientation?: Orientation;
 
@@ -40,6 +41,7 @@ export interface SelectTriggerDomProps extends AriaLabelableProps {
 export interface SelectionContext<TOption, TValue = TOption> {
   isValueSelected(value: TValue): boolean;
   isMultiple(): boolean;
+  isDisabled(): boolean;
   toggleValue(value: TValue, force?: boolean): void;
 }
 
@@ -50,6 +52,7 @@ const MENU_OPEN_KEYS = ['Enter', 'Space', 'ArrowDown', 'ArrowUp'];
 export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectProps<TOption, TValue>, 'schema'>) {
   const inputId = useUniqId(FieldTypePrefixes.Select);
   const props = normalizeProps(_props, ['schema']);
+  const isMutable = () => !toValue(props.disabled) && !toValue(props.readonly);
   const field = useFormField<Arrayable<TValue>>({
     path: props.name,
     initialValue: toValue(props.modelValue) as Arrayable<TValue>,
@@ -98,7 +101,12 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
 
       return values.some(item => isEqual(item, value));
     },
+    isDisabled: () => toValue(props.disabled) ?? false,
     toggleValue(optionValue, force) {
+      if (!isMutable()) {
+        return;
+      }
+
       if (isSingle()) {
         lastRecentlySelectedOption = optionValue;
         setValue(optionValue);
@@ -136,7 +144,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
   }
 
   function toggleBefore() {
-    if (isSingle()) {
+    if (isSingle() || !isMutable()) {
       return;
     }
 
@@ -151,7 +159,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
   }
 
   function toggleAfter() {
-    if (isSingle()) {
+    if (isSingle() || !isMutable()) {
       return;
     }
 
@@ -162,7 +170,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
   }
 
   function toggleAll() {
-    if (isSingle()) {
+    if (isSingle() || !isMutable()) {
       return;
     }
 
