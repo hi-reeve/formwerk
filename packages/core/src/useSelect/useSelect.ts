@@ -52,7 +52,8 @@ const MENU_OPEN_KEYS = ['Enter', 'Space', 'ArrowDown', 'ArrowUp'];
 export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectProps<TOption, TValue>, 'schema'>) {
   const inputId = useUniqId(FieldTypePrefixes.Select);
   const props = normalizeProps(_props, ['schema']);
-  const isMutable = () => !toValue(props.disabled) && !toValue(props.readonly);
+  const isDisabled = () => toValue(props.disabled) ?? false;
+  const isMutable = () => !isDisabled() && !toValue(props.readonly);
   const field = useFormField<Arrayable<TValue>>({
     path: props.name,
     initialValue: toValue(props.modelValue) as Arrayable<TValue>,
@@ -101,7 +102,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
 
       return values.some(item => isEqual(item, value));
     },
-    isDisabled: () => toValue(props.disabled) ?? false,
+    isDisabled,
     toggleValue(optionValue, force) {
       if (!isMutable()) {
         return;
@@ -189,9 +190,17 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
 
   const handlers = {
     onClick() {
+      if (isDisabled()) {
+        return;
+      }
+
       isOpen.value = !isOpen.value;
     },
     onKeydown(e: KeyboardEvent) {
+      if (isDisabled()) {
+        return;
+      }
+
       if (!isOpen.value && MENU_OPEN_KEYS.includes(e.code)) {
         e.preventDefault();
         isOpen.value = true;
