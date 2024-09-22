@@ -146,26 +146,27 @@ export function useListBox<TOption, TValue = TOption>(
 
   function focusNext() {
     const currentlyFocusedIdx = findFocused();
-    // Focus first one if none is focused
-    if (currentlyFocusedIdx === -1) {
-      focusAndToggleIfShiftPressed(0);
-      return;
+    for (let i = currentlyFocusedIdx + 1; i < options.value.length; i++) {
+      if (!options.value[i].isDisabled()) {
+        focusAndToggleIfShiftPressed(i);
+        return;
+      }
     }
-
-    const nextIdx = Math.min(currentlyFocusedIdx + 1, options.value.length - 1);
-    focusAndToggleIfShiftPressed(nextIdx);
   }
 
   function focusPrev() {
     const currentlyFocusedIdx = findFocused();
-    // Focus first one if none is focused
     if (currentlyFocusedIdx === -1) {
-      focusAndToggleIfShiftPressed(0);
+      focusNext();
       return;
     }
 
-    const nextIdx = Math.max(currentlyFocusedIdx - 1, 0);
-    focusAndToggleIfShiftPressed(nextIdx);
+    for (let i = currentlyFocusedIdx - 1; i >= 0; i--) {
+      if (!options.value[i].isDisabled()) {
+        focusAndToggleIfShiftPressed(i);
+        return;
+      }
+    }
   }
 
   const listBoxProps = computed<ListBoxDomProps>(() => {
@@ -193,9 +194,13 @@ export function useListBox<TOption, TValue = TOption>(
     }
 
     await nextTick();
-    const currentlySelected = options.value.findIndex(o => o.isSelected());
-    const toBeSelected = currentlySelected === -1 ? 0 : currentlySelected;
-    options.value[toBeSelected]?.focus();
+    const currentlySelected = options.value.find(o => o.isSelected());
+    if (currentlySelected && !currentlySelected?.isDisabled()) {
+      currentlySelected.focus();
+      return;
+    }
+
+    focusNext();
   });
 
   return {
