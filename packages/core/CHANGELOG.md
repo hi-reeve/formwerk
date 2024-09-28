@@ -1,5 +1,13 @@
 # @formwerk/core
 
+## 0.1.17
+
+### Patch Changes
+
+- 4f70409: fix: skip disabled options from the focus order
+- 591f7c4: fix: add novalidate to the formProps
+- b01a6ce: fix: re-apply validationMessage after top-level validations are done
+
 ## 0.1.16
 
 ### Patch Changes
