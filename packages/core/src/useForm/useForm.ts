@@ -136,6 +136,7 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
 
   const formProps = {
     id,
+    novalidate: true,
     onSubmit,
     onFormdata,
   };
