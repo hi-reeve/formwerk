@@ -42,9 +42,10 @@ interface GroupProps extends AriaLabelableProps {
   role?: 'group';
 }
 
-interface FormGroupContext<TOutput extends FormObject = FormObject> {
+export interface FormGroupContext<TOutput extends FormObject = FormObject> {
   prefixPath: (path: string | undefined) => string | undefined;
   onValidationDispatch(cb: (enqueue: (promise: Promise<ValidationResult>) => void) => void): void;
+  onValidationDone(cb: () => void): void;
   requestValidation(): Promise<GroupValidationResult<TOutput>>;
   getValidationMode(): FormValidationMode;
   isHtmlValidationDisabled(): boolean;
@@ -65,12 +66,13 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
     toValue(props.disableHtmlValidation) ??
     form?.isHtmlValidationDisabled() ??
     getConfig().validation.disableHtmlValidation;
-  const { validate, onValidationDispatch, defineValidationRequest } = useValidationProvider({
-    getValues,
-    getPath,
-    schema: props.schema,
-    type: 'GROUP',
-  });
+  const { validate, onValidationDispatch, defineValidationRequest, onValidationDone, dispatchValidateDone } =
+    useValidationProvider({
+      getValues,
+      getPath,
+      schema: props.schema,
+      type: 'GROUP',
+    });
 
   const requestValidation = defineValidationRequest(res => {
     // Clears Errors in that path before proceeding.
@@ -78,6 +80,8 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
     for (const entry of res.errors) {
       form?.setFieldErrors(entry.path ?? '', entry.messages);
     }
+
+    dispatchValidateDone();
   });
 
   if (!form) {
@@ -143,6 +147,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   const ctx: FormGroupContext = {
     prefixPath,
     onValidationDispatch,
+    onValidationDone,
     requestValidation,
     getValidationMode: () => (props.schema ? 'schema' : 'aggregate'),
     isHtmlValidationDisabled,
@@ -160,6 +165,9 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
       }),
     );
   });
+
+  // When the form is done validating, the form group should also signal the same to its children.
+  form?.onValidationDone(dispatchValidateDone);
 
   provide(FormGroupKey, ctx);
 

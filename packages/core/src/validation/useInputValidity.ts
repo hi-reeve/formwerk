@@ -1,10 +1,10 @@
 import { Ref, inject, nextTick, onMounted, shallowRef, watch, MaybeRefOrGetter, toValue } from 'vue';
 import { EventExpression, useEventListener } from '../helpers/useEventListener';
-import { FormKey } from '../useForm';
+import { type FormContext, FormKey } from '../useForm';
 import { Arrayable, Maybe, ValidationResult } from '../types';
 import { FormField } from '../useFormField';
 import { isInputElement, normalizeArrayable } from '../utils/common';
-import { FormGroupKey } from '../useFormGroup';
+import { FormGroupContext, FormGroupKey } from '../useFormGroup';
 import { getConfig } from '../config';
 
 type ElementReference = Ref<Arrayable<Maybe<HTMLElement>>>;
@@ -22,7 +22,7 @@ export function useInputValidity(opts: InputValidityOptions) {
   const formGroup = inject(FormGroupKey, null);
   const { setErrors, errorMessage, schema, validate: validateField, getPath } = opts.field;
   const validityDetails = shallowRef<ValidityState>();
-  useMessageCustomValiditySync(errorMessage, opts.inputEl);
+  useMessageCustomValiditySync(errorMessage, opts.inputEl, form, formGroup);
   const isHtmlValidationDisabled = () =>
     toValue(opts.disableHtmlValidation) ??
     (formGroup || form)?.isHtmlValidationDisabled() ??
@@ -47,6 +47,7 @@ export function useInputValidity(opts: InputValidityOptions) {
     let validityIdx = -1;
     for (let i = 0; i < inputs.length; i++) {
       const input = inputs[i];
+      // We have to reset the custom validity to make way for the native validation message to be picked up.
       input.setCustomValidity('');
       if (opts.groupValidityBehavior === 'some' && input.validity.valid) {
         messages = [];
@@ -127,7 +128,12 @@ export function useInputValidity(opts: InputValidityOptions) {
 /**
  * Syncs the message with the input's native validation message.
  */
-function useMessageCustomValiditySync(message: Ref<string>, input?: ElementReference) {
+function useMessageCustomValiditySync(
+  message: Ref<string>,
+  input?: ElementReference,
+  form?: FormContext | null,
+  formGroup?: FormGroupContext | null,
+) {
   if (!input) {
     return;
   }
@@ -139,9 +145,15 @@ function useMessageCustomValiditySync(message: Ref<string>, input?: ElementRefer
     }
   }
 
-  watch(message, msg => {
+  function syncMessage(msg: string) {
     normalizeArrayable(toValue(input))
       .filter(isInputElement)
       .forEach(el => applySync(el, msg));
-  });
+  }
+
+  const syncMessageInline = () => syncMessage(message.value);
+
+  (formGroup || form)?.onValidationDone(syncMessageInline);
+
+  watch(message, syncMessage);
 }

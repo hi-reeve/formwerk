@@ -46,6 +46,8 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     validate: _validate,
     onValidationDispatch,
     defineValidationRequest,
+    onValidationDone,
+    dispatchValidateDone,
   } = useValidationProvider({ schema, getValues: () => form.getValues(), type: 'FORM' });
   const requestValidation = defineValidationRequest(updateValidationStateFromResult);
 
@@ -85,6 +87,7 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
   function updateValidationStateFromResult(result: FormValidationResult<TOutput>) {
     form.clearErrors();
     applyErrors(result.errors);
+    dispatchValidateDone();
 
     return result;
   }
@@ -132,6 +135,7 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     requestValidation,
     onSubmitAttempt,
     onValidationDispatch,
+    onValidationDone,
     isSubmitting,
   };
 }

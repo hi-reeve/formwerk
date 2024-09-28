@@ -32,6 +32,7 @@ export function useValidationProvider<
 >({ schema, getValues, type, getPath }: ValidationProviderOptions<TInput, TOutput, TType>) {
   const [dispatchValidate, onValidationDispatch] =
     createEventDispatcher<(pending: Promise<ValidationResult>) => void>('validate');
+  const [dispatchValidateDone, onValidationDone] = createEventDispatcher<void>('validate-done');
 
   /**
    * Validates but tries to not mutate anything if possible.
@@ -69,6 +70,8 @@ export function useValidationProvider<
     }
 
     const allErrors = [...errors, ...fieldErrors];
+
+    dispatchValidateDone();
 
     return createValidationResult({
       isValid: !allErrors.length,
@@ -135,6 +138,8 @@ export function useValidationProvider<
   return {
     validate,
     onValidationDispatch,
+    onValidationDone,
     defineValidationRequest,
+    dispatchValidateDone,
   };
 }

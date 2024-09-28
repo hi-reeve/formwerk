@@ -35,6 +35,7 @@ export interface FormContext<TForm extends FormObject = FormObject, TOutput exte
     FormTransactionManager<TForm> {
   requestValidation(): Promise<FormValidationResult<TOutput>>;
   onSubmitAttempt(cb: () => void): void;
+  onValidationDone(cb: () => void): void;
   isHtmlValidationDisabled(): boolean;
   onValidationDispatch(
     cb: (enqueue: (promise: Promise<ValidationResult | GroupValidationResult>) => void) => void,
