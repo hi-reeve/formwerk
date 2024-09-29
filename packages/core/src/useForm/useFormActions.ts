@@ -116,7 +116,7 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
 
     form.revertValues();
     form.revertTouched();
-    if (state?.revalidate) {
+    if (state?.revalidate ?? true) {
       await validate();
       return;
     }

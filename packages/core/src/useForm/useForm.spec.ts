@@ -840,7 +840,7 @@ describe('form validation', () => {
     });
   });
 
-  test('form reset clears errors', async () => {
+  test('form reset re-validates by default', async () => {
     const schema: TypedSchema<{ test: string }> = {
       async parse() {
         return {
@@ -858,10 +858,10 @@ describe('form validation', () => {
     await flush();
     expect(getError('test')).toBe('error');
     await reset();
-    expect(getError('test')).toBeUndefined();
+    expect(getError('test')).toBe('error');
   });
 
-  test('form reset can revalidate', async () => {
+  test('form reset revalidation can be disabled', async () => {
     let wasReset = false;
     const schema: TypedSchema<{ test: string }> = {
       async parse() {
@@ -880,8 +880,8 @@ describe('form validation', () => {
     await flush();
     expect(getError('test')).toBe('error');
     wasReset = true;
-    await reset({ revalidate: true });
-    expect(getError('test')).toBe('reset');
+    await reset({ revalidate: false });
+    expect(getError('test')).toBeUndefined();
   });
 
   test('displays errors if the field is touched', async () => {
