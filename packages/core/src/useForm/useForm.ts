@@ -149,6 +149,7 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
     isTouched,
     isDirty,
     isValid,
+    isFieldDirty: ctx.isFieldDirty,
     setFieldValue: ctx.setFieldValue,
     getFieldValue: ctx.getFieldValue,
     isFieldTouched: ctx.isFieldTouched,

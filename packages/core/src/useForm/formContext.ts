@@ -10,7 +10,7 @@ import {
   ErrorsSchema,
   TypedSchemaError,
 } from '../types';
-import { cloneDeep, normalizeArrayable } from '../utils/common';
+import { cloneDeep, isEqual, normalizeArrayable } from '../utils/common';
 import { escapePath, findLeaf, getFromPath, isPathSet, setInPath, unsetPath as unsetInObject } from '../utils/path';
 import { FormSnapshot } from './formSnapshot';
 import { isObject, merge } from '../../../shared/src';
@@ -25,6 +25,7 @@ export interface BaseFormContext<TForm extends FormObject = FormObject> {
   unsetPath<TPath extends Path<TForm>>(path: TPath): void;
   setFieldTouched<TPath extends Path<TForm>>(path: TPath, value: boolean): void;
   isFieldTouched<TPath extends Path<TForm>>(path: TPath): boolean;
+  isFieldDirty<TPath extends Path<TForm>>(path: TPath): boolean;
   isFieldSet<TPath extends Path<TForm>>(path: TPath): boolean;
   getFieldInitialValue<TPath extends Path<TForm>>(path: TPath): PathValue<TForm, TPath>;
   getFieldOriginalValue<TPath extends Path<TForm>>(path: TPath): PathValue<TForm, TPath>;
@@ -89,6 +90,10 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     }
 
     return !!value;
+  }
+
+  function isFieldDirty<TPath extends Path<TForm>>(path: TPath) {
+    return !isEqual(getFieldValue(path), getFieldOriginalValue(path));
   }
 
   function isFieldSet<TPath extends Path<TForm>>(path: TPath) {
@@ -237,6 +242,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     setFieldTouched,
     getFieldValue,
     isFieldTouched,
+    isFieldDirty,
     isFieldSet,
     destroyPath,
     unsetPath,

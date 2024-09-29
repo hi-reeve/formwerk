@@ -254,63 +254,6 @@ describe('form submit', () => {
     expect(cb).toHaveBeenCalledTimes(2);
     expect(cb).toHaveBeenLastCalledWith({ multiple: ['field 1', 'field 3', 'field 4'] });
   });
-});
-
-describe('form dirty state', () => {
-  test('isDirty is true when the current values are different than the originals', async () => {
-    const { isDirty, setFieldValue, reset } = await renderSetup(() => {
-      return useForm({ initialValues: { foo: 'bar' } });
-    });
-
-    expect(isDirty.value).toBe(false);
-    setFieldValue('foo', 'baz');
-    expect(isDirty.value).toBe(true);
-    reset();
-    expect(isDirty.value).toBe(false);
-  });
-
-  test('pathless fields do not contribute their dirty state to the form', async () => {
-    const { form, field } = await renderSetup(
-      () => {
-        return { form: useForm({ initialValues: { field: 'foo' } }) };
-      },
-      () => {
-        return { field: useFormField({ initialValue: 'bar' }) };
-      },
-    );
-
-    expect(form.isDirty.value).toBe(false);
-    form.setFieldValue('field', 'bar');
-    expect(form.isDirty.value).toBe(true);
-
-    expect(field.isDirty.value).toBe(false);
-    field.setValue('foo');
-    expect(field.isDirty.value).toBe(true);
-
-    form.setFieldValue('field', 'foo');
-    field.setValue('bar');
-    expect(form.isDirty.value).toBe(false);
-    expect(field.isDirty.value).toBe(false);
-  });
-
-  test('fields with path sync their dirty state with the form', async () => {
-    const { form, field } = await renderSetup(
-      () => {
-        return { form: useForm({ initialValues: { field: 'foo' } }) };
-      },
-      () => {
-        return { field: useFormField({ path: 'field' }) };
-      },
-    );
-
-    expect(field.isDirty.value).toBe(false);
-    expect(form.isDirty.value).toBe(false);
-    field.setValue('bar');
-    expect(field.isDirty.value).toBe(true);
-    expect(form.isDirty.value).toBe(true);
-    field.setValue('foo');
-    expect(field.isDirty.value).toBe(false);
-  });
 
   test('can submit with FormData', async () => {
     const file1 = new File([''], 'test1.jpg', { type: 'image/jpeg' });
@@ -449,6 +392,82 @@ describe('form dirty state', () => {
     await fireEvent(screen.getByTestId('form'), e);
     await flush();
     expect(formData.get('foo')).toBe('bar');
+  });
+});
+
+describe('form dirty state', () => {
+  test('isDirty is true when the current values are different than the originals', async () => {
+    const { isDirty, setFieldValue, reset } = await renderSetup(() => {
+      return useForm({ initialValues: { foo: 'bar' } });
+    });
+
+    expect(isDirty.value).toBe(false);
+    setFieldValue('foo', 'baz');
+    expect(isDirty.value).toBe(true);
+    reset();
+    expect(isDirty.value).toBe(false);
+  });
+
+  test('pathless fields do not contribute their dirty state to the form', async () => {
+    const { form, field } = await renderSetup(
+      () => {
+        return { form: useForm({ initialValues: { field: 'foo' } }) };
+      },
+      () => {
+        return { field: useFormField({ initialValue: 'bar' }) };
+      },
+    );
+
+    expect(form.isDirty.value).toBe(false);
+    form.setFieldValue('field', 'bar');
+    expect(form.isDirty.value).toBe(true);
+
+    expect(field.isDirty.value).toBe(false);
+    field.setValue('foo');
+    expect(field.isDirty.value).toBe(true);
+
+    form.setFieldValue('field', 'foo');
+    field.setValue('bar');
+    expect(form.isDirty.value).toBe(false);
+    expect(field.isDirty.value).toBe(false);
+  });
+
+  test('fields with path sync their dirty state with the form', async () => {
+    const { form, field } = await renderSetup(
+      () => {
+        return { form: useForm({ initialValues: { field: 'foo' } }) };
+      },
+      () => {
+        return { field: useFormField({ path: 'field' }) };
+      },
+    );
+
+    expect(field.isDirty.value).toBe(false);
+    expect(form.isDirty.value).toBe(false);
+    field.setValue('bar');
+    expect(field.isDirty.value).toBe(true);
+    expect(form.isDirty.value).toBe(true);
+    field.setValue('foo');
+    expect(field.isDirty.value).toBe(false);
+  });
+
+  test('can query if a field is dirty', async () => {
+    const { form } = await renderSetup(
+      () => {
+        return { form: useForm<any>({ initialValues: { foo: 'bar' } }) };
+      },
+      () => {
+        return { field: useFormField({ path: 'field' }) };
+      },
+    );
+
+    expect(form.isFieldDirty('foo')).toBe(false);
+    expect(form.isFieldDirty('field')).toBe(false);
+
+    form.setFieldValue('foo', 'baz');
+    form.setFieldValue('field', 'something');
+    expect(form.isFieldDirty('foo')).toBe(true);
+    expect(form.isFieldDirty('field')).toBe(true);
   });
 });
 
