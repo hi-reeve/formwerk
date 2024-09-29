@@ -46,7 +46,7 @@ export interface BaseFormContext<TForm extends FormObject = FormObject> {
 }
 
 export interface SetValueOptions {
-  mode: 'merge' | 'replace';
+  behavior: 'merge' | 'replace';
 }
 
 export interface FormContextCreateOptions<TForm extends FormObject = FormObject, TOutput extends FormObject = TForm> {
@@ -141,7 +141,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
   }
 
   function setInitialValues(newValues: Partial<TForm>, opts?: SetValueOptions) {
-    if (opts?.mode === 'merge') {
+    if (opts?.behavior === 'merge') {
       snapshots.values.initials.value = merge(cloneDeep(snapshots.values.initials.value), cloneDeep(newValues));
       snapshots.values.originals.value = cloneDeep(snapshots.values.initials.value);
 
@@ -153,7 +153,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
   }
 
   function setInitialTouched(newTouched: Partial<TouchedSchema<TForm>>, opts?: SetValueOptions) {
-    if (opts?.mode === 'merge') {
+    if (opts?.behavior === 'merge') {
       snapshots.touched.initials.value = merge(cloneDeep(snapshots.touched.initials.value), cloneDeep(newTouched));
       snapshots.touched.originals.value = cloneDeep(snapshots.touched.initials.value);
 
@@ -169,7 +169,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
    * TODO: Maybe have two different signatures for this method? A partial for merge mode and a full for replace mode?
    */
   function setValues(newValues: Partial<TForm>, opts?: SetValueOptions) {
-    if (opts?.mode === 'merge') {
+    if (opts?.behavior === 'merge') {
       merge(values, newValues);
 
       return;
@@ -195,7 +195,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
   }
 
   function setTouched(newTouched: Partial<TouchedSchema<TForm>>, opts?: SetValueOptions) {
-    if (opts?.mode === 'merge') {
+    if (opts?.behavior === 'merge') {
       merge(touched, newTouched);
 
       return;
@@ -223,11 +223,11 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
   }
 
   function revertValues() {
-    setValues(cloneDeep(snapshots.values.originals.value), { mode: 'replace' });
+    setValues(cloneDeep(snapshots.values.originals.value), { behavior: 'replace' });
   }
 
   function revertTouched() {
-    setTouched(cloneDeep(snapshots.touched.originals.value), { mode: 'replace' });
+    setTouched(cloneDeep(snapshots.touched.originals.value), { behavior: 'replace' });
   }
 
   function getValidationMode(): FormValidationMode {

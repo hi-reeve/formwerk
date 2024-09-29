@@ -90,7 +90,7 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
   });
 
   function onAsyncInit(v: TForm) {
-    ctx.setValues(v, { mode: 'merge' });
+    ctx.setValues(v, { behavior: 'merge' });
   }
 
   const transactionsManager = useFormTransactions(ctx);

@@ -55,7 +55,7 @@ describe('form values', () => {
       return useForm<Record<string, any>>({ initialValues: { x: 'y' } });
     });
 
-    setValues({ foo: 'baz' }, { mode: 'merge' });
+    setValues({ foo: 'baz' }, { behavior: 'merge' });
 
     expect(values).toEqual({ x: 'y', foo: 'baz' });
   });
