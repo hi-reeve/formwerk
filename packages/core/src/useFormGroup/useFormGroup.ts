@@ -1,22 +1,8 @@
-import {
-  computed,
-  createBlock,
-  defineComponent,
-  Fragment,
-  inject,
-  InjectionKey,
-  openBlock,
-  provide,
-  Ref,
-  shallowRef,
-  toValue,
-  VNode,
-} from 'vue';
+import { computed, inject, InjectionKey, provide, Ref, shallowRef, toValue } from 'vue';
 import { useLabel } from '../a11y/useLabel';
 import { FieldTypePrefixes } from '../constants';
 import {
   AriaLabelableProps,
-  AriaLabelProps,
   FormObject,
   GroupValidationResult,
   Reactivify,
@@ -108,8 +94,6 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
     );
   });
 
-  const FormGroup = createInlineFormGroupComponent({ groupProps, labelProps });
-
   function getValues() {
     return form?.getFieldValue(getPath()) ?? {};
   }
@@ -175,7 +159,6 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
     groupRef,
     labelProps,
     groupProps,
-    FormGroup,
     isDirty,
     isValid,
     isTouched,
@@ -184,30 +167,5 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
     getError,
     displayError,
     validate,
-  };
-}
-
-interface InlineComponentProps {
-  groupProps: GroupProps;
-  labelProps: AriaLabelProps;
-}
-
-function createInlineFormGroupComponent({ groupProps, labelProps }: Reactivify<InlineComponentProps>) {
-  const impl = defineComponent({
-    setup(_, { slots }) {
-      return () => (
-        openBlock(),
-        createBlock(Fragment),
-        slots.default?.({ groupProps: toValue(groupProps), labelProps: toValue(labelProps) })
-      );
-    },
-  });
-
-  return impl as typeof impl & {
-    new (): {
-      $slots: {
-        default: (arg: InlineComponentProps) => VNode[];
-      };
-    };
   };
 }
