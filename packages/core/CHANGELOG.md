@@ -1,5 +1,15 @@
 # @formwerk/core
 
+## 0.1.18
+
+### Patch Changes
+
+- f9d9416: feat: add isFieldDirty to useForm
+- 2a8e808: feat: add form repeater implementation
+- 3759cc1: feat: reset re-validates by default
+- 05ecda4: feat: drop inline groups
+- 8ce260b: refactor: rename `mode` to `behavior` with setValue
+
 ## 0.1.17
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@formwerk/schema-zod",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "",
   "sideEffects": false,
   "module": "dist/schema-zod.esm.js",
