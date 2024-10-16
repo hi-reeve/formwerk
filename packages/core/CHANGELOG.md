@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.1.19
+
+### Patch Changes
+
+- 00f920b: fix: expose iteration with root element cababilities to allow animation
+- 03e74ec: feat: remove Repeat component API in favor of a singular API
+
 ## 0.1.18
 
 ### Patch Changes
