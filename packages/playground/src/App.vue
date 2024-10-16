@@ -1,18 +1,23 @@
 <script setup lang="ts">
+import { useForm } from '@formwerk/core';
+import InputText from '@/components/InputText.vue';
 import Checkbox from '@/components/CheckboxInput.vue';
-import CheckboxGroup from '@/components/CheckboxGroup.vue';
-import { z } from 'zod';
-import { defineSchema } from '@formwerk/schema-zod';
+import FormRepeater from '@/components/Repeater.vue';
 
-const schema = defineSchema(
-  z.array(z.string()).min(1, 'Please select a drink').max(2, 'You can only select up to 2 drinks'),
-);
+const { handleSubmit } = useForm();
+
+const onSubmit = handleSubmit(data => {
+  alert(JSON.stringify(data.toJSON(), null, 2));
+});
 </script>
 
 <template>
-  <CheckboxGroup label="Select a drink" description="Select up to 2 drinks" :schema="schema">
-    <Checkbox label="Tea 🍵" value="🍵" />
-    <Checkbox label="Coffee ☕️" value="☕️" />
-    <Checkbox label="Milk 🥛" value="🥛" />
-  </CheckboxGroup>
+  <form @submit="onSubmit" novalidate>
+    <FormRepeater name="users" min="1">
+      <InputText name="email" label="Email Address" required type="email" />
+      <Checkbox name="isAdmin" label="is Admin" />
+    </FormRepeater>
+
+    <button type="submit">Submit</button>
+  </form>
 </template>
