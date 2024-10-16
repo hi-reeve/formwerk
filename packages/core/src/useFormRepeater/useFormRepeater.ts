@@ -14,7 +14,15 @@ import {
 } from 'vue';
 import { Numberish, Reactivify } from '../types';
 import { FormKey } from '../useForm';
-import { cloneDeep, isEqual, isNullOrUndefined, normalizeProps, useUniqId, warn } from '../utils/common';
+import {
+  cloneDeep,
+  isEqual,
+  isNullOrUndefined,
+  normalizeProps,
+  useUniqId,
+  warn,
+  withRefCapture,
+} from '../utils/common';
 import { FieldTypePrefixes } from '../constants';
 import { createPathPrefixer } from '../helpers/usePathPrefixer';
 import { prefixPath } from '../utils/path';
@@ -266,16 +274,22 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
 
 function createBtnProps(_props: Reactivify<FormRepeaterButtonProps, 'onClick'>) {
   const props = normalizeProps(_props, ['onClick']);
+  const buttonEl = ref<HTMLElement>();
 
   const buttonProps = computed<FormRepeaterButtonDomProps>(() => {
-    return {
-      'aria-label': toValue(props.label),
-      type: 'button',
-      role: 'button',
-      onClick: props.onClick,
-      disabled: toValue(props.disabled) ?? undefined,
-      'aria-disabled': toValue(props.disabled) ?? undefined,
-    };
+    const isBtnTag = buttonEl.value?.tagName === 'BUTTON';
+
+    return withRefCapture(
+      {
+        'aria-label': toValue(props.label),
+        type: isBtnTag ? 'button' : undefined,
+        role: isBtnTag ? undefined : 'button',
+        onClick: props.onClick,
+        disabled: isBtnTag ? (toValue(props.disabled) ?? undefined) : undefined,
+        'aria-disabled': isBtnTag ? undefined : (toValue(props.disabled) ?? undefined),
+      },
+      buttonEl,
+    );
   });
 
   return buttonProps;
