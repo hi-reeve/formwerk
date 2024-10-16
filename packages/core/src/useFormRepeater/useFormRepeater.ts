@@ -205,9 +205,8 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
   const Iteration = defineComponent<{ index: number; as?: string; noButtonProps?: boolean }>({
     name: 'FormRepeaterIteration',
     props: {
-      index: Number,
       as: { type: String, required: false },
-      noButtonProps: { required: false, type: Boolean, default: false },
+      index: Number,
     },
     setup(props, { slots, attrs }) {
       // Prefixes the path with the index of the repeater
@@ -216,16 +215,6 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
       createPathPrefixer(path =>
         isNullOrUndefined(path) ? undefined : prefixPath(getPath(), `${props.index}${path ? `.${path}` : ''}`),
       );
-
-      if (props.noButtonProps) {
-        return () => {
-          if (props.as) {
-            return h(props.as, {}, () => slots.default?.({}));
-          }
-
-          return slots.default?.({});
-        };
-      }
 
       const { removeButtonProps, moveUpButtonProps, moveDownButtonProps } = createIterationButtonProps(
         () => props.index,
@@ -243,28 +232,6 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
         }
 
         return slots.default?.(getSlotProps());
-      };
-    },
-  });
-
-  const Repeat = defineComponent({
-    name: 'FormRepeater',
-    setup(_, { slots }) {
-      return () => {
-        return records.value.map((key, index) => {
-          const { removeButtonProps, moveUpButtonProps, moveDownButtonProps } = createIterationButtonProps(index);
-
-          return h(Iteration, { key, index, noButtonProps: true }, () =>
-            slots.default?.({
-              index,
-              key,
-              path: `${getPath()}.${index}`,
-              moveDownButtonProps: moveDownButtonProps.value,
-              moveUpButtonProps: moveUpButtonProps.value,
-              removeButtonProps: removeButtonProps.value,
-            } as FormRepeaterIterationSlotProps),
-          );
-        });
       };
     },
   });
@@ -291,13 +258,6 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
       new (): {
         $slots: {
           default: (args: Simplify<Omit<FormRepeaterIterationSlotProps, 'index' | 'path' | 'key'>>) => VNode[];
-        };
-      };
-    },
-    Repeat: Repeat as typeof Repeat & {
-      new (): {
-        $slots: {
-          default: (args: FormRepeaterIterationSlotProps) => VNode[];
         };
       };
     },

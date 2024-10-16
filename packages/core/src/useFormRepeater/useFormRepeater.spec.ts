@@ -4,15 +4,20 @@ import { useFormRepeater, FormRepeaterProps } from './useFormRepeater';
 import { flush } from '@test-utils/index';
 
 async function renderTest(props: FormRepeaterProps) {
-  const { addButtonProps, Repeat, swap, insert, remove } = useFormRepeater(props);
+  const { addButtonProps, items, Iteration, swap, insert, remove } = useFormRepeater(props);
 
   const TestComponent = defineComponent({
-    components: { Repeat },
+    components: { Iteration },
     setup() {
-      return { addButtonProps };
+      return { addButtonProps, items };
     },
     template: `
-      <Repeat v-slot="{ removeButtonProps, moveUpButtonProps, moveDownButtonProps, path, key }">
+      <Iteration
+        v-for="(key, index) in items"
+        :key="key"
+        :index="index"
+        v-slot="{ removeButtonProps, moveUpButtonProps, moveDownButtonProps }"
+      >
         <div data-testid="repeater-item">
           <span data-testid="key">{{ key }}</span>
 
@@ -20,7 +25,7 @@ async function renderTest(props: FormRepeaterProps) {
           <button data-testid="move-up-button" v-bind="moveUpButtonProps">Move Up</button>
           <button data-testid="move-down-button" v-bind="moveDownButtonProps">Move Down</button>
         </div>
-      </Repeat>
+      </Iteration>
 
       <button data-testid="add-button" v-bind="addButtonProps">Add</button>
     `,
@@ -270,4 +275,77 @@ test('can remove all if no min is set', async () => {
 
   const items = screen.queryAllByTestId('repeater-item');
   expect(items).toHaveLength(0);
+});
+
+test('renders Iteration component with correct props', async () => {
+  const { Iteration, items } = useFormRepeater({
+    name: 'testRepeater',
+    min: 1,
+  });
+
+  const TestComponent = defineComponent({
+    components: { Iteration },
+
+    setup() {
+      return { items, Iteration };
+    },
+    template: `
+      <Iteration v-for="(key, index) in items" :index="index" v-slot="{ removeButtonProps, moveUpButtonProps, moveDownButtonProps }">
+        <div data-testid="iteration-content">
+          <button data-testid="remove-button" v-bind="removeButtonProps">Remove</button>
+          <button data-testid="move-up-button" v-bind="moveUpButtonProps">Move Up</button>
+          <button data-testid="move-down-button" v-bind="moveDownButtonProps">Move Down</button>
+        </div>
+      </Iteration>
+    `,
+  });
+
+  await render(TestComponent);
+
+  const content = screen.getByTestId('iteration-content');
+  expect(content).toBeInTheDocument();
+
+  const removeButton = screen.getByTestId('remove-button');
+  expect(removeButton).toBeInTheDocument();
+  expect(removeButton).toHaveAttribute('type', 'button');
+  expect(removeButton).toHaveAttribute('role', 'button');
+
+  const moveUpButton = screen.getByTestId('move-up-button');
+  expect(moveUpButton).toBeInTheDocument();
+  expect(moveUpButton).toHaveAttribute('type', 'button');
+  expect(moveUpButton).toHaveAttribute('role', 'button');
+  expect(moveUpButton).toBeDisabled();
+
+  const moveDownButton = screen.getByTestId('move-down-button');
+  expect(moveDownButton).toBeInTheDocument();
+  expect(moveDownButton).toHaveAttribute('type', 'button');
+  expect(moveDownButton).toHaveAttribute('role', 'button');
+});
+
+test('renders Iteration component with correct props with custom element', async () => {
+  const { Iteration, items } = useFormRepeater({
+    name: 'testRepeater',
+    min: 1,
+  });
+
+  const TestComponent = defineComponent({
+    components: { Iteration },
+    setup() {
+      return { items };
+    },
+    template: `
+      <Iteration v-for="(key, index) in items" as="div" data-testid="repeater-item" :index="index" v-slot="{ removeButtonProps, moveUpButtonProps, moveDownButtonProps }">
+        <div data-testid="iteration-content">
+          <button data-testid="remove-button" v-bind="removeButtonProps">Remove</button>
+          <button data-testid="move-up-button" v-bind="moveUpButtonProps">Move Up</button>
+          <button data-testid="move-down-button" v-bind="moveDownButtonProps">Move Down</button>
+        </div>
+      </Iteration>
+    `,
+  });
+
+  await render(TestComponent);
+
+  const content = screen.getByTestId('repeater-item');
+  expect(content).toBeInTheDocument();
 });
