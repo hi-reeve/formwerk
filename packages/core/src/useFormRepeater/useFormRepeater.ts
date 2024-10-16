@@ -1,10 +1,24 @@
-import { computed, defineComponent, h, inject, nextTick, onMounted, ref, toValue, VNode, watch } from 'vue';
+import {
+  computed,
+  defineComponent,
+  h,
+  inject,
+  MaybeRefOrGetter,
+  nextTick,
+  onMounted,
+  readonly,
+  ref,
+  toValue,
+  VNode,
+  watch,
+} from 'vue';
 import { Numberish, Reactivify } from '../types';
 import { FormKey } from '../useForm';
 import { cloneDeep, isEqual, isNullOrUndefined, normalizeProps, useUniqId, warn } from '../utils/common';
 import { FieldTypePrefixes } from '../constants';
 import { createPathPrefixer } from '../helpers/usePathPrefixer';
 import { prefixPath } from '../utils/path';
+import { Simplify } from 'type-fest';
 
 export interface FormRepeaterProps {
   name: string;
@@ -36,6 +50,7 @@ export interface FormRepeaterButtonDomProps {
 export interface FormRepeaterIterationSlotProps {
   index: number;
   path: string;
+  key: string;
   moveDownButtonProps: FormRepeaterButtonDomProps;
   moveUpButtonProps: FormRepeaterButtonDomProps;
   removeButtonProps: FormRepeaterButtonDomProps;
@@ -155,10 +170,46 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     disabled: () => !canAdd(),
   });
 
-  const Iteration = defineComponent<{ index: number }>({
+  function createIterationButtonProps(index: MaybeRefOrGetter<number>) {
+    const removeButtonProps = createBtnProps({
+      label: () => toValue(repeaterProps.removeButtonLabel) ?? 'Remove',
+      disabled: () => !canRemove(),
+      onClick: () => remove(toValue(index)),
+    });
+
+    const moveUpButtonProps = createBtnProps({
+      label: () => toValue(repeaterProps.moveUpButtonLabel) ?? 'Move up',
+      disabled: () => toValue(index) === 0,
+      onClick: () => {
+        move(toValue(index), toValue(index) - 1);
+      },
+    });
+
+    const moveDownButtonProps = createBtnProps({
+      label: () => toValue(repeaterProps.moveDownButtonLabel) ?? 'Move down',
+      disabled: () => toValue(index) === records.value.length - 1,
+      onClick: () => {
+        const idx = toValue(index);
+
+        move(idx, idx + 1);
+      },
+    });
+
+    return {
+      removeButtonProps,
+      moveUpButtonProps,
+      moveDownButtonProps,
+    };
+  }
+
+  const Iteration = defineComponent<{ index: number; as?: string; noButtonProps?: boolean }>({
     name: 'FormRepeaterIteration',
-    props: { index: Number },
-    setup(props, { slots }) {
+    props: {
+      index: Number,
+      as: { type: String, required: false },
+      noButtonProps: { required: false, type: Boolean, default: false },
+    },
+    setup(props, { slots, attrs }) {
       // Prefixes the path with the index of the repeater
       // If a path is not provided, even as an empty string, it will be considered an uncontrolled path.
       // This is a minor divergence from the controlled/uncontrolled behavior of form fields,
@@ -166,8 +217,32 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
         isNullOrUndefined(path) ? undefined : prefixPath(getPath(), `${props.index}${path ? `.${path}` : ''}`),
       );
 
+      if (props.noButtonProps) {
+        return () => {
+          if (props.as) {
+            return h(props.as, {}, () => slots.default?.({}));
+          }
+
+          return slots.default?.({});
+        };
+      }
+
+      const { removeButtonProps, moveUpButtonProps, moveDownButtonProps } = createIterationButtonProps(
+        () => props.index,
+      );
+
+      const getSlotProps = () => ({
+        removeButtonProps: removeButtonProps.value,
+        moveUpButtonProps: moveUpButtonProps.value,
+        moveDownButtonProps: moveDownButtonProps.value,
+      });
+
       return () => {
-        return slots.default?.();
+        if (props.as) {
+          return h(props.as, attrs, { default: () => slots.default?.(getSlotProps()) });
+        }
+
+        return slots.default?.(getSlotProps());
       };
     },
   });
@@ -177,31 +252,9 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     setup(_, { slots }) {
       return () => {
         return records.value.map((key, index) => {
-          const removeButtonProps = createBtnProps({
-            label: () => toValue(repeaterProps.removeButtonLabel) ?? 'Remove',
-            disabled: () => !canRemove(),
-            onClick: () => remove(index),
-          });
+          const { removeButtonProps, moveUpButtonProps, moveDownButtonProps } = createIterationButtonProps(index);
 
-          const moveUpButtonProps = createBtnProps({
-            label: () => toValue(repeaterProps.moveUpButtonLabel) ?? 'Move up',
-            disabled: () => index === 0,
-            onClick: () => {
-              move(index, index - 1);
-            },
-          });
-
-          const moveDownButtonProps = createBtnProps({
-            label: () => toValue(repeaterProps.moveDownButtonLabel) ?? 'Move down',
-            disabled: () => index === records.value.length - 1,
-            onClick: () => {
-              const idx = index;
-
-              move(idx, idx + 1);
-            },
-          });
-
-          return h(Iteration, { key, index }, () =>
+          return h(Iteration, { key, index, noButtonProps: true }, () =>
             slots.default?.({
               index,
               key,
@@ -209,7 +262,7 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
               moveDownButtonProps: moveDownButtonProps.value,
               moveUpButtonProps: moveUpButtonProps.value,
               removeButtonProps: removeButtonProps.value,
-            }),
+            } as FormRepeaterIterationSlotProps),
           );
         });
       };
@@ -227,12 +280,20 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
   }
 
   return {
+    items: readonly(records),
     addButtonProps,
     add,
     swap,
     remove,
     move,
     insert,
+    Iteration: Iteration as typeof Iteration & {
+      new (): {
+        $slots: {
+          default: (args: Simplify<Omit<FormRepeaterIterationSlotProps, 'index' | 'path' | 'key'>>) => VNode[];
+        };
+      };
+    },
     Repeat: Repeat as typeof Repeat & {
       new (): {
         $slots: {
