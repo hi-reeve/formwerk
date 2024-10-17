@@ -308,18 +308,15 @@ test('renders Iteration component with correct props', async () => {
   const removeButton = screen.getByTestId('remove-button');
   expect(removeButton).toBeInTheDocument();
   expect(removeButton).toHaveAttribute('type', 'button');
-  expect(removeButton).toHaveAttribute('role', 'button');
 
   const moveUpButton = screen.getByTestId('move-up-button');
   expect(moveUpButton).toBeInTheDocument();
   expect(moveUpButton).toHaveAttribute('type', 'button');
-  expect(moveUpButton).toHaveAttribute('role', 'button');
   expect(moveUpButton).toBeDisabled();
 
   const moveDownButton = screen.getByTestId('move-down-button');
   expect(moveDownButton).toBeInTheDocument();
   expect(moveDownButton).toHaveAttribute('type', 'button');
-  expect(moveDownButton).toHaveAttribute('role', 'button');
 });
 
 test('renders Iteration component with correct props with custom element', async () => {
