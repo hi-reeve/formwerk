@@ -94,7 +94,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
     );
   });
 
-  function getValues() {
+  function getValues(): TInput {
     return form?.getFieldValue(getPath()) ?? {};
   }
 
