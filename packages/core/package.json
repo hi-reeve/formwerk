@@ -8,6 +8,13 @@
   "unpkg": "dist/core.js",
   "main": "dist/core.js",
   "types": "dist/core.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/core.esm.js",
+      "require": "./dist/core.js",
+      "types": "./dist/core.d.ts"
+    }
+  },
   "homepage": "https://formwerk.dev/",
   "repository": {
     "url": "https://github.com/formwerkjs/formwerk.git",

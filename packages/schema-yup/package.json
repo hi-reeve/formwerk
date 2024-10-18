@@ -7,6 +7,13 @@
   "unpkg": "dist/schema-yup.js",
   "main": "dist/schema-yup.js",
   "types": "dist/schema-yup.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/schema-yup.esm.js",
+      "require": "./dist/schema-yup.js",
+      "types": "./dist/schema-yup.d.ts"
+    }
+  },
   "repository": {
     "url": "https://github.com/formwerkjs/formwerk.git",
     "type": "git",

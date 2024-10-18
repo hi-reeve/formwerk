@@ -7,6 +7,13 @@
   "unpkg": "dist/schema-zod.js",
   "main": "dist/schema-zod.js",
   "types": "dist/schema-zod.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/schema-zod.esm.js",
+      "require": "./dist/schema-zod.js",
+      "types": "./dist/schema-zod.d.ts"
+    }
+  },
   "repository": {
     "url": "https://github.com/formwerkjs/formwerk.git",
     "type": "git",
