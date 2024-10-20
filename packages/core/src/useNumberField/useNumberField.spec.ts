@@ -224,3 +224,25 @@ describe('sets initial value', () => {
     expect(screen.getByLabelText(label)).toHaveDisplayValue('55');
   });
 });
+
+describe('mouse wheel', () => {
+  test('should increment and decrement the value', async () => {
+    await render(makeTest());
+    await fireEvent.wheel(screen.getByLabelText(label), { deltaY: 100 });
+    await fireEvent.wheel(screen.getByLabelText(label), { deltaY: 100 });
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('2');
+    await fireEvent.wheel(screen.getByLabelText(label), { deltaY: -100 });
+    await fireEvent.wheel(screen.getByLabelText(label), { deltaY: -100 });
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('0');
+  });
+
+  test('should be disabled when disableMouseWheel is true', async () => {
+    await render(makeTest({ disableWheel: true, value: 0 }));
+    await fireEvent.wheel(screen.getByLabelText(label), { deltaY: 100 });
+    await fireEvent.wheel(screen.getByLabelText(label), { deltaY: 100 });
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('0');
+    await fireEvent.wheel(screen.getByLabelText(label), { deltaY: -100 });
+    await fireEvent.wheel(screen.getByLabelText(label), { deltaY: -100 });
+    expect(screen.getByLabelText(label)).toHaveDisplayValue('0');
+  });
+});

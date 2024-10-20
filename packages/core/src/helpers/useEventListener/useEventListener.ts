@@ -4,6 +4,7 @@ import { normalizeArrayable, tryOnScopeDispose } from '../../utils/common';
 
 interface ListenerOptions {
   disabled?: MaybeRefOrGetter<boolean | undefined>;
+  passive?: boolean;
 }
 
 export type EventExpression = string | [string, (e: Event) => boolean];
@@ -26,7 +27,7 @@ export function useEventListener<TEvent extends Event>(
 
     controller = new AbortController();
     const events = normalizeArrayable(event);
-    const listenerOpts = { signal: controller.signal };
+    const listenerOpts = { signal: controller.signal, passive: toValue(opts?.passive) };
     events.forEach(evt => {
       normalizeArrayable(target).forEach(el => {
         if (typeof evt === 'string') {

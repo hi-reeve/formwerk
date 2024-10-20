@@ -26,6 +26,7 @@ import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { TypedSchema } from '../types';
 import { exposeField } from '../utils/exposers';
+import { useEventListener } from '../helpers/useEventListener';
 
 export interface NumberInputDOMAttributes {
   name?: string;
@@ -64,6 +65,7 @@ export interface NumberFieldProps {
 
   schema?: TypedSchema<number>;
 
+  disableWheel?: boolean;
   disableHtmlValidation?: boolean;
 }
 
@@ -199,6 +201,20 @@ export function useNumberField(
       elementRef,
     );
   });
+
+  useEventListener(
+    inputEl,
+    'wheel',
+    (e: WheelEvent) => {
+      if (e.deltaY > 0) {
+        increment();
+        return;
+      }
+
+      decrement();
+    },
+    { disabled: () => toValue(props.disableWheel), passive: true },
+  );
 
   return {
     ...exposeField(field),
