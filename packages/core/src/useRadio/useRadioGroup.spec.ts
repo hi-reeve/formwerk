@@ -5,7 +5,7 @@ import { fireEvent, render, screen } from '@testing-library/vue';
 import { axe } from 'vitest-axe';
 import { describe } from 'vitest';
 import { flush } from '@test-utils/flush';
-import { TypedSchema } from '../../dist/core';
+import { TypedSchema } from '../..';
 
 const createGroup = (props: RadioGroupProps): Component => {
   return defineComponent({
