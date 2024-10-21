@@ -1,5 +1,14 @@
 # @formwerk/schema-yup
 
+## 0.1.21
+
+### Patch Changes
+
+- ba8771e: chore: rename package outputs
+- Updated dependencies [1f13a5f]
+- Updated dependencies [ba8771e]
+  - @formwerk/core@0.1.21
+
 ## 0.1.20
 
 ### Patch Changes

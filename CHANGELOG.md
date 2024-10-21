@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.1.21
+
+### Patch Changes
+
+- 1f13a5f: fix: avoid checking for File or Blob instances in SSR
+- ba8771e: chore: rename package outputs
+
 ## 0.1.20
 
 ### Patch Changes
