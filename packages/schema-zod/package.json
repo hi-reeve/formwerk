@@ -3,14 +3,15 @@
   "version": "0.1.20",
   "description": "",
   "sideEffects": false,
-  "module": "dist/schema-zod.esm.js",
-  "unpkg": "dist/schema-zod.js",
-  "main": "dist/schema-zod.js",
+  "module": "dist/schema-zod.mjs",
+  "unpkg": "dist/schema-zod.iife.js",
+  "jsdelivr": "dist/schema-zod.iife.js",
+  "main": "dist/schema-zod.cjs",
   "types": "dist/schema-zod.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/schema-zod.esm.js",
-      "require": "./dist/schema-zod.js",
+      "import": "./dist/schema-zod.mjs",
+      "require": "./dist/schema-zod.cjs",
       "types": "./dist/schema-zod.d.ts"
     }
   },

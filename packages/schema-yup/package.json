@@ -3,14 +3,15 @@
   "version": "0.1.20",
   "description": "",
   "sideEffects": false,
-  "module": "dist/schema-yup.esm.js",
-  "unpkg": "dist/schema-yup.js",
-  "main": "dist/schema-yup.js",
+  "module": "dist/schema-yup.mjs",
+  "unpkg": "dist/schema-yup.iife.js",
+  "jsdelivr": "dist/schema-yup.iife.js",
+  "main": "dist/schema-yup.cjs",
   "types": "dist/schema-yup.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/schema-yup.esm.js",
-      "require": "./dist/schema-yup.js",
+      "import": "./dist/schema-yup.mjs",
+      "require": "./dist/schema-yup.cjs",
       "types": "./dist/schema-yup.d.ts"
     }
   },

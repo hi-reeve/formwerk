@@ -2,7 +2,7 @@ import { consola } from 'consola';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
-import { rollup } from 'rollup';
+import { rollup, type ModuleFormat } from 'rollup';
 import * as Terser from 'terser';
 import { createConfig, pkgNameMap } from './config';
 import { reportSize } from './info';
@@ -22,7 +22,7 @@ async function minify({ code, pkg, bundleName }) {
     throw new Error(`🚨 Minification error: ${pkg}/${bundleName}`);
   }
 
-  const fileName = bundleName.replace(/\.js$/, '.min.js');
+  const fileName = bundleName.replace(/\.js$/, '.prod.js');
   const filePath = `${pkgout}/${fileName}`;
   fs.outputFileSync(filePath, output.code);
 }
@@ -30,24 +30,19 @@ async function minify({ code, pkg, bundleName }) {
 function logPkgSize(pkg: string) {
   const pkgout = path.join(__dirname, `../packages/${pkg}/dist`);
   const fileName = pkgNameMap[pkg];
-  const filePath = `${pkgout}/${fileName}.js`;
+  const filePath = `${pkgout}/${fileName}.mjs`;
 
   const code = fs.readFileSync(filePath, 'utf-8');
   const stats = reportSize({ code, path: filePath });
 
   consola.info(`📊 @formwerk/${pkg}`, `${stats}`);
-
-  const minifiedPath = filePath.replace(/\.js$/, '.min.js');
-  const minifiedCode = fs.readFileSync(minifiedPath, 'utf-8');
-  const minifiedStats = reportSize({ code: minifiedCode, path: minifiedPath });
-
-  consola.info(`📊 @formwerk/${pkg} minified`, `${minifiedStats}`);
 }
 
 async function build(pkg) {
   consola.start(`📦 Generating bundle for @formwerk/${pkg}`);
   const pkgout = path.join(__dirname, `../packages/${pkg}/dist`);
-  for (const format of ['es', 'umd']) {
+  await fs.emptyDir(pkgout);
+  for (const format of ['esm', 'iife', 'cjs'] as ModuleFormat[]) {
     const { input, output, bundleName } = await createConfig(pkg, format);
     const bundle = await rollup(input);
     const {
@@ -57,7 +52,7 @@ async function build(pkg) {
     const outputPath = path.join(pkgout, bundleName);
     fs.outputFileSync(outputPath, code);
 
-    if (format === 'umd') {
+    if (format === 'iife') {
       await minify({ bundleName, pkg, code });
     }
   }

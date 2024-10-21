@@ -1,5 +1,6 @@
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { ModuleFormat } from 'rollup';
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
@@ -10,9 +11,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const formatNameMap = {
-  core: 'FormwerkCore',
-  'schema-yup': 'FWSchemaYup',
-  'schema-zod': 'FWSchemaZod',
+  core: 'Formwerk',
+  'schema-yup': 'FormwerkYup',
+  'schema-zod': 'FormwerkZod',
 };
 
 const pkgNameMap = {
@@ -21,9 +22,10 @@ const pkgNameMap = {
   'schema-zod': 'schema-zod',
 };
 
-const formatMap = {
-  es: 'esm',
-  umd: '',
+const formatExt: Partial<Record<ModuleFormat, string>> = {
+  esm: 'mjs',
+  iife: 'iife.js',
+  cjs: 'cjs',
 };
 
 const createPlugins = ({ version, format, pkg }) => {
@@ -46,7 +48,7 @@ const createPlugins = ({ version, format, pkg }) => {
   ];
 };
 
-async function createConfig(pkg, format) {
+async function createConfig(pkg: keyof typeof pkgNameMap, format: ModuleFormat) {
   // An import assertion in a dynamic import
   const { default: info } = await import(normalizePath(path.resolve(__dirname, `../packages/${pkg}/package.json`)), {
     assert: {
@@ -56,10 +58,10 @@ async function createConfig(pkg, format) {
 
   const { version } = info;
 
-  const isEsm = format === 'es';
+  const isEsm = format === 'esm';
 
   const config = {
-    bundleName: `${pkgNameMap[pkg]}${formatMap[format] ? '.' + formatMap[format] : ''}.js`,
+    bundleName: `${pkgNameMap[pkg]}.${formatExt[format] ?? 'js'}`,
     input: {
       input: slashes(path.resolve(__dirname, `../packages/${pkg}/src/index.ts`)),
       external: ['vue', isEsm ? '@vue/devtools-api' : undefined, 'yup', 'zod'].filter(Boolean) as string[],
@@ -72,7 +74,7 @@ async function createConfig(pkg, format) {
   * @license MIT
   */`,
       format,
-      name: format === 'umd' ? formatNameMap[pkg] : undefined,
+      name: format === 'iife' ? formatNameMap[pkg] : undefined,
       globals: {
         vue: 'Vue',
       },
@@ -90,4 +92,4 @@ async function createConfig(pkg, format) {
   return config;
 }
 
-export { formatNameMap, pkgNameMap, formatMap, createConfig, createPlugins };
+export { formatNameMap, pkgNameMap, formatExt, createConfig, createPlugins };
