@@ -6,6 +6,7 @@ export * from './useSlider';
 export * from './useCheckbox';
 export * from './useNumberField';
 export * from './useSelect';
+export * from './useHiddenField';
 export * from './types';
 export * from './config';
 export * from './useForm';
