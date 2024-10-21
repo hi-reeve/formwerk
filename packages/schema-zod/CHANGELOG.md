@@ -1,5 +1,17 @@
 # @formwerk/schema-zod
 
+## 0.1.20
+
+### Patch Changes
+
+- 94fe184: fix: add proper exports in package.json for all packages
+- Updated dependencies [9c9b235]
+- Updated dependencies [e822e3f]
+- Updated dependencies [159d86a]
+- Updated dependencies [94fe184]
+- Updated dependencies [3878bd2]
+  - @formwerk/core@0.1.20
+
 ## 0.1.19
 
 ### Patch Changes

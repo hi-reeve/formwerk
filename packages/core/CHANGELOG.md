@@ -1,5 +1,15 @@
 # @formwerk/core
 
+## 0.1.20
+
+### Patch Changes
+
+- 9c9b235: fix: ensure buttons props adapt to the element type
+- e822e3f: feat: implement mouse wheel behavior for number field
+- 159d86a: fix: form group getValues type should be of input type
+- 94fe184: fix: add proper exports in package.json for all packages
+- 3878bd2: feat: implement hidden field composable/component
+
 ## 0.1.19
 
 ### Patch Changes
