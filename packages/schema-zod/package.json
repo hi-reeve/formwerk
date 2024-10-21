@@ -31,6 +31,8 @@
   ],
   "files": [
     "dist/*.js",
+    "dist/*.mjs",
+    "dist/*.cjs",
     "dist/*.d.ts"
   ],
   "dependencies": {
