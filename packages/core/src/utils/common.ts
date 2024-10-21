@@ -178,7 +178,7 @@ export function normalizeArrayable<T>(value: Arrayable<T>): T[] {
  * https://github.com/lukeed/klona/tree/master/src
  */
 export function cloneDeep<T>(value: T): T {
-  if (value instanceof File || value instanceof RegExp || value instanceof Blob) {
+  if (isFileOrBlob(value) || value instanceof RegExp) {
     return value;
   }
 
@@ -187,6 +187,14 @@ export function cloneDeep<T>(value: T): T {
 
 export function isPromise(value: unknown): value is Promise<unknown> {
   return value instanceof Promise;
+}
+
+export function isFileOrBlob(a: unknown): a is File | Blob {
+  if (isSSR) {
+    return false;
+  }
+
+  return a instanceof File || a instanceof Blob;
 }
 
 export function isFile(a: unknown): a is File {
