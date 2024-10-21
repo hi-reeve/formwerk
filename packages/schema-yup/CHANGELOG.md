@@ -1,5 +1,13 @@
 # @formwerk/schema-yup
 
+## 0.1.22
+
+### Patch Changes
+
+- 07584bf: fix: include cjs and mjs files in dist while publishing
+- Updated dependencies [07584bf]
+  - @formwerk/core@0.1.22
+
 ## 0.1.21
 
 ### Patch Changes
