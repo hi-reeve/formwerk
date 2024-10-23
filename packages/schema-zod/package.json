@@ -6,8 +6,9 @@
   "module": "dist/schema-zod.mjs",
   "unpkg": "dist/schema-zod.iife.js",
   "jsdelivr": "dist/schema-zod.iife.js",
-  "main": "dist/schema-zod.cjs",
+  "main": "dist/schema-zod.mjs",
   "types": "dist/schema-zod.d.ts",
+  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/schema-zod.mjs",

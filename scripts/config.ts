@@ -29,7 +29,7 @@ const formatExt: Partial<Record<ModuleFormat, string>> = {
 };
 
 const createPlugins = ({ version, format, pkg }) => {
-  const isEsm = format === 'es';
+  const isEsm = format === 'esm';
   const tsPlugin = typescript({
     declarationDir: normalizePath(path.resolve(__dirname, `../packages/${pkg}/dist`)),
   });
@@ -80,14 +80,6 @@ async function createConfig(pkg: keyof typeof pkgNameMap, format: ModuleFormat) 
       },
     },
   };
-
-  // if (options.env) {
-  //   config.input.plugins.unshift(
-  //     replace({
-  //       'process.env.NODE_ENV': JSON.stringify(options.env)
-  //     })
-  //   );
-  // }
 
   return config;
 }

@@ -6,8 +6,9 @@
   "module": "dist/schema-yup.mjs",
   "unpkg": "dist/schema-yup.iife.js",
   "jsdelivr": "dist/schema-yup.iife.js",
-  "main": "dist/schema-yup.cjs",
+  "main": "dist/schema-yup.mjs",
   "types": "dist/schema-yup.d.ts",
+  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/schema-yup.mjs",

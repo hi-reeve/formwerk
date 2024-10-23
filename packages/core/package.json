@@ -7,8 +7,9 @@
   "module": "dist/core.mjs",
   "unpkg": "dist/core.iife.js",
   "jsdelivr": "dist/core.iife.js",
-  "main": "dist/core.cjs",
+  "main": "dist/core.mjs",
   "types": "dist/core.d.ts",
+  "type": "module",
   "funding": "https://github.com/sponsors/logaretm",
   "exports": {
     ".": {
