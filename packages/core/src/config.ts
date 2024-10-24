@@ -5,6 +5,7 @@ import { merge } from '../../shared/src';
 
 interface Config {
   locale: string;
+  detectDirection: boolean;
   validation: {
     disableHtmlValidation: boolean;
   };
@@ -12,6 +13,7 @@ interface Config {
 
 const currentConfig = shallowRef<Config>({
   locale: getSiteLocale(),
+  detectDirection: true,
   validation: {
     disableHtmlValidation: false,
   },

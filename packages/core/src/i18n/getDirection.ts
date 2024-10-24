@@ -1,7 +1,12 @@
 import { Direction } from '../types';
 import { isCallable, warn } from '../utils/common';
+import { getConfig } from '../config';
 
 export function getDirection(locale: string): Direction {
+  if (!getConfig().detectDirection) {
+    return 'ltr';
+  }
+
   try {
     const instance = new Intl.Locale(locale);
     if ('textInfo' in instance) {
