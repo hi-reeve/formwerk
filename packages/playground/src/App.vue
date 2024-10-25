@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import { useForm } from '@formwerk/core';
-import InputText from '@/components/InputText.vue';
-import Checkbox from '@/components/CheckboxInput.vue';
-import FormRepeater from '@/components/Repeater.vue';
+import InputNumber from '@/components/InputNumber.vue';
+import { useI18n } from 'vue-i18n';
 
 const { handleSubmit } = useForm();
 
 const onSubmit = handleSubmit(data => {
   alert(JSON.stringify(data.toJSON(), null, 2));
 });
+
+const { locale } = useI18n();
 </script>
 
 <template>
   <form @submit="onSubmit" novalidate>
-    <FormRepeater name="users" min="1">
-      <InputText name="email" label="Email Address" required type="email" />
-      <Checkbox name="isAdmin" label="is Admin" />
-    </FormRepeater>
+    {{ locale }}
+
+    <InputNumber name="number" label="Number" :format-options="{ style: 'currency', currency: 'USD' }" />
 
     <button type="submit">Submit</button>
   </form>
+
+  <button @click="locale = locale === 'ar-EG' ? 'en-US' : 'ar-EG'">Change Locale</button>
 </template>
