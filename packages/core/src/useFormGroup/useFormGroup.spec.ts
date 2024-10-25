@@ -481,9 +481,7 @@ describe('disabling HTML validation', () => {
 
   test('can be disabled globally and overridden', async () => {
     configure({
-      validation: {
-        disableHtmlValidation: true,
-      },
+      disableHtmlValidation: true,
     });
 
     await render({
@@ -517,9 +515,7 @@ describe('disabling HTML validation', () => {
     expect(errors[2]).toHaveTextContent('Constraints not satisfied');
 
     configure({
-      validation: {
-        disableHtmlValidation: false,
-      },
+      disableHtmlValidation: false,
     });
   });
 });

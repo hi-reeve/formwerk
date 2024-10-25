@@ -58,7 +58,7 @@ export function useForm<TForm extends FormObject = FormObject, TOutput extends F
   });
 
   const id = opts?.id || useUniqId(FieldTypePrefixes.Form);
-  const isHtmlValidationDisabled = () => opts?.disableHtmlValidation ?? getConfig().validation.disableHtmlValidation;
+  const isHtmlValidationDisabled = () => opts?.disableHtmlValidation ?? getConfig().disableHtmlValidation;
   const values = reactive(cloneDeep(valuesSnapshot.originals.value)) as TForm;
   const touched = reactive(cloneDeep(touchedSnapshot.originals.value)) as TouchedSchema<TForm>;
   const disabled = {} as DisabledSchema<TForm>;

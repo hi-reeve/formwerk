@@ -26,7 +26,7 @@ export function useInputValidity(opts: InputValidityOptions) {
   const isHtmlValidationDisabled = () =>
     toValue(opts.disableHtmlValidation) ??
     (formGroup || form)?.isHtmlValidationDisabled() ??
-    getConfig().validation.disableHtmlValidation;
+    getConfig().disableHtmlValidation;
 
   function validateNative(mutate?: boolean): ValidationResult {
     const baseReturns: Omit<ValidationResult, 'errors' | 'isValid'> = {

@@ -49,9 +49,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   const groupRef = elementRef || shallowRef<HTMLInputElement>();
   const form = inject(FormKey, null);
   const isHtmlValidationDisabled = () =>
-    toValue(props.disableHtmlValidation) ??
-    form?.isHtmlValidationDisabled() ??
-    getConfig().validation.disableHtmlValidation;
+    toValue(props.disableHtmlValidation) ?? form?.isHtmlValidationDisabled() ?? getConfig().disableHtmlValidation;
   const { validate, onValidationDispatch, defineValidationRequest, onValidationDone, dispatchValidateDone } =
     useValidationProvider({
       getValues,

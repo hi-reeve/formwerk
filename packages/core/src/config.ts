@@ -1,28 +1,38 @@
-import { PartialDeep } from 'type-fest';
-import { shallowRef } from 'vue';
+import { computed, shallowRef, toValue } from 'vue';
 import { getSiteLocale } from './i18n/getSiteLocale';
 import { merge } from '../../shared/src';
+import { Reactivify } from './types';
 
 interface Config {
   locale: string;
   detectDirection: boolean;
-  validation: {
-    disableHtmlValidation: boolean;
-  };
+  disableHtmlValidation: boolean;
 }
 
-const currentConfig = shallowRef<Config>({
+const currentConfig = shallowRef<Reactivify<Config>>({
   locale: getSiteLocale(),
   detectDirection: true,
-  validation: {
-    disableHtmlValidation: false,
-  },
+  disableHtmlValidation: false,
 });
 
-export function configure(config: PartialDeep<Config>) {
+const evaluatedConfig = computed(() => {
+  const config = currentConfig.value;
+
+  return Object.fromEntries(
+    Object.entries(config).map(([key, value]) => {
+      if (key === 'validation') {
+        return [key, value] as const;
+      }
+
+      return [key, toValue(value)] as const;
+    }),
+  ) as unknown as Config;
+});
+
+export function configure(config: Partial<Reactivify<Config>>) {
   currentConfig.value = merge({ ...currentConfig.value }, config);
 }
 
 export function getConfig() {
-  return currentConfig.value;
+  return evaluatedConfig.value;
 }
