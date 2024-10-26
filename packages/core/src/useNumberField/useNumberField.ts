@@ -228,5 +228,6 @@ export function useNumberField(
     inputProps,
     labelProps,
     validityDetails,
+    formattedText,
   };
 }
