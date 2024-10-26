@@ -308,7 +308,15 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
     return computed(() => {
       const value = getThumbValue(idx);
       if (isNullOrUndefined(value)) {
-        return undefined;
+        return {
+          value: 0,
+          percent: 0,
+          min: 0,
+          max: 0,
+          sliderPercent: 0,
+          sliderMin: 0,
+          sliderMax: 0,
+        };
       }
 
       const { min, max, absoluteMax, absoluteMin } = getThumbRange(thumbs.value[idx]);
