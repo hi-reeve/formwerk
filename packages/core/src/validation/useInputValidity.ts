@@ -3,9 +3,10 @@ import { EventExpression, useEventListener } from '../helpers/useEventListener';
 import { type FormContext, FormKey } from '../useForm';
 import { Arrayable, Maybe, ValidationResult } from '../types';
 import { FormField } from '../useFormField';
-import { isInputElement, normalizeArrayable } from '../utils/common';
+import { isInputElement, normalizeArrayable, warn } from '../utils/common';
 import { FormGroupContext, FormGroupKey } from '../useFormGroup';
 import { getConfig } from '../config';
+import { checkLocaleMismatch } from '../i18n';
 
 type ElementReference = Ref<Arrayable<Maybe<HTMLElement>>>;
 
@@ -67,6 +68,15 @@ export function useInputValidity(opts: InputValidityOptions) {
 
     validityIdx = validityIdx === -1 ? 0 : validityIdx;
     validityDetails.value = inputs[validityIdx].validity;
+
+    if (__DEV__) {
+      const { matches, configLocale, userLocale } = checkLocaleMismatch();
+      if (!matches && messages.length) {
+        warn(
+          `HTML validation messages were generated using the browser's language (${userLocale}) and it does not match your site's language (${configLocale}). Consider disabling HTML Validation messages.`,
+        );
+      }
+    }
 
     return {
       ...baseReturns,
