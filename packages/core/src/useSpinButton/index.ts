@@ -3,7 +3,7 @@ import { Direction, Maybe, Numberish, Orientation2D, Reactivify } from '../types
 import { toNearestMultipleOf } from '../utils/math';
 import { useButtonHold } from '../helpers/useButtonHold';
 import { hasKeyCode, isButtonElement, normalizeProps, withRefCapture } from '../utils/common';
-import { useLocale } from '../i18n/useLocale';
+import { useLocale } from '../i18n';
 
 export interface SpinButtonProps {
   min?: Numberish;

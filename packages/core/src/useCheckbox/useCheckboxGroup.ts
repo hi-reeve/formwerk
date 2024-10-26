@@ -22,7 +22,7 @@ import {
   hasKeyCode,
   warn,
 } from '../utils/common';
-import { useLocale } from '../i18n/useLocale';
+import { useLocale } from '../i18n';
 import { FormField, useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { exposeField } from '../utils/exposers';

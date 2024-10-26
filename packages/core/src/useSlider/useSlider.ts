@@ -12,7 +12,7 @@ import {
   withRefCapture,
 } from '../utils/common';
 import { toNearestMultipleOf } from '../utils/math';
-import { useLocale } from '../i18n/useLocale';
+import { useLocale } from '../i18n';
 import { useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { exposeField } from '../utils/exposers';

@@ -3,7 +3,7 @@ import { SliderContext, SliderInjectionKey, ThumbRegistration } from './useSlide
 import { normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
 import { Reactivify } from '../types';
 import { useSpinButton } from '../useSpinButton';
-import { useLocale } from '../i18n/useLocale';
+import { useLocale } from '../i18n';
 import { FieldTypePrefixes, NOOP } from '../constants';
 
 export interface SliderThumbProps {
