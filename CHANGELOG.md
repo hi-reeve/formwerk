@@ -1,5 +1,13 @@
 # @formwerk/core
 
+## 0.1.23
+
+### Patch Changes
+
+- 0f7f05e: feat: make configuration reactive
+- e4c8a99: feat: add detectDirection config
+- 0da6b62: chore: added export entry for types
+
 ## 0.1.22
 
 ### Patch Changes

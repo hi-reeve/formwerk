@@ -1,5 +1,14 @@
 # @formwerk/schema-zod
 
+## 0.1.23
+
+### Patch Changes
+
+- Updated dependencies [0f7f05e]
+- Updated dependencies [e4c8a99]
+- Updated dependencies [0da6b62]
+  - @formwerk/core@0.1.23
+
 ## 0.1.22
 
 ### Patch Changes
