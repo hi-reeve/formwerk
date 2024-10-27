@@ -8,49 +8,48 @@ const { labelProps, inputProps } = useRadio(props);
 
 <template>
   <div class="radio-item" v-bind="inputProps">
-    <div v-bind="labelProps">
+    <div class="radio-item-inner">
+      <div class="radio-item-inner-circle"></div>
+    </div>
+
+    <div v-bind="labelProps" class="radio-item-label">
       {{ label }}
     </div>
   </div>
 </template>
 
-<style>
-:root {
-  --color-text: #333;
-  --color-hint: #666;
-  --color-border: #ccc;
-  --color-focus: #0056b3;
-  --color-error: #f00;
-  --color-valid: #059669;
-  --color-hover: #eee;
-}
-</style>
-
 <style scoped>
 .radio-item {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 99999px;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--color-border);
-  font-size: 13px;
-  font-weight: 500;
-  transition:
-    background-color 0.15s,
-    color 0.15s;
+  @apply text-white font-medium flex items-center gap-2;
 
-  &:focus {
-    border: 1px solid var(--color-focus);
+  .radio-item-inner {
+    @apply w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700 transition-all duration-200;
+  }
+
+  .radio-item-inner-circle {
+    @apply w-2.5 h-2.5 rounded-full bg-zinc-800 transition-all duration-200;
   }
 
   &[aria-checked='true'] {
-    background-color: var(--color-focus);
-    color: #fff;
+    .radio-item-inner-circle {
+      @apply bg-emerald-500;
+    }
+
+    .radio-item-inner {
+      @apply border-emerald-500;
+    }
   }
 
-  &[aria-disabled='true'],
-  &[aria-readOnly='true'] {
-    opacity: 0.5;
+  &:focus {
+    @apply outline-none;
+
+    .radio-item-inner {
+      @apply border-emerald-500;
+    }
+  }
+
+  .radio-item-label {
+    @apply select-none;
   }
 }
 

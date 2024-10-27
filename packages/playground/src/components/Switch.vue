@@ -3,22 +3,22 @@ import { useSwitch, SwitchProps } from '@formwerk/core';
 
 const props = defineProps<SwitchProps>();
 
-const { switchProps, labelProps, isPressed } = useSwitch(props);
+const { inputProps, labelProps, isPressed } = useSwitch(props);
 </script>
 
 <template>
   <div class="flex items-center">
     <div
-      v-bind="switchProps"
-      class="flex items-center p-1 w-9 rounded-full transition-colors duration-200 cursor-pointer focus-visible:outline-none focus:ring-2 ring-blue-500 ring-offset-2"
-      :class="{ 'bg-blue-500': isPressed, 'bg-gray-400': !isPressed }"
+      v-bind="inputProps"
+      class="flex items-center p-1 w-12 rounded-full transition-colors duration-200 cursor-pointer focus-visible:outline-none focus:ring-2 ring-emerald-500 ring-offset-2"
+      :class="{ 'bg-emerald-500': isPressed, 'bg-gray-400': !isPressed }"
     >
       <div
-        class="rounded-full w-3 h-3 flex-shrink-0 bg-white origin-center transition-transform duration-200"
-        :class="{ 'translate-x-4': isPressed }"
+        class="rounded-full w-5 h-5 flex-shrink-0 bg-white origin-center transition-transform duration-200"
+        :class="{ 'translate-x-5': isPressed }"
       ></div>
     </div>
 
-    <label class="ml-2" v-bind="labelProps">{{ label }}</label>
+    <label class="ml-3 text-white text-xl" v-bind="labelProps">{{ label }}</label>
   </div>
 </template>

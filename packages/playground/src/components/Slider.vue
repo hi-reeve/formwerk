@@ -1,46 +1,65 @@
 <script setup lang="ts">
-import { useSlider, SliderProps } from '@formwerk/core';
+import { useSlider, type SliderProps } from '@formwerk/core';
+
 import Thumb from './Thumb.vue';
 
 const props = defineProps<SliderProps>();
 
-const { trackProps, groupProps, labelProps } = useSlider(props);
+const { trackProps, groupProps, labelProps, errorMessage, errorMessageProps, useThumbMetadata } = useSlider(props);
+
+const thumbData = useThumbMetadata(0);
 </script>
 
 <template>
-  <div class="slider" v-bind="groupProps" :class="{ vertical: orientation === 'vertical' }">
-    <div v-bind="labelProps">{{ label }}</div>
+  <div class="slider" v-bind="groupProps">
+    <div v-bind="labelProps" class="slider-label">{{ label }}</div>
     <div v-bind="trackProps" class="track">
       <Thumb />
+    </div>
+
+    <div v-if="errorMessage" v-bind="errorMessageProps" class="error">
+      {{ errorMessage }}
     </div>
   </div>
 </template>
 
-<style lang="postcss" scoped>
+<style scoped>
 .slider {
-  width: 150px;
+  --track-width: 300px;
+
+  font-family: 'Monaspace Neon Var';
+
+  .slider-label {
+    @apply block mb-1 w-full font-semibold text-lg text-white;
+  }
 
   .track {
-    @apply w-full py-2 flex items-center;
+    display: flex;
+    align-items: center;
+    width: var(--track-width);
+    height: 6px;
+    background-color: #78716c;
+    border-radius: 6px;
+
     &::before {
       content: '';
-      @apply w-full bg-blue-600;
-      height: 2px;
+      width: calc(v-bind('thumbData.percent') * 100%);
+      background-color: #059669;
+      border-radius: 6px;
+      height: 6px;
     }
   }
 
-  &.vertical {
-    height: 150px;
-    width: unset;
+  .error {
+    display: none;
+    font-size: 13px;
+    color: #f00;
+    width: 100%;
+  }
 
-    .track {
-      @apply h-full w-8  flex-col;
-
-      &::before {
-        @apply h-full bg-blue-600;
-        width: 2px;
-        height: 100%;
-      }
+  &:has([aria-invalid='true']) {
+    .error {
+      display: block;
     }
   }
 }

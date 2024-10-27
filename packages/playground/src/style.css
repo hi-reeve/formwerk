@@ -8,6 +8,11 @@
   font-weight: 400;
 }
 
+html,
 body {
-  @apply p-10;
+  height: 100%;
+}
+
+#app {
+  @apply h-full p-20;
 }

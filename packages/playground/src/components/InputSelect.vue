@@ -11,7 +11,7 @@ export interface TheProps<TOption, TValue> extends SelectProps<TOption, TValue> 
 
 const props = defineProps<TheProps<TOption, TValue>>();
 
-const { triggerProps, labelProps, errorMessageProps, isTouched, displayError, fieldValue, listBoxProps } =
+const { triggerProps, labelProps, errorMessageProps, isTouched, displayError, fieldValue, popupProps } =
   useSelect(props);
 </script>
 
@@ -20,12 +20,18 @@ const { triggerProps, labelProps, errorMessageProps, isTouched, displayError, fi
     <label v-bind="labelProps">{{ label }}</label>
 
     <div v-bind="triggerProps" class="trigger flex items-center">
-      {{ fieldValue || 'Select here' }}
+      {{ fieldValue || 'Select a country' }}
 
-      <span class="ml-auto">⬇️</span>
+      <span class="ml-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="text-zinc-400 fill-current w-6 h-6" viewBox="0 0 256 256">
+          <path
+            d="M184.49,167.51a12,12,0,0,1,0,17l-48,48a12,12,0,0,1-17,0l-48-48a12,12,0,0,1,17-17L128,207l39.51-39.52A12,12,0,0,1,184.49,167.51Zm-96-79L128,49l39.51,39.52a12,12,0,0,0,17-17l-48-48a12,12,0,0,0-17,0l-48,48a12,12,0,0,0,17,17Z"
+          ></path>
+        </svg>
+      </span>
     </div>
 
-    <div v-bind="listBoxProps" popover class="listbox">
+    <div v-bind="popupProps" popover class="listbox">
       <slot>
         <template v-if="groups">
           <OptionGroup v-for="group in groups" :key="group.label" :label="group.label">
@@ -65,52 +71,66 @@ const { triggerProps, labelProps, errorMessageProps, isTouched, displayError, fi
 
 <style scoped lang="postcss">
 .InputSelect {
-  @apply relative w-full;
+  font-family: 'Monaspace Neon Var';
+  @apply relative w-full max-w-xs;
   margin-bottom: calc(1em * 1.5);
 
   label {
-    @apply block mb-1 w-full;
+    @apply block mb-1 w-full font-semibold text-lg text-white;
   }
 
   .trigger {
-    @apply text-gray-800 rounded-md border-2 border-transparent py-3 px-4 w-full bg-gray-100 focus-within:outline-none transition-colors duration-200 focus-within:border-blue-500  disabled:cursor-not-allowed;
+    @apply bg-zinc-800 focus:bg-zinc-900 w-full  rounded-md border-2 border-transparent py-3 px-4 text-white font-medium cursor-pointer transition-all duration-200;
     anchor-name: --trigger;
+
+    &:focus {
+      @apply outline-none border-emerald-500;
+    }
+
+    &:hover {
+      @apply bg-zinc-900;
+    }
   }
 
   .error-message {
     @apply absolute left-0 text-sm text-red-500;
     bottom: calc(-1.5 * 1em);
   }
+}
 
-  .listbox {
-    margin: 0;
-    @apply p-0 max-h-[60vh] relative;
-    position-anchor: --trigger;
-    position-area: bottom;
-    inset-area: bottom;
-    @apply shadow-sm border border-gray-200 w-[300px];
-    opacity: 0;
-    transition:
-      display 0.4s allow-discrete,
-      opacity 0.4s allow-discrete,
-      transform 0.4s allow-discrete,
-      overlay 0.4s allow-discrete;
+.listbox {
+  margin: 0;
+  width: 320px;
+  @apply p-0 max-h-[60vh] relative;
+  position-anchor: --trigger;
+  position-area: bottom;
+  inset-area: bottom;
+  transform: scale(0.9);
+  transform-origin: top;
 
-    &:popover-open {
-      opacity: 1;
-    }
+  @apply shadow-lg border border-zinc-600 bg-zinc-900 rounded-md mt-1;
+  opacity: 0;
+  transition:
+    display 0.1s allow-discrete,
+    opacity 0.1s allow-discrete,
+    transform 0.1s allow-discrete,
+    overlay 0.1s allow-discrete;
+
+  &:popover-open {
+    opacity: 1;
+    transform: scale(1);
   }
 
-  &.touched {
-    input {
-      @apply bg-blue-50;
-    }
-  }
+  scrollbar-width: thin;
+  overflow-y: auto;
+  overflow-y: overlay;
+  scrollbar-color: rgb(63 63 70) transparent;
 }
 
 @starting-style {
-  .listbox:popover-open {
+  .listbox :popover-open {
     opacity: 0;
+    transform: scale(0.9);
   }
 }
 </style>

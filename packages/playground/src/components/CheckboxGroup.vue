@@ -26,69 +26,19 @@ const { groupProps, labelProps, descriptionProps, errorMessageProps, errorMessag
 
 <style scoped>
 .checkbox-group {
-  --color-text: #333;
-  --color-hint: #666;
-  --color-border: #ccc;
-  --color-focus: #007bff;
-  --color-error: #f00;
-  --color-valid: #059669;
-  --color-hover: #eee;
-
+  font-family: 'Monaspace Neon Var';
   display: flex;
   flex-direction: column;
+  @apply relative w-full;
+  margin-bottom: calc(1em * 1.5);
 
-  .hint,
-  .error {
-    margin-top: 0.25rem;
-  }
-
-  .error {
-    color: var(--color-error);
-    display: none;
-    font-size: 13px;
-  }
-
-  .hint {
-    color: var(--color-hint);
-    font-size: 13px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  .group-label {
+    @apply block mb-1 w-full font-semibold text-lg text-white;
   }
 
   .checkboxes-container {
     margin-top: 0.25rem;
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .group-label {
-    color: var(--color-text);
-    display: block;
-    margin-bottom: 0.25rem;
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  &:has(:focus) {
-    .hint {
-      opacity: 1;
-    }
-  }
-
-  &:has(:user-invalid) {
-    .error {
-      display: block;
-    }
-
-    .hint {
-      display: none;
-    }
-  }
-
-  &[aria-orientation='vertical'] {
-    .checkboxes-container {
-      flex-direction: column;
-    }
+    @apply flex flex-col gap-1;
   }
 }
 </style>

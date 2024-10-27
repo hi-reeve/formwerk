@@ -20,31 +20,26 @@ const { inputProps, labelProps, errorMessageProps, isTouched, displayError } = u
 
 <style scoped lang="postcss">
 .InputText {
-  @apply relative w-full;
+  font-family: 'Monaspace Neon Var';
+  @apply relative w-full max-w-xs;
   margin-bottom: calc(1em * 1.5);
 
   label {
-    @apply block mb-1 w-full;
+    @apply block mb-1 w-full font-semibold text-lg text-white;
   }
 
   input {
-    @apply text-gray-800 rounded-md border-2 border-transparent py-3 px-4 w-full bg-gray-100 focus:outline-none transition-colors duration-200 focus:border-blue-500  disabled:cursor-not-allowed;
+    @apply rounded-md border-2 border-transparent py-3 px-4 w-full bg-zinc-800 focus:bg-zinc-900 focus:outline-none transition-colors duration-200 focus:border-emerald-500 disabled:cursor-not-allowed text-white font-medium;
   }
 
   .error-message {
-    @apply absolute left-0 text-sm text-red-500;
-    bottom: calc(-1.5 * 1em);
+    @apply absolute left-0 text-sm text-red-500 font-medium;
+    bottom: calc(-1.8 * 1em);
   }
 
-  &.has-error {
+  &:has(:user-invalid) {
     input {
-      @apply bg-red-100 text-red-600 focus:border-red-500;
-    }
-  }
-
-  &.touched {
-    input {
-      @apply bg-blue-50;
+      @apply border-red-500;
     }
   }
 
