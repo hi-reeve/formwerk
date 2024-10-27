@@ -55,8 +55,9 @@ export function getFromPath<TValue = unknown, TFallback = TValue>(
     return object[cleanupNonNestedPath(path)] as TValue | undefined;
   }
 
-  const resolvedValue = (path || '')
-    .split(/\.|\[(\d+)\]/)
+  const normalizedPath = normalizePath(path);
+  const resolvedValue = (normalizedPath || '')
+    .split('.')
     .filter(Boolean)
     .reduce((acc, propKey) => {
       if (isContainerValue(acc) && propKey in acc) {
@@ -78,7 +79,8 @@ export function setInPath(object: NestedRecord, path: string, value: unknown): v
     return;
   }
 
-  const keys = path.split(/\.|\[(\d+)\]/).filter(Boolean);
+  const normalizedPath = normalizePath(path);
+  const keys = normalizedPath.split('.').filter(Boolean);
   let acc: Record<string, unknown> = object;
   for (let i = 0; i < keys.length; i++) {
     // Last key, set it
@@ -130,7 +132,8 @@ export function unsetPath(object: NestedRecord, path: string, destroy?: boolean)
 
   const mut = destroy ? del : unset;
 
-  const keys = path.split(/\.|\[(\d+)\]/).filter(Boolean);
+  const normalizedPath = normalizePath(path);
+  const keys = normalizedPath.split('.').filter(Boolean);
   let acc: Record<string, unknown> = object;
   for (let i = 0; i < keys.length; i++) {
     // Last key, unset it
