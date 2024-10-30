@@ -18,30 +18,39 @@ const { items, addButtonProps, Iteration } = useFormRepeater(props);
         v-slot="{ removeButtonProps, moveUpButtonProps, moveDownButtonProps }"
       >
         <div class="repeater-item-content">
-          <slot />
+          <slot :index="index" />
         </div>
 
-        <div class="repeater-item-buttons">
-          <button v-bind="moveUpButtonProps">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">
+        <div class="bg-zinc-800 ml-auto px-1.5 flex flex-col items-center justify-center gap-2">
+          <button
+            v-bind="moveUpButtonProps"
+            class="w-6 h-6 group disabled:opacity-50 disabled:text-zinc-400 text-emerald-500"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="fill-current">
               <path
-                d="M231.39,123.06A8,8,0,0,1,224,128H184v80a16,16,0,0,1-16,16H88a16,16,0,0,1-16-16V128H32a8,8,0,0,1-5.66-13.66l96-96a8,8,0,0,1,11.32,0l96,96A8,8,0,0,1,231.39,123.06Z"
+                d="M208.49,120.49a12,12,0,0,1-17,0L140,69V216a12,12,0,0,1-24,0V69L64.49,120.49a12,12,0,0,1-17-17l72-72a12,12,0,0,1,17,0l72,72A12,12,0,0,1,208.49,120.49Z"
               ></path>
             </svg>
           </button>
 
-          <button v-bind="removeButtonProps" class="remove-button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">
+          <button
+            v-bind="removeButtonProps"
+            class="w-6 h-6 group disabled:opacity-50 disabled:text-zinc-400 text-red-500"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="fill-current">
               <path
-                d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM112,168a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm0-120H96V40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8Z"
+                d="M216,48H40a12,12,0,0,0,0,24h4V208a20,20,0,0,0,20,20H192a20,20,0,0,0,20-20V72h4a12,12,0,0,0,0-24ZM188,204H68V72H188ZM76,20A12,12,0,0,1,88,8h80a12,12,0,0,1,0,24H88A12,12,0,0,1,76,20Z"
               ></path>
             </svg>
           </button>
 
-          <button v-bind="moveDownButtonProps">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+          <button
+            v-bind="moveDownButtonProps"
+            class="w-6 h-6 group disabled:opacity-50 disabled:text-zinc-400 text-emerald-500"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current" viewBox="0 0 256 256">
               <path
-                d="M229.66,141.66l-96,96a8,8,0,0,1-11.32,0l-96-96A8,8,0,0,1,32,128H72V48A16,16,0,0,1,88,32h80a16,16,0,0,1,16,16v80h40a8,8,0,0,1,5.66,13.66Z"
+                d="M208.49,152.49l-72,72a12,12,0,0,1-17,0l-72-72a12,12,0,0,1,17-17L116,187V40a12,12,0,0,1,24,0V187l51.51-51.52a12,12,0,0,1,17,17Z"
               ></path>
             </svg>
           </button>
@@ -49,69 +58,41 @@ const { items, addButtonProps, Iteration } = useFormRepeater(props);
       </Iteration>
     </TransitionGroup>
 
-    <button v-bind="addButtonProps" class="add-button">Add</button>
+    <button
+      v-bind="addButtonProps"
+      class="bg-zinc-900 gap-2 flex items-center max-w-max font-medium text-white py-2 px-4 rounded"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 fill-current text-zinc-400" viewBox="0 0 256 256">
+        <path
+          d="M128,24A104,104,0,1,0,232,128,104.13,104.13,0,0,0,128,24Zm40,112H136v32a8,8,0,0,1-16,0V136H88a8,8,0,0,1,0-16h32V88a8,8,0,0,1,16,0v32h32a8,8,0,0,1,0,16Z"
+        ></path>
+      </svg>
+
+      Add
+    </button>
   </div>
 </template>
 
 <style scoped>
-.add-button {
-  margin-top: 1rem;
-  padding: 4px;
-  border-radius: 6px;
-  background-color: #059669;
-  color: #fff;
-  width: max-content;
-}
-
 .repeater-container {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
 }
 
 .repeater-item {
-  border: 1px solid #e7e5e4;
-  max-width: 280px;
-  border-radius: 6px;
+  @apply border border-zinc-500 overflow-hidden max-w-md rounded-lg shadow-sm bg-zinc-700;
   display: flex;
   gap: 12px;
 
   .repeater-item-buttons {
-    background: #f5f5f4;
+    @apply bg-zinc-800;
     margin-left: auto;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 2px;
     flex-direction: column;
-
-    button {
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      color: #0284c7;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      svg {
-        width: 100%;
-        height: 100%;
-        flex-shrink: 0;
-      }
-
-      &.remove-button {
-        color: #b91c1c;
-      }
-
-      &:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-        color: #44403c;
-      }
-    }
   }
 
   .repeater-item-content {
@@ -122,37 +103,24 @@ const { items, addButtonProps, Iteration } = useFormRepeater(props);
   }
 }
 
-.repeater-list-move,
-.repeater-list-enter-active,
-.repeater-list-leave-active {
-  transition: all 0.5s ease;
-}
-
-.repeater-list-enter-from,
-.repeater-list-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-
-.repeater-list-leave-active {
-  position: absolute;
-}
-
 .list-move, /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.5s ease;
+  transition: all 0.3s ease;
 }
 
-.list-enter-from,
-.list-leave-to {
+.list-enter-from {
   opacity: 0;
   transform: translateX(30px);
+}
+
+.list-leave-to {
+  opacity: 0;
 }
 
 /* ensure leaving items are taken out of layout flow so that moving
    animations can be calculated correctly. */
 .list-leave-active {
-  position: absolute;
+  height: 0;
 }
 </style>

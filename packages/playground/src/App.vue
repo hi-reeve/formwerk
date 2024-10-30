@@ -1,64 +1,25 @@
 <script setup lang="ts">
-import InputSelect from './components/InputSelect.vue';
+import { useForm } from '@formwerk/core';
+import InputText from './components/InputText.vue';
+import Switch from './components/Switch.vue';
+import FormRepeater from './components/Repeater.vue';
 
-const continents = [
-  {
-    label: 'Africa',
-    items: [
-      { label: 'Egypt', flag: '🇪🇬' },
-      { label: 'South Africa', flag: '🇿🇦' },
-      { label: 'Kenya', flag: '🇰🇪' },
-      { label: 'Nigeria', flag: '🇳🇬' },
-    ],
-  },
-  {
-    label: 'Asia',
-    items: [
-      { label: 'Japan', flag: '🇯🇵' },
-      { label: 'India', flag: '🇮🇳' },
-      { label: 'Thailand', flag: '🇹🇭' },
-      { label: 'Vietnam', flag: '🇻🇳' },
-    ],
-  },
-  {
-    label: 'Europe',
-    items: [
-      { label: 'France', flag: '🇫🇷' },
-      { label: 'Germany', flag: '🇩🇪' },
-      { label: 'Italy', flag: '🇮🇹' },
-      { label: 'Sweden', flag: '🇸🇪' },
-    ],
-  },
-  {
-    label: 'North America',
-    items: [
-      { label: 'Canada', flag: '🇨🇦' },
-      { label: 'Mexico', flag: '🇲🇽' },
-      { label: 'United States', flag: '🇺🇸' },
-      { label: 'Jamaica', flag: '🇯🇲' },
-    ],
-  },
-  {
-    label: 'South America',
-    items: [
-      { label: 'Brazil', flag: '🇧🇷' },
-      { label: 'Argentina', flag: '🇦🇷' },
-      { label: 'Peru', flag: '🇵🇪' },
-      { label: 'Colombia', flag: '🇨🇴' },
-    ],
-  },
-  {
-    label: 'Oceania',
-    items: [
-      { label: 'Australia', flag: '🇦🇺' },
-      { label: 'New Zealand', flag: '🇳🇿' },
-      { label: 'Fiji', flag: '🇫🇯' },
-      { label: 'Samoa', flag: '🇼🇸' },
-    ],
-  },
-];
+const { handleSubmit } = useForm();
+
+const onSubmit = handleSubmit(data => {
+  console.log(data);
+});
 </script>
 
 <template>
-  <div class=""></div>
+  <form class="flex flex-col gap-4" novalidate @submit="onSubmit">
+    <h2 class="text-2xl font-bold text-white">Invite users</h2>
+    <FormRepeater name="users" :min="1" :max="3" v-slot="{ index }">
+      <InputText name="email" :label="`Email #${index + 1}`" type="email" required />
+
+      <Switch name="admin" label="Admin" />
+    </FormRepeater>
+
+    <button class="mt-5 w-max" type="submit">Submit</button>
+  </form>
 </template>

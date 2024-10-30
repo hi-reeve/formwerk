@@ -10,15 +10,15 @@ const { inputProps, labelProps, isPressed } = useSwitch(props);
   <div class="flex items-center">
     <div
       v-bind="inputProps"
-      class="flex items-center p-1 w-12 rounded-full transition-colors duration-200 cursor-pointer focus-visible:outline-none focus:ring-2 ring-emerald-500 ring-offset-2"
+      class="flex items-center p-1 w-10 rounded-full transition-colors duration-200 cursor-pointer focus-visible:outline-none focus:ring-2 ring-emerald-500 ring-offset-2"
       :class="{ 'bg-emerald-500': isPressed, 'bg-gray-400': !isPressed }"
     >
       <div
-        class="rounded-full w-5 h-5 flex-shrink-0 bg-white origin-center transition-transform duration-200"
-        :class="{ 'translate-x-5': isPressed }"
+        class="rounded-full w-4 h-4 flex-shrink-0 bg-white origin-center transition-transform duration-200"
+        :class="{ 'translate-x-4': isPressed }"
       ></div>
     </div>
 
-    <label class="ml-3 text-white text-xl" v-bind="labelProps">{{ label }}</label>
+    <label class="ml-3 text-white text-lg" v-bind="labelProps">{{ label }}</label>
   </div>
 </template>

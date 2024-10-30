@@ -1,17 +1,13 @@
 <template>
-  <fieldset v-bind="groupProps" class="p-2 border border-gray-400 rounded-lg">
-    <legend v-bind="labelProps">{{ label }}</legend>
+  <div v-bind="groupProps" class="border border-zinc-500 rounded-lg overflow-hidden">
+    <div class="mb-7 bg-zinc-800 py-4 px-8">
+      <h2 v-bind="labelProps" class="text-2xl font-semibold text-white">{{ label }}</h2>
+    </div>
 
-    <slot :display-error="displayError" :get-error="getError" />
-
-    <!--    <pre class="bg-gray-600 text-white text-xs p-2.5 rounded-lg">Errors: {{getErrors()}}-->
-    <!--    </pre>-->
-
-    <!--    <div>values: {{ getValues()}}</div>-->
-    <!--    <div>touched: {{ isTouched }}</div>-->
-    <!--    <div>dirty: {{ isDirty }}</div>-->
-    <div>valid: {{ isValid }}</div>
-  </fieldset>
+    <div class="flex flex-col gap-2 p-8">
+      <slot :display-error="displayError" :get-error="getError" />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

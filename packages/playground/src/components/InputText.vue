@@ -12,7 +12,7 @@ const { inputProps, labelProps, errorMessageProps, isTouched, displayError } = u
 
     <input v-bind="inputProps" />
 
-    <span v-bind="errorMessageProps" class="error-message">
+    <span v-bind="errorMessageProps" class="error-message truncate w-full">
       {{ displayError() }}
     </span>
   </div>
@@ -21,7 +21,7 @@ const { inputProps, labelProps, errorMessageProps, isTouched, displayError } = u
 <style scoped lang="postcss">
 .InputText {
   font-family: 'Monaspace Neon Var';
-  @apply relative w-full max-w-xs;
+  @apply relative w-full;
   margin-bottom: calc(1em * 1.5);
 
   label {
@@ -29,7 +29,7 @@ const { inputProps, labelProps, errorMessageProps, isTouched, displayError } = u
   }
 
   input {
-    @apply rounded-md border-2 border-transparent py-3 px-4 w-full bg-zinc-800 focus:bg-zinc-900 focus:outline-none transition-colors duration-200 focus:border-emerald-500 disabled:cursor-not-allowed text-white font-medium;
+    @apply max-w-xs rounded-md border-2 border-transparent py-3 px-4 w-full bg-zinc-800 focus:bg-zinc-900 focus:outline-none transition-colors duration-200 focus:border-emerald-500 disabled:cursor-not-allowed text-white font-medium;
   }
 
   .error-message {
@@ -37,7 +37,8 @@ const { inputProps, labelProps, errorMessageProps, isTouched, displayError } = u
     bottom: calc(-1.8 * 1em);
   }
 
-  &:has(:user-invalid) {
+  &:has(:user-invalid),
+  &:has(.error-message:not(:empty)) {
     input {
       @apply border-red-500;
     }
