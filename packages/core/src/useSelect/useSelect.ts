@@ -68,7 +68,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
   });
 
   let lastRecentlySelectedOption: TValue | undefined;
-  const { listBoxProps, isOpen, options, isShiftPressed } = useListBox<TOption, TValue>({
+  const { listBoxProps, isPopupOpen, options, isShiftPressed } = useListBox<TOption, TValue>({
     labeledBy: () => labelledByProps.value['aria-labelledby'],
     label: props.label,
     multiple: props.multiple,
@@ -112,7 +112,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
         lastRecentlySelectedOption = optionValue;
         setValue(optionValue);
         updateValidity();
-        isOpen.value = false;
+        isPopupOpen.value = false;
         return;
       }
 
@@ -194,16 +194,16 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
         return;
       }
 
-      isOpen.value = !isOpen.value;
+      isPopupOpen.value = !isPopupOpen.value;
     },
     onKeydown(e: KeyboardEvent) {
       if (isDisabled()) {
         return;
       }
 
-      if (!isOpen.value && MENU_OPEN_KEYS.includes(e.code)) {
+      if (!isPopupOpen.value && MENU_OPEN_KEYS.includes(e.code)) {
         e.preventDefault();
-        isOpen.value = true;
+        isPopupOpen.value = true;
         return;
       }
     },
@@ -218,13 +218,13 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
       tabindex: '0',
       role: 'combobox',
       'aria-haspopup': 'listbox',
-      'aria-expanded': isOpen.value,
+      'aria-expanded': isPopupOpen.value,
       ...handlers,
     };
   });
 
   return {
-    isOpen,
+    isPopupOpen,
     triggerProps,
     labelProps,
     popupProps: listBoxProps,

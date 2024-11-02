@@ -205,7 +205,7 @@ export function useListBox<TOption, TValue = TOption>(
 
   return {
     listBoxProps,
-    isOpen,
+    isPopupOpen: isOpen,
     options,
     isShiftPressed,
   };
