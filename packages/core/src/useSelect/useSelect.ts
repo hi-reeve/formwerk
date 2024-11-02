@@ -20,7 +20,9 @@ export interface SelectProps<TOption, TValue = TOption> {
   label: string;
   name?: string;
   description?: string;
+  placeholder?: string;
 
+  value?: Arrayable<TValue>;
   modelValue?: Arrayable<TValue>;
 
   disabled?: boolean;
@@ -56,7 +58,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
   const isMutable = () => !isDisabled() && !toValue(props.readonly);
   const field = useFormField<Arrayable<TValue>>({
     path: props.name,
-    initialValue: toValue(props.modelValue) as Arrayable<TValue>,
+    initialValue: (toValue(props.modelValue) ?? toValue(props.value)) as Arrayable<TValue>,
     disabled: props.disabled,
 
     schema: props.schema,
