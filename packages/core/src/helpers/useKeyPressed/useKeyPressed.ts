@@ -1,7 +1,7 @@
 import { MaybeRefOrGetter, shallowRef } from 'vue';
 import { useEventListener } from '../useEventListener';
 import { Arrayable } from '../../types';
-import { isCallable, normalizeArrayable } from '../../utils/common';
+import { isCallable, isSSR, normalizeArrayable } from '../../utils/common';
 
 export function useKeyPressed(
   codes: Arrayable<string> | ((evt: KeyboardEvent) => boolean),
@@ -23,24 +23,26 @@ export function useKeyPressed(
     }
   }
 
-  useEventListener(
-    window,
-    'keydown',
-    e => {
-      onKeydown(e as KeyboardEvent);
-    },
-    { disabled },
-  );
+  if (!isSSR) {
+    useEventListener(
+      window,
+      'keydown',
+      e => {
+        onKeydown(e as KeyboardEvent);
+      },
+      { disabled },
+    );
 
-  useEventListener(
-    window,
-    'keyup',
-    e => {
-      const keyEvt = e as KeyboardEvent;
-      onKeyup(keyEvt);
-    },
-    { disabled: () => !isPressed.value },
-  );
+    useEventListener(
+      window,
+      'keyup',
+      e => {
+        const keyEvt = e as KeyboardEvent;
+        onKeyup(keyEvt);
+      },
+      { disabled: () => !isPressed.value },
+    );
+  }
 
   return isPressed;
 }
