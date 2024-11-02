@@ -114,7 +114,7 @@ export const SliderInjectionKey: InjectionKey<SliderContext> = Symbol('Slider');
 export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.Slider);
-  const trackRef = ref<HTMLElement>();
+  const trackEl = ref<HTMLElement>();
   const thumbs = ref<ThumbRegistration[]>([]);
   const isDisabled = () => toValue(props.disabled) ?? false;
   const isReadonly = () => toValue(props.readonly) ?? false;
@@ -132,7 +132,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
-    targetRef: trackRef,
+    targetRef: trackEl,
     handleClick: () => thumbs.value[0]?.focus(),
   });
 
@@ -184,7 +184,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
       {
         style: { 'container-type': isVertical ? 'size' : 'inline-size', position: 'relative' },
         onMousedown(e: MouseEvent) {
-          if (!trackRef.value || !isMutable()) {
+          if (!trackEl.value || !isMutable()) {
             return;
           }
 
@@ -212,17 +212,17 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
           setTouched(true);
         },
       },
-      trackRef,
+      trackEl,
     );
   });
 
   function getValueForPagePosition({ x, y }: Coordinate) {
-    if (!trackRef.value) {
+    if (!trackEl.value) {
       return 0;
     }
 
     const orientation = toValue(props.orientation) || 'horizontal';
-    const rect = trackRef.value.getBoundingClientRect();
+    const rect = trackEl.value.getBoundingClientRect();
     let percent = orientation === 'horizontal' ? (x - rect.left) / rect.width : (y - rect.top) / rect.height;
     if (toValue(props.dir) === 'rtl' || orientation === 'vertical') {
       percent = 1 - percent;
@@ -336,7 +336,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
   }
 
   return {
-    trackRef,
+    trackEl,
     labelProps,
     groupProps,
     outputProps,

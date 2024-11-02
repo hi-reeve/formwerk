@@ -24,9 +24,9 @@ function createThumbComponent(props: SliderThumbProps): Component {
 function createSliderComponent(props: SliderProps): Component {
   return {
     setup() {
-      const { fieldValue, labelProps, trackProps, groupProps, outputProps, trackRef } = useSlider(props);
+      const { fieldValue, labelProps, trackProps, groupProps, outputProps, trackEl } = useSlider(props);
 
-      onMounted(() => setUpRect(trackRef.value));
+      onMounted(() => setUpRect(trackEl.value));
 
       return {
         fieldValue,

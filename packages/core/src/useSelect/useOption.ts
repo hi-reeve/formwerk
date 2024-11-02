@@ -26,7 +26,7 @@ export interface OptionProps<TValue> {
 
 export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>, elementRef?: Ref<Maybe<HTMLElement>>) {
   const props = normalizeProps(_props);
-  const optionRef = elementRef || ref<HTMLElement>();
+  const optionEl = elementRef || ref<HTMLElement>();
   const isFocused = shallowRef(false);
   const selectionCtx = inject(SelectionContextKey, null);
   const listManager = inject(ListManagerKey, null);
@@ -61,7 +61,7 @@ export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>, ele
     focus: () => {
       isFocused.value = true;
       nextTick(() => {
-        optionRef.value?.focus();
+        optionEl.value?.focus();
       });
     },
   });
@@ -107,7 +107,7 @@ export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>, ele
         'aria-disabled': isDisabled() || undefined,
         ...handlers,
       },
-      optionRef,
+      optionEl,
       elementRef,
     );
   });
@@ -115,5 +115,6 @@ export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>, ele
   return {
     optionProps,
     isSelected,
+    optionEl,
   };
 }

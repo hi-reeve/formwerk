@@ -46,7 +46,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   const id = useUniqId(FieldTypePrefixes.FormGroup);
   const props = normalizeProps(_props, ['schema']);
   const getPath = () => toValue(props.name);
-  const groupRef = elementRef || shallowRef<HTMLInputElement>();
+  const groupEl = elementRef || shallowRef<HTMLInputElement>();
   const form = inject(FormKey, null);
   const isHtmlValidationDisabled = () =>
     toValue(props.disableHtmlValidation) ?? form?.isHtmlValidationDisabled() ?? getConfig().disableHtmlValidation;
@@ -75,11 +75,11 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   const { labelProps, labelledByProps } = useLabel({
     for: id,
     label: props.label,
-    targetRef: groupRef,
+    targetRef: groupEl,
   });
 
   const groupProps = computed<GroupProps>(() => {
-    const isFieldSet = groupRef.value?.tagName === 'FIELDSET';
+    const isFieldSet = groupEl.value?.tagName === 'FIELDSET';
 
     return withRefCapture(
       {
@@ -87,7 +87,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
         ...(isFieldSet ? {} : labelledByProps.value),
         role: isFieldSet ? undefined : 'group',
       },
-      groupRef,
+      groupEl,
       elementRef,
     );
   });
@@ -155,7 +155,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   provide(FormGroupKey, ctx);
 
   return {
-    groupRef,
+    groupEl,
     labelProps,
     groupProps,
     isDirty,

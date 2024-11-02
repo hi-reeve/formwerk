@@ -52,10 +52,10 @@ export function useListBox<TOption, TValue = TOption>(
   elementRef?: Ref<Maybe<HTMLElement>>,
 ) {
   const props = normalizeProps(_props);
-  const listBoxRef = elementRef || ref<HTMLElement>();
+  const listBoxEl = elementRef || ref<HTMLElement>();
   const options = shallowRef<OptionRegistrationWithId<TValue>[]>([]);
   // Initialize popover controller, NO-OP if the element is not a popover-enabled element.
-  const { isOpen } = usePopoverController(listBoxRef, { disabled: props.disabled });
+  const { isOpen } = usePopoverController(listBoxEl, { disabled: props.disabled });
   const finder = useOptionFinder(options);
   const isShiftPressed = useKeyPressed(['ShiftLeft', 'ShiftRight'], () => !isOpen.value);
   const isMetaPressed = useKeyPressed(
@@ -183,7 +183,7 @@ export function useListBox<TOption, TValue = TOption>(
         'aria-activedescendant': option?.id ?? undefined,
         ...handlers,
       },
-      listBoxRef,
+      listBoxEl,
       elementRef,
     );
   });
@@ -208,6 +208,7 @@ export function useListBox<TOption, TValue = TOption>(
     isPopupOpen: isOpen,
     options,
     isShiftPressed,
+    listBoxEl,
   };
 }
 

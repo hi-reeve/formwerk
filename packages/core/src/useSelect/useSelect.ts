@@ -68,7 +68,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
   });
 
   let lastRecentlySelectedOption: TValue | undefined;
-  const { listBoxProps, isPopupOpen, options, isShiftPressed } = useListBox<TOption, TValue>({
+  const { listBoxProps, isPopupOpen, options, isShiftPressed, listBoxEl } = useListBox<TOption, TValue>({
     labeledBy: () => labelledByProps.value['aria-labelledby'],
     label: props.label,
     multiple: props.multiple,
@@ -231,5 +231,6 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
     errorMessageProps,
     descriptionProps,
     ...exposeField(field),
+    listBoxEl,
   };
 }

@@ -14,7 +14,7 @@ export interface SliderThumbProps {
 
 export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?: Ref<HTMLElement>) {
   const props = normalizeProps(_props);
-  const thumbRef = elementRef || ref<HTMLElement>();
+  const thumbEl = elementRef || ref<HTMLElement>();
   const isDragging = ref(false);
   const { direction } = useLocale();
   const id = useUniqId(FieldTypePrefixes.SliderThumb);
@@ -22,7 +22,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
   const thumbContext: ThumbRegistration = {
     id,
     focus() {
-      thumbRef.value?.focus();
+      thumbEl.value?.focus();
     },
   };
 
@@ -91,7 +91,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
         onMousedown,
         style: getPositionStyle(),
       },
-      thumbRef,
+      thumbEl,
     );
   });
 
@@ -126,7 +126,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
 
     e.preventDefault();
     e.stopPropagation();
-    thumbRef.value?.focus();
+    thumbEl.value?.focus();
 
     document.addEventListener('mousemove', onMousemove);
     document.addEventListener('mouseup', onMouseup);
@@ -150,5 +150,6 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
     thumbProps,
     currentValue: thumbValue,
     isDragging,
+    thumbEl,
   };
 }

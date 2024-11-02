@@ -9,14 +9,14 @@ export interface OptionGroupProps {
 }
 
 export function useOptionGroup(_props: Reactivify<OptionGroupProps>, elementRef?: Ref<Maybe<HTMLElement>>) {
-  const groupRef = elementRef || ref<HTMLElement>();
+  const groupEl = elementRef || ref<HTMLElement>();
   const props = normalizeProps(_props);
   const groupId = useUniqId(FieldTypePrefixes.OptionGroup);
 
   const { labelProps, labelledByProps } = useLabel({
     label: props.label,
     for: groupId,
-    targetRef: groupRef,
+    targetRef: groupEl,
   });
 
   const groupProps = computed(() => {
@@ -26,7 +26,7 @@ export function useOptionGroup(_props: Reactivify<OptionGroupProps>, elementRef?
         role: 'group',
         ...labelledByProps.value,
       },
-      groupRef,
+      groupEl,
       elementRef,
     );
   });
@@ -34,5 +34,6 @@ export function useOptionGroup(_props: Reactivify<OptionGroupProps>, elementRef?
   return {
     labelProps,
     groupProps,
+    groupEl,
   };
 }
