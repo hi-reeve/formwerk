@@ -1,6 +1,6 @@
 {
   "name": "@formwerk/schema-yup",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "description": "",
   "sideEffects": false,
   "module": "dist/schema-yup.mjs",

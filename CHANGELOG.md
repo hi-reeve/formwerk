@@ -1,5 +1,18 @@
 # @formwerk/core
 
+## 0.1.24
+
+### Patch Changes
+
+- 452b2dc: feat: warn if HTML validation language does not match configured language
+- 3c9be6f: feat: expose formattedText from useNumberField
+- 6e8f396: fix: avoid referencing window without SSR check
+- 194cb14: fix: slider thumb data to return empty object instead of null
+- 97a1cb9: feat: change isOpen to isPopoup open in useSelect
+- 6c5cb5f: feat: drop support for indices path and only use dot paths
+- 20cc8a9: fix: added value and placeholder props to useSelect
+- 80364a3: feat: expose and rename element refs to els for consistency
+
 ## 0.1.23
 
 ### Patch Changes
