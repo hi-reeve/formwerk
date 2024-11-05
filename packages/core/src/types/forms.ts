@@ -8,7 +8,9 @@ export type StandardIssue = v1.StandardIssue;
 
 export type StandardSchema<TInput = unknown, TOutput = TInput> = v1.StandardSchema<TInput, TOutput>;
 
-export type FormSchema = StandardSchema<FormObject>;
+export type GenericFormSchema = StandardSchema<FormObject>;
+
+export type FormSchema<TInput extends FormObject = FormObject, TOutput = TInput> = StandardSchema<TInput, TOutput>;
 
 export type TouchedSchema<TForm extends FormObject> = Simplify<Schema<TForm, boolean>>;
 

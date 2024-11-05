@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { useForm } from '@formwerk/core';
+import { FormSchema, useForm } from '@formwerk/core';
 import InputText from './components/InputText.vue';
 import Switch from './components/Switch.vue';
 import FormRepeater from './components/Repeater.vue';
 
-const { handleSubmit } = useForm();
+const { handleSubmit, values } = useForm<FormSchema<{ email: string }>>();
+
+values.email; // string | null
 
 const onSubmit = handleSubmit(data => {
-  console.log(data);
+  console.log(data.toJSON().email); // string
 });
 </script>
 

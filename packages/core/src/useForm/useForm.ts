@@ -12,7 +12,7 @@ import {
   ValidationResult,
   FormValidationResult,
   GroupValidationResult,
-  FormSchema,
+  GenericFormSchema,
   StandardSchema,
 } from '../types';
 import { createFormContext, BaseFormContext } from './formContext';
@@ -25,7 +25,7 @@ import { FieldTypePrefixes } from '../constants';
 import { appendToFormData, clearFormData } from '../utils/formData';
 import { PartialDeep } from 'type-fest';
 
-export interface FormOptions<TSchema extends FormSchema, TInput extends FormObject = InferInput<TSchema>> {
+export interface FormOptions<TSchema extends GenericFormSchema, TInput extends FormObject = InferInput<TSchema>> {
   id: string;
   initialValues: MaybeGetter<MaybeAsync<TInput>>;
   initialTouched: TouchedSchema<TInput>;
@@ -52,7 +52,7 @@ export interface FormDomProps {
 export const FormKey: InjectionKey<FormContext<any>> = Symbol('Formwerk FormKey');
 
 export function useForm<
-  TSchema extends FormSchema,
+  TSchema extends GenericFormSchema,
   TInput extends FormObject = InferInput<TSchema>,
   TOutput extends FormObject = InferOutput<TSchema>,
 >(opts?: Partial<FormOptions<TSchema, TInput>>) {
