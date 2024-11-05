@@ -1,8 +1,14 @@
 import { Schema, Simplify } from 'type-fest';
+import type { v1 } from '@standard-schema/spec';
 import { FormObject } from './common';
 import { Path } from './paths';
-import { TypedSchemaError } from './typedSchema';
 import { FormValidationMode } from '../useForm/formContext';
+
+export type StandardIssue = v1.StandardIssue;
+
+export type StandardSchema<TInput = unknown, TOutput = TInput> = v1.StandardSchema<TInput, TOutput>;
+
+export type FormSchema = StandardSchema<FormObject>;
 
 export type TouchedSchema<TForm extends FormObject> = Simplify<Schema<TForm, boolean>>;
 
@@ -10,9 +16,14 @@ export type DisabledSchema<TForm extends FormObject> = Partial<Record<Path<TForm
 
 export type ErrorsSchema<TForm extends FormObject> = Partial<Record<Path<TForm>, string[]>>;
 
+export type IssueCollection = {
+  path: string;
+  messages: string[];
+};
+
 type BaseValidationResult = {
   isValid: boolean;
-  errors: TypedSchemaError[];
+  errors: IssueCollection[];
 };
 
 export interface ValidationResult<TValue = unknown> extends BaseValidationResult {

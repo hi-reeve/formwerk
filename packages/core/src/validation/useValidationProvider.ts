@@ -3,10 +3,11 @@ import {
   FormObject,
   FormValidationResult,
   GroupValidationResult,
-  TypedSchema,
+  IssueCollection,
+  StandardSchema,
   ValidationResult,
 } from '../types';
-import { batchAsync, cloneDeep, withLatestCall } from '../utils/common';
+import { batchAsync, cloneDeep, combineIssues, withLatestCall } from '../utils/common';
 import { createEventDispatcher } from '../utils/events';
 import { SCHEMA_BATCH_MS } from '../constants';
 import { prefixPath, setInPath } from '../utils/path';
@@ -19,7 +20,7 @@ interface ValidationProviderOptions<
   TType extends AggregatorResult<TOutput>['type'],
 > {
   type: TType;
-  schema?: TypedSchema<TInput, TOutput>;
+  schema?: StandardSchema<TInput, TOutput>;
   getValues: () => TInput;
   getPath?: () => string;
 }
@@ -57,11 +58,11 @@ export function useValidationProvider<
       });
     }
 
-    const { errors: parseErrors, output } = await schema.parse(getValues());
-    let errors = parseErrors;
+    const result = await schema['~validate']({ value: getValues() });
+    let errors: IssueCollection[] = combineIssues(result.issues || []);
     const prefix = getPath?.();
     if (prefix) {
-      errors = parseErrors.map(e => {
+      errors = errors.map(e => {
         return {
           messages: e.messages,
           path: prefixPath(prefix, e.path) || '',
@@ -70,6 +71,7 @@ export function useValidationProvider<
     }
 
     const allErrors = [...errors, ...fieldErrors];
+    const output = result.issues ? undefined : result.value;
 
     dispatchValidateDone();
 
