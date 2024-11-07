@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.1.25
+
+### Patch Changes
+
+- 765f3c7: feat: exported FormSchema utility type
+- eb6ab81: feat: add standard schema support
+
 ## 0.1.24
 
 ### Patch Changes
