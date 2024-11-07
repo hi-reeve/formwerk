@@ -11,7 +11,7 @@ import { generateDts } from './generate-dts';
         return arg === pkg || !arg;
       })
       .map(async pkg => {
-        const config = await createConfig(pkg, 'es');
+        const config = await createConfig(pkg as keyof typeof pkgNameMap, 'es');
 
         return {
           pkg,
