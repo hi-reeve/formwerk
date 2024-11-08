@@ -731,7 +731,7 @@ describe('form validation', () => {
     });
 
     test('re-validates on field value change', async () => {
-      const schema = defineStandardSchema<{ test: string }>(({ value }) => {
+      const schema = defineStandardSchema<{ test: string }>(value => {
         return {
           issues: !(value as any).test ? [{ path: ['test'], message: 'error' }] : [],
         };

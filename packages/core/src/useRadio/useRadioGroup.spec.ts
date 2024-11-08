@@ -442,7 +442,7 @@ describe('validation', () => {
   });
 
   test('should revalidate when value changes via arrow keys', async () => {
-    const schema = defineStandardSchema<any, any>(({ value }) => {
+    const schema = defineStandardSchema<any, any>(value => {
       return Number(value) > 2
         ? { value: String(value) }
         : { issues: [{ message: 'Value must be greater than 2', path: [] }] };
@@ -471,7 +471,7 @@ describe('validation', () => {
   });
 
   test('should revalidate when value changes via clicks', async () => {
-    const schema = defineStandardSchema<any, any>(({ value }) => {
+    const schema = defineStandardSchema<any, any>(value => {
       return Number(value) > 2
         ? { value: String(value) }
         : { issues: [{ message: 'Value must be greater than 2', path: [] }] };

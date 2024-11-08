@@ -127,7 +127,7 @@ describe('validation', () => {
   });
 
   test('should revalidate when increment/decrement buttons', async () => {
-    const schema = defineStandardSchema<number>(({ value }) => {
+    const schema = defineStandardSchema<number>(value => {
       return Number(value) > 1
         ? { value: Number(value) }
         : { issues: [{ message: 'Value must be greater than 1', path: [] }] };
@@ -145,7 +145,7 @@ describe('validation', () => {
   });
 
   test('should revalidate when increment/decrement with arrows', async () => {
-    const schema = defineStandardSchema<number>(({ value }) => {
+    const schema = defineStandardSchema<number>(value => {
       return Number(value) > 1
         ? { value: Number(value) }
         : { issues: [{ message: 'Value must be greater than 1', path: [] }] };

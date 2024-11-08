@@ -1,5 +1,5 @@
 import { computed, InjectionKey, onMounted, provide, reactive, readonly, Ref, ref } from 'vue';
-import { InferInput, InferOutput } from '@standard-schema/spec';
+import type { v1 } from '@standard-schema/spec';
 import { cloneDeep, isEqual, useUniqId } from '../utils/common';
 import {
   FormObject,
@@ -25,7 +25,7 @@ import { FieldTypePrefixes } from '../constants';
 import { appendToFormData, clearFormData } from '../utils/formData';
 import { PartialDeep } from 'type-fest';
 
-export interface FormOptions<TSchema extends GenericFormSchema, TInput extends FormObject = InferInput<TSchema>> {
+export interface FormOptions<TSchema extends GenericFormSchema, TInput extends FormObject = v1.InferInput<TSchema>> {
   id: string;
   initialValues: MaybeGetter<MaybeAsync<TInput>>;
   initialTouched: TouchedSchema<TInput>;
@@ -53,8 +53,8 @@ export const FormKey: InjectionKey<FormContext<any>> = Symbol('Formwerk FormKey'
 
 export function useForm<
   TSchema extends GenericFormSchema,
-  TInput extends FormObject = InferInput<TSchema>,
-  TOutput extends FormObject = InferOutput<TSchema>,
+  TInput extends FormObject = v1.InferInput<TSchema>,
+  TOutput extends FormObject = v1.InferOutput<TSchema>,
 >(opts?: Partial<FormOptions<TSchema, TInput>>) {
   const touchedSnapshot = useFormSnapshots(opts?.initialTouched);
   const valuesSnapshot = useFormSnapshots<TInput, TOutput>(opts?.initialValues, {

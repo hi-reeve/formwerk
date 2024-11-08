@@ -146,7 +146,7 @@ test('tracks its touched state', async () => {
 
 test('tracks its valid state', async () => {
   const groups: ReturnType<typeof useFormGroup>[] = [];
-  const schema = defineStandardSchema<any, any>(({ value }) => {
+  const schema = defineStandardSchema<any, any>(value => {
     return {
       issues: value ? [] : [{ path: ['groupTest', 'field1'], message: 'error' }],
     };
@@ -185,7 +185,7 @@ test('tracks its valid state', async () => {
 test('validates with a typed schema', async () => {
   let form!: ReturnType<typeof useForm>;
   const groups: ReturnType<typeof useFormGroup>[] = [];
-  const schema = defineStandardSchema<any, any>(({ value }) => {
+  const schema = defineStandardSchema<any, any>(value => {
     return {
       issues: (value as any).field ? [] : [{ message: 'error', path: ['field'] }],
     };
@@ -221,13 +221,13 @@ test('validates with a typed schema', async () => {
 test('validation combines schema with form schema', async () => {
   let form!: ReturnType<typeof useForm>;
   const groups: ReturnType<typeof useFormGroup>[] = [];
-  const groupSchema = defineStandardSchema<{ field: string }>(({ value }) => {
+  const groupSchema = defineStandardSchema<{ field: string }>(value => {
     return {
       issues: (value as any).field ? [] : [{ message: 'error', path: ['field'] }],
     };
   });
 
-  const formSchema = defineStandardSchema<{ other: string }>(({ value }) => {
+  const formSchema = defineStandardSchema<{ other: string }>(value => {
     return {
       issues: (value as any).other ? [] : [{ message: 'error', path: ['other'] }],
     };
@@ -270,13 +270,13 @@ test('validation combines schema with form schema', async () => {
 test('validation cascades', async () => {
   let form!: ReturnType<typeof useForm>;
   const groups: ReturnType<typeof useFormGroup>[] = [];
-  const groupSchema = defineStandardSchema<{ field: string }>(({ value }) => {
+  const groupSchema = defineStandardSchema<{ field: string }>(value => {
     return {
       issues: (value as any).field === 'valid' ? [] : [{ message: 'error', path: ['field'] }],
     };
   });
 
-  const formSchema = defineStandardSchema<{ other: string }>(({ value }) => {
+  const formSchema = defineStandardSchema<{ other: string }>(value => {
     return {
       issues: (value as any).other === 'valid' ? [] : [{ message: 'error', path: ['other'] }],
     };

@@ -222,7 +222,7 @@ describe('validation', () => {
   });
 
   test('should revalidate when value changes', async () => {
-    const schema = defineStandardSchema<any, any>(async ({ value }) => {
+    const schema = defineStandardSchema<any, any>(async value => {
       return (value as any)?.length >= 2
         ? Promise.resolve({ value: value })
         : Promise.resolve({

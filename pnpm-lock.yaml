@@ -144,11 +144,11 @@ importers:
   packages/core:
     dependencies:
       '@standard-schema/spec':
-        specifier: 1.0.0-beta.1
-        version: 1.0.0-beta.1
+        specifier: 1.0.0-beta.3
+        version: 1.0.0-beta.3
       '@standard-schema/utils':
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.2.1
+        version: 0.2.1
       klona:
         specifier: ^2.0.6
         version: 2.0.6
@@ -165,11 +165,11 @@ importers:
         specifier: workspace:*
         version: link:../core
       arktype:
-        specifier: 2.0.0-rc.21
-        version: 2.0.0-rc.21
+        specifier: 2.0.0-rc.22
+        version: 2.0.0-rc.22
       valibot:
-        specifier: 1.0.0-beta.3
-        version: 1.0.0-beta.3(typescript@5.6.3)
+        specifier: 1.0.0-beta.4
+        version: 1.0.0-beta.4(typescript@5.6.3)
 
   packages/playground:
     dependencies:
@@ -208,8 +208,8 @@ importers:
   packages/test-utils:
     devDependencies:
       '@standard-schema/spec':
-        specifier: 1.0.0-beta.1
-        version: 1.0.0-beta.1
+        specifier: 1.0.0-beta.3
+        version: 1.0.0-beta.3
 
 packages:
 
@@ -221,11 +221,11 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@ark/schema@0.21.0':
-    resolution: {integrity: sha512-lYcE2S865F8XNId3Id7SGuVletZVqXs0jtcImX8fPGeSIxzkP43zinrkoeU3SMJB/KJUfhpNxQqBdveCyMOjYQ==}
+  '@ark/schema@0.22.0':
+    resolution: {integrity: sha512-d6jkChLfxRWeZz/WrWFOhhyKFNzlPGd4INt6ylZt2HdB5d+S7FYDLjTHg7neT5dqJFRToy+onJRfVN0+uqqeXw==}
 
-  '@ark/util@0.21.0':
-    resolution: {integrity: sha512-VeE8OJncWZ1+oKAXp+rNY7IE2AibN/GRWK/ImCqKMC6Z0IHH9LDS/5dtR4C3RvNJw1O9Sur23S93a5HLFkaU1A==}
+  '@ark/util@0.22.0':
+    resolution: {integrity: sha512-+zkFBk77+M0LpXobN9yt/Dw1Z1/7ClOcqWpAS5wvHw8fyggCYGdxkWXeSuOxrTS3RDpT6vMCjPYsS/Lr/ypbeg==}
 
   '@babel/code-frame@7.24.7':
     resolution: {integrity: sha512-BcYH1CVJBO9tvyIZ2jVeXgSIMvGZ2FDRvDdOIVQyuklNKSsx+eppDEBq/g47Ayw+RqNFE+URvOShmf+f/qwAlA==}
@@ -1053,11 +1053,11 @@ packages:
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
 
-  '@standard-schema/spec@1.0.0-beta.1':
-    resolution: {integrity: sha512-XFHxCgvFiNrofjsZ1SFLKjLSo6kM9WITBU6gPnkKtrQ6fSuPWhZ/7gLTWmMcMprFgN4FfU1Wcsr5+jNkRaksCQ==}
+  '@standard-schema/spec@1.0.0-beta.3':
+    resolution: {integrity: sha512-0ifF3BjA1E8SY9C+nUew8RefNOIq0cDlYALPty4rhUm8Rrl6tCM8hBT4bhGhx7I7iXD0uAgt50lgo8dD73ACMw==}
 
-  '@standard-schema/utils@0.1.1':
-    resolution: {integrity: sha512-Uc/EWqUoxElTp50GChAK4l/QTn82RiSMsJB9dtUiIo54HHCpxByOxBGAOh73J1AGxMjk1ALvlDCyueOdvaxxPw==}
+  '@standard-schema/utils@0.2.1':
+    resolution: {integrity: sha512-Vq2UmL3Nc7BG9lD7xILL+UmuCkU9s4x66OAiLBCab46S60dfVyZoiPNuLmr4Gjoo0Eaw6/bzzrDAp02R/NHVgA==}
 
   '@testing-library/dom@9.3.4':
     resolution: {integrity: sha512-FlS4ZWlp97iiNWig0Muq8p+3rVDjRiYE+YKGbAqXOu9nwJFFOdL00kFpz42M+4huzYi86vAK1sOOfyOG45muIQ==}
@@ -1368,8 +1368,8 @@ packages:
   aria-query@5.3.0:
     resolution: {integrity: sha512-b0P0sZPKtyu8HkeRAfCq0IfURZK+SuwMjY1UXGBU27wpAiTwQAIlq56IbIO+ytk/JjS1fMR14ee5WBBfKi5J6A==}
 
-  arktype@2.0.0-rc.21:
-    resolution: {integrity: sha512-XbgxgFsONklbE1alpTQtcV/Foew39zphCXgPzx4g1o+hNMlLgPeNqtcgjC/dBwhyYqEHPlwNIk1vrKO0JFs7yg==}
+  arktype@2.0.0-rc.22:
+    resolution: {integrity: sha512-iciINVNXEuTG1lYhVUOgnWC315zrnAT48n2Y7PbbYMFa2844vdakTJxugxal7RkxZGI5YveyIHH2gPATsFRlnQ==}
 
   array-buffer-byte-length@1.0.0:
     resolution: {integrity: sha512-LPuwb2P+NrQw3XhxGc36+XSvuBPopovXYTR9Ew++Du9Yb/bx5AzBfrIsBoj0EZUifjQU+sHL21sseZ3jerWO/A==}
@@ -3677,8 +3677,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  valibot@1.0.0-beta.3:
-    resolution: {integrity: sha512-PRknKVj2249cF8Pxqil1dahkVHgyaPDq++Y8sA96R5lx4nYnVazs11kefOsRVD3PSygYJG5q2MEdEm7kuSWa+g==}
+  valibot@1.0.0-beta.4:
+    resolution: {integrity: sha512-7nagwijpIKyZ4MJELRsAv7t6KQMq/leP0zfIzDOI+2ZwCk/F0gB63sH8DQtJlRuDtgRsDbcfRemrGPpcUR9SFg==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -3945,11 +3945,11 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@ark/schema@0.21.0':
+  '@ark/schema@0.22.0':
     dependencies:
-      '@ark/util': 0.21.0
+      '@ark/util': 0.22.0
 
-  '@ark/util@0.21.0': {}
+  '@ark/util@0.22.0': {}
 
   '@babel/code-frame@7.24.7':
     dependencies:
@@ -4750,9 +4750,9 @@ snapshots:
 
   '@rtsao/scc@1.1.0': {}
 
-  '@standard-schema/spec@1.0.0-beta.1': {}
+  '@standard-schema/spec@1.0.0-beta.3': {}
 
-  '@standard-schema/utils@0.1.1': {}
+  '@standard-schema/utils@0.2.1': {}
 
   '@testing-library/dom@9.3.4':
     dependencies:
@@ -5150,10 +5150,10 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
-  arktype@2.0.0-rc.21:
+  arktype@2.0.0-rc.22:
     dependencies:
-      '@ark/schema': 0.21.0
-      '@ark/util': 0.21.0
+      '@ark/schema': 0.22.0
+      '@ark/util': 0.22.0
 
   array-buffer-byte-length@1.0.0:
     dependencies:
@@ -7624,7 +7624,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  valibot@1.0.0-beta.3(typescript@5.6.3):
+  valibot@1.0.0-beta.4(typescript@5.6.3):
     optionalDependencies:
       typescript: 5.6.3
 

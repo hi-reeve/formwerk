@@ -2,8 +2,8 @@
   "name": "ecosystem",
   "private": true,
   "dependencies": {
-    "arktype": "2.0.0-rc.21",
-    "valibot": "1.0.0-beta.3",
-    "@formwerk/core": "workspace:*"
+    "@formwerk/core": "workspace:*",
+    "arktype": "2.0.0-rc.22",
+    "valibot": "1.0.0-beta.4"
   }
 }

@@ -1,10 +1,14 @@
 import { v1 } from '@standard-schema/spec';
 
-export function defineStandardSchema<TInput, TOutput = TInput>(validate: v1.StandardValidate<TOutput>) {
+export function defineStandardSchema<TInput, TOutput = TInput>(
+  validate: v1.StandardSchema<TInput, TOutput>['~standard']['validate'],
+) {
   const schema: v1.StandardSchema<TInput, TOutput> = {
-    '~standard': 1,
-    '~vendor': 'custom',
-    '~validate': validate,
+    '~standard': {
+      vendor: 'custom',
+      validate,
+      version: 1,
+    },
   };
 
   return schema;

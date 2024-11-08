@@ -58,7 +58,7 @@ export function useValidationProvider<
       });
     }
 
-    const result = await schema['~validate']({ value: getValues() });
+    const result = await schema['~standard']['validate'](getValues());
     let errors: IssueCollection[] = combineIssues(result.issues || []);
     const prefix = getPath?.();
     if (prefix) {
