@@ -16,6 +16,7 @@ import { Numberish, Reactivify } from '../types';
 import { FormKey } from '../useForm';
 import {
   cloneDeep,
+  fromNumberish,
   isEqual,
   isNullOrUndefined,
   normalizeProps,
@@ -80,7 +81,7 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
 
   function buildRecords(): string[] {
     const pathArray = getPathValue();
-    const length = Math.max(Number(toValue(repeaterProps.min) ?? 0), pathArray.length);
+    const length = Math.max(fromNumberish(repeaterProps.min) ?? 0, pathArray.length);
     lastControlledValueSnapshot = cloneDeep(pathArray);
 
     return Array.from({ length }).fill(null).map(generateRecord);
@@ -99,7 +100,7 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
   }
 
   function canAdd(count = 1) {
-    const max = Number(toValue(repeaterProps.max));
+    const max = fromNumberish(repeaterProps.max);
     if (!max) {
       return true;
     }
@@ -108,7 +109,7 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
   }
 
   function canRemove(count = 1) {
-    const min = Number(toValue(repeaterProps.min));
+    const min = fromNumberish(repeaterProps.min);
     if (!min) {
       return true;
     }

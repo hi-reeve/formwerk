@@ -7,6 +7,7 @@ import {
   IssueCollection,
   Maybe,
   NormalizedProps,
+  Numberish,
   StandardIssue,
   WithId,
 } from '../types';
@@ -420,4 +421,15 @@ export function combineIssues(issues: StandardIssue[] | readonly StandardIssue[]
   }
 
   return Object.values(issueMap);
+}
+
+export function fromNumberish(value: MaybeRefOrGetter<Numberish | undefined>): number | undefined {
+  const innerVal = toValue(value);
+  if (isNullOrUndefined(innerVal)) {
+    return undefined;
+  }
+
+  const num = Number(innerVal);
+
+  return Number.isNaN(num) ? undefined : num;
 }

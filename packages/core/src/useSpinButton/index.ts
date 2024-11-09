@@ -2,7 +2,14 @@ import { computed, shallowRef, toValue } from 'vue';
 import { Direction, Maybe, Numberish, Orientation2D, Reactivify } from '../types';
 import { toNearestMultipleOf } from '../utils/math';
 import { useButtonHold } from '../helpers/useButtonHold';
-import { hasKeyCode, isButtonElement, normalizeProps, withRefCapture } from '../utils/common';
+import {
+  fromNumberish,
+  hasKeyCode,
+  isButtonElement,
+  isNullOrUndefined,
+  normalizeProps,
+  withRefCapture,
+} from '../utils/common';
 import { useLocale } from '../i18n';
 
 export interface SpinButtonProps {
@@ -53,9 +60,9 @@ function getDirectionalStepKeys(orientation: Orientation2D, direction: Direction
 export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
   const props = normalizeProps(_props, ['onChange']);
   const { direction } = useLocale();
-  const getStep = () => Number(toValue(props.step) || 1);
-  const getMin = () => Number(toValue(props.min) ?? undefined);
-  const getMax = () => Number(toValue(props.max) ?? undefined);
+  const getStep = () => fromNumberish(props.step) || 1;
+  const getMin = () => fromNumberish(props.min) ?? undefined;
+  const getMax = () => fromNumberish(props.max) ?? undefined;
   const incrBtnEl = shallowRef<HTMLElement>();
   const decrBtnEl = shallowRef<HTMLElement>();
 
@@ -66,7 +73,7 @@ export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
     const max = getMax();
     const min = getMin();
 
-    if (Number.isNaN(max) || Number.isNaN(min)) {
+    if (isNullOrUndefined(max) || isNullOrUndefined(min)) {
       return 10;
     }
 
@@ -125,11 +132,11 @@ export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
     const max = getMax();
     const min = getMin();
 
-    if (!Number.isNaN(max) && value >= max) {
+    if (!isNullOrUndefined(max) && value >= max) {
       return max;
     }
 
-    if (!Number.isNaN(min) && value <= min) {
+    if (!isNullOrUndefined(min) && value <= min) {
       return min;
     }
 
@@ -162,14 +169,14 @@ export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
 
   function incrementToMax() {
     const max = getMax();
-    if (!Number.isNaN(max)) {
+    if (!isNullOrUndefined(max)) {
       props.onChange?.(max);
     }
   }
 
   function decrementToMin() {
     const min = getMin();
-    if (!Number.isNaN(min)) {
+    if (!isNullOrUndefined(min)) {
       props.onChange?.(min);
     }
   }
@@ -178,14 +185,14 @@ export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
     const max = getMax();
     const current = toValue(props.current);
 
-    return !Number.isNaN(max) && current !== undefined && max <= current;
+    return !isNullOrUndefined(max) && current !== undefined && max <= current;
   });
 
   const isDecrementDisabled = computed(() => {
     const min = getMin();
     const current = toValue(props.current);
 
-    return !Number.isNaN(min) && current !== undefined && min >= current;
+    return !isNullOrUndefined(min) && current !== undefined && min >= current;
   });
 
   const incrementHoldProps = useButtonHold({

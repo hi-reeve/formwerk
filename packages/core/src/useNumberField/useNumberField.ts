@@ -2,6 +2,7 @@ import { Ref, computed, nextTick, shallowRef, toValue } from 'vue';
 import {
   createAccessibleErrorMessageProps,
   createDescribedByProps,
+  fromNumberish,
   isEmpty,
   isNullOrUndefined,
   normalizeProps,
@@ -80,7 +81,7 @@ export function useNumberField(
   const parser = useNumberParser(() => toValue(props.locale) ?? locale.value, props.formatOptions);
   const field = useFormField<number>({
     path: props.name,
-    initialValue: toValue(props.modelValue) ?? Number(toValue(props.value)),
+    initialValue: toValue(props.modelValue) ?? fromNumberish(props.value),
     disabled: props.disabled,
     schema: props.schema,
   });
@@ -173,7 +174,7 @@ export function useNumberField(
 
   const inputMode = computed(() => {
     const intlOpts = toValue(props.formatOptions);
-    const step = Number(toValue(props.step)) || 1;
+    const step = fromNumberish(props.step) || 1;
     const hasDecimals = (intlOpts?.maximumFractionDigits ?? 0) > 0 || String(step).includes('.');
 
     if (hasDecimals) {

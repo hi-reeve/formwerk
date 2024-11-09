@@ -1,9 +1,10 @@
 import { type CSSProperties, type InjectionKey, computed, onBeforeUnmount, provide, ref, toValue } from 'vue';
 import { useLabel } from '../a11y/useLabel';
-import { AriaLabelableProps, Arrayable, Direction, Orientation, Reactivify, StandardSchema } from '../types';
+import { AriaLabelableProps, Arrayable, Direction, Numberish, Orientation, Reactivify, StandardSchema } from '../types';
 import {
   createAccessibleErrorMessageProps,
   ErrorableAttributes,
+  fromNumberish,
   isNullOrUndefined,
   normalizeArrayable,
   normalizeProps,
@@ -25,9 +26,9 @@ export interface SliderProps {
   orientation?: Orientation;
   dir?: Direction;
   modelValue?: number | number[];
-  min?: number;
-  max?: number;
-  step?: number;
+  min?: Numberish;
+  max?: Numberish;
+  step?: Numberish;
 
   disabled?: boolean;
   readonly?: boolean;
@@ -228,16 +229,16 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
       percent = 1 - percent;
     }
 
-    const min = toValue(props.min) || 0;
-    const max = toValue(props.max) || 100;
+    const min = fromNumberish(props.min) ?? 0;
+    const max = fromNumberish(props.max) ?? 100;
 
     const value = percent * (max - min) + min;
 
-    return toNearestMultipleOf(value, toValue(props.step) || 1);
+    return toNearestMultipleOf(value, fromNumberish(props.step) ?? 1);
   }
 
   function getSliderRange() {
-    return { min: toValue(props.min) || 0, max: toValue(props.max) || 100 };
+    return { min: fromNumberish(props.min) ?? 0, max: fromNumberish(props.max) ?? 100 };
   }
 
   function getThumbRange(thumbCtx: ThumbRegistration) {
@@ -272,7 +273,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
       getThumbRange: () => getThumbRange(ctx),
       getSliderRange,
       getSliderStep() {
-        return toValue(props.step) || 1;
+        return fromNumberish(props.step) ?? 1;
       },
       getSliderLabelProps() {
         return labelledByProps.value;
