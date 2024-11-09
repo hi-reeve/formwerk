@@ -1,6 +1,7 @@
 import { ComponentInternalInstance, nextTick, onBeforeUnmount } from 'vue';
 import { isSSR, tryOnScopeDispose, useUniqId } from './common';
 import { NOOP } from '../constants';
+import { EventHandler } from '../types';
 
 export function createEventDispatcher<TPayload>(eventName?: string) {
   const evtName = `formwerk:${useUniqId(eventName)}`;
@@ -24,9 +25,9 @@ export function createEventDispatcher<TPayload>(eventName?: string) {
       handler(e.detail);
     };
 
-    document.addEventListener(evtName, handlerWrapper as any, { signal: controller.signal });
+    document.addEventListener(evtName, handlerWrapper as EventHandler, { signal: controller.signal });
 
-    const removeListener = () => document.removeEventListener(evtName, handlerWrapper as any);
+    const removeListener = () => document.removeEventListener(evtName, handlerWrapper as EventHandler);
     onBeforeUnmount(removeListener, vm);
 
     return removeListener;

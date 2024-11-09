@@ -37,12 +37,14 @@ export type AriaInputProps = {
   'aria-disabled'?: boolean;
 };
 
+export type EventHandler = (e: Event) => void;
+
 export type InputEvents = {
-  onInput?: (event: Event) => void;
-  onChange?: (event: Event) => void;
-  onBlur?: (event: Event) => void;
-  onBeforeinput?: (event: Event) => void;
-  onInvalid?: (event: Event) => void;
+  onInput?: EventHandler;
+  onChange?: EventHandler;
+  onBlur?: EventHandler;
+  onBeforeinput?: EventHandler;
+  onInvalid?: EventHandler;
   onKeydown?: (event: KeyboardEvent) => void;
 };
 

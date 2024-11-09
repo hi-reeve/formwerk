@@ -3,6 +3,7 @@ import {
   AriaDescribableProps,
   AriaInputProps,
   AriaLabelableProps,
+  EventHandler,
   InputBaseAttributes,
   InputEvents,
   Reactivify,
@@ -39,7 +40,7 @@ export interface SwitchDOMProps extends AriaInputProps, AriaLabelableProps, Aria
   role: 'switch';
   'aria-checked'?: boolean;
 
-  onClick: (e: Event) => void;
+  onClick: EventHandler;
 }
 
 export type SwitchProps = {
@@ -119,7 +120,7 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
     setTouched(true);
   }
 
-  const handlers: InputEvents & { onClick: (e: Event) => void } = {
+  const handlers: InputEvents & { onClick: EventHandler } = {
     onKeydown: (evt: KeyboardEvent) => {
       if (hasKeyCode(evt, 'Space') || hasKeyCode(evt, 'Enter')) {
         evt.preventDefault();
