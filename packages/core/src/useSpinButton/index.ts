@@ -215,7 +215,7 @@ export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
     }
 
     return {
-      type: 'button',
+      type: 'button' as const,
       disabled: baseProps.disabled,
     };
   }

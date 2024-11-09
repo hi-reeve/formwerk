@@ -1,4 +1,4 @@
-import { Ref, computed, inject, ref, toValue } from 'vue';
+import { type CSSProperties, type Ref, computed, inject, ref, toValue } from 'vue';
 import { SliderContext, SliderInjectionKey, ThumbRegistration } from './useSlider';
 import { normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
 import { Reactivify } from '../types';
@@ -95,7 +95,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
     );
   });
 
-  function getPositionStyle() {
+  function getPositionStyle(): CSSProperties {
     const value = slider.getThumbValue();
     const { min, max } = slider.getSliderRange();
     const dir = slider.getInlineDirection();

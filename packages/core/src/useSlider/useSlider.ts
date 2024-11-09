@@ -1,4 +1,4 @@
-import { InjectionKey, computed, onBeforeUnmount, provide, ref, toValue } from 'vue';
+import { type CSSProperties, type InjectionKey, computed, onBeforeUnmount, provide, ref, toValue } from 'vue';
 import { useLabel } from '../a11y/useLabel';
 import { AriaLabelableProps, Arrayable, Direction, Orientation, Reactivify, StandardSchema } from '../types';
 import {
@@ -182,7 +182,7 @@ export function useSlider(_props: Reactivify<SliderProps, 'schema'>) {
 
     return withRefCapture(
       {
-        style: { 'container-type': isVertical ? 'size' : 'inline-size', position: 'relative' },
+        style: { 'container-type': isVertical ? 'size' : 'inline-size', position: 'relative' } as CSSProperties,
         onMousedown(e: MouseEvent) {
           if (!trackEl.value || !isMutable()) {
             return;

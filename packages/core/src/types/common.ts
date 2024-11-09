@@ -38,10 +38,10 @@ export type AriaInputProps = {
 };
 
 export type InputEvents = {
-  onInput?: (event: InputEvent) => void;
+  onInput?: (event: Event) => void;
   onChange?: (event: Event) => void;
   onBlur?: (event: Event) => void;
-  onBeforeinput?: (event: InputEvent) => void;
+  onBeforeinput?: (event: Event) => void;
   onInvalid?: (event: Event) => void;
   onKeydown?: (event: KeyboardEvent) => void;
 };

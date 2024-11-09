@@ -137,21 +137,24 @@ export function useNumberField(
     });
 
   const handlers: InputEvents = {
-    onBeforeinput: (event: InputEvent) => {
+    onBeforeinput: (event: Event) => {
+      const inputEvent = event as InputEvent;
       // No data,like backspace or whatever
-      if (isNullOrUndefined(event.data)) {
+      if (isNullOrUndefined(inputEvent.data)) {
         return;
       }
 
-      const el = event.target as HTMLInputElement;
+      const el = inputEvent.target as HTMLInputElement;
       // Kind of predicts the next value of the input by appending the new data
       const nextValue =
-        el.value.slice(0, el.selectionStart ?? undefined) + event.data + el.value.slice(el.selectionEnd ?? undefined);
+        el.value.slice(0, el.selectionStart ?? undefined) +
+        inputEvent.data +
+        el.value.slice(el.selectionEnd ?? undefined);
 
       const isValid = parser.isValidNumberPart(nextValue);
       if (!isValid) {
-        event.preventDefault();
-        event.stopPropagation();
+        inputEvent.preventDefault();
+        inputEvent.stopPropagation();
         return;
       }
     },

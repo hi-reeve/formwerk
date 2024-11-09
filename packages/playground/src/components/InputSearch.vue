@@ -20,7 +20,7 @@ const { inputProps, labelProps, fieldValue, displayError, errorMessageProps, cle
       ></path>
     </svg>
 
-    <input v-bind="inputProps" type="text" placeholder="Search for..." />
+    <input v-bind="inputProps" placeholder="Search for..." />
 
     <span v-bind="errorMessageProps" class="error-message">
       {{ displayError() }}
