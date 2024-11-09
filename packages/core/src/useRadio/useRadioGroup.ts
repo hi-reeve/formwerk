@@ -46,6 +46,7 @@ export interface RadioRegistration {
   getElem(): HTMLElement | undefined;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const RadioGroupKey: InjectionKey<RadioGroupContext<any>> = Symbol('RadioGroupKey');
 
 export interface RadioGroupProps<TValue = string> {
@@ -220,7 +221,7 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
     setValue(value);
   }
 
-  const context: RadioGroupContext<any> = reactive({
+  const context: RadioGroupContext<TValue> = reactive({
     name: computed(() => toValue(props.name) ?? groupId),
     disabled: computed(() => toValue(props.disabled) ?? false),
     readonly: computed(() => toValue(props.readonly) ?? false),

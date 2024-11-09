@@ -49,6 +49,7 @@ export interface FormDomProps {
   id: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const FormKey: InjectionKey<FormContext<any>> = Symbol('Formwerk FormKey');
 
 export function useForm<

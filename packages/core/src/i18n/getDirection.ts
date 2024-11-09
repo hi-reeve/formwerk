@@ -10,7 +10,7 @@ export function getDirection(locale: string): Direction {
   try {
     const instance = new Intl.Locale(locale);
     if ('textInfo' in instance) {
-      return ((instance.textInfo as any).direction as Direction) || 'ltr';
+      return ((instance.textInfo as { direction: Direction }).direction as Direction) || 'ltr';
     }
 
     if ('getTextInfo' in instance && isCallable(instance.getTextInfo)) {

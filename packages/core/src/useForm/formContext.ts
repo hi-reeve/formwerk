@@ -182,7 +182,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
 
     // We escape paths automatically
     Object.keys(newValues).forEach(key => {
-      setFieldValue(escapePath(key) as any, newValues[key]);
+      setFieldValue(escapePath(key) as Path<TForm>, newValues[key] as PathValue<TForm, Path<TForm>>);
     });
   }
 

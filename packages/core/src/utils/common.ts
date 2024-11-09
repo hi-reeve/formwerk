@@ -4,6 +4,7 @@ import {
   AriaDescriptionProps,
   AriaErrorMessageProps,
   Arrayable,
+  DangerousAny,
   IssueCollection,
   Maybe,
   NormalizedProps,
@@ -101,7 +102,7 @@ function arrayToKeys<T extends string | number | symbol>(keys: T[]): Record<T, t
   return keyDict;
 }
 
-export function propsToValues<TProps extends Record<string, MaybeRefOrGetter<any>>>(
+export function propsToValues<TProps extends Record<string, MaybeRefOrGetter<unknown>>>(
   props: TProps,
   keys: (keyof TProps)[],
 ) {
@@ -132,6 +133,7 @@ export function normalizeProps<TProps extends Record<string, unknown>, Exclude e
       }
 
       if (isCallable(props[key])) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return [key, (...args: any[]) => (props[key] as any)(...args)];
       }
 
@@ -159,12 +161,13 @@ export function withRefCapture<TProps>(
   elementRef?: Ref<Maybe<HTMLElement>>,
 ): TProps {
   if (!elementRef) {
-    (props as any).ref = createRefCapture(inputEl);
+    (props as typeof props & { ref: (el: HTMLElement) => void }).ref = createRefCapture(inputEl);
   }
 
   return props;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isCallable(fn: unknown): fn is (...args: any[]) => any {
   return typeof fn === 'function';
 }
@@ -220,8 +223,8 @@ export function isFile(a: unknown): a is File {
  * Compares if two values are the same borrowed from:
  * https://github.com/epoberezkin/fast-deep-equal
  * We added a case for file matching since `Object.keys` doesn't work with Files.
- * */
-export function isEqual(a: any, b: any) {
+ **/
+export function isEqual(a: DangerousAny, b: DangerousAny) {
   if (a === b) return true;
 
   if (a && b && typeof a === 'object' && typeof b === 'object') {
@@ -262,10 +265,10 @@ export function isEqual(a: any, b: any) {
     }
 
     if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
-      length = (a as any).length;
+      length = (a as DangerousAny).length;
 
-      if (length != (b as any).length) return false;
-      for (i = length; i-- !== 0; ) if ((a as any)[i] !== (b as any)[i]) return false;
+      if (length != (b as DangerousAny).length) return false;
+      for (i = length; i-- !== 0; ) if ((a as DangerousAny)[i] !== (b as DangerousAny)[i]) return false;
       return true;
     }
 
@@ -292,6 +295,7 @@ export function isEqual(a: any, b: any) {
 }
 
 export function withLatestCall<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TFunction extends (...args: any[]) => Promise<any>,
   TResult = AsyncReturnType<TFunction>,
 >(fn: TFunction, onDone: (result: TResult, args: Parameters<TFunction>) => TResult) {
@@ -311,12 +315,12 @@ export function withLatestCall<
   };
 }
 
-export function batchAsync<TFunction extends (...args: any) => Promise<any>, TResult = AsyncReturnType<TFunction>>(
-  inner: TFunction,
-  ms = 0,
-): (...args: Parameters<TFunction>) => Promise<TResult> {
+export function batchAsync<
+  TFunction extends (...args: unknown[]) => Promise<unknown>,
+  TResult = AsyncReturnType<TFunction>,
+>(inner: TFunction, ms = 0): (...args: Parameters<TFunction>) => Promise<TResult> {
   let timer: number | null = null;
-  let resolves: any[] = [];
+  let resolves: ((value: TResult | Promise<TResult>) => void)[] = [];
 
   return function (...args: Parameters<TFunction>) {
     // Run the function after a certain amount of time
@@ -327,9 +331,9 @@ export function batchAsync<TFunction extends (...args: any) => Promise<any>, TRe
     timer = window.setTimeout(() => {
       // Get the result of the inner function, then apply it to the resolve function of
       // each promise that has been created since the last time the inner function was run
-      const result = inner(...(args as any));
+      const result = inner(...args);
 
-      resolves.forEach(r => r(result));
+      resolves.forEach(r => r(result as TResult));
       resolves = [];
     }, ms);
 

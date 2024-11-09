@@ -99,8 +99,11 @@ export type NormalizedProps<TProps extends object, Exclude extends keyof TProps 
 
 export type Arrayable<T> = T | T[];
 
-export type FormObject = Record<string, any>;
+export type FormObject = Record<string, unknown>;
 
 export type MaybeAsync<T> = T | Promise<T>;
 
 export type MaybeGetter<T> = T | Getter<T>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type DangerousAny = any;

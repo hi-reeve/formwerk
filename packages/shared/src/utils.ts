@@ -25,6 +25,7 @@ export function isPlainObject(value: unknown) {
   return Object.getPrototypeOf(value) === proto;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function merge(target: any, source: any) {
   Object.keys(source).forEach(key => {
     if (isPlainObject(source[key]) && isPlainObject(target[key])) {

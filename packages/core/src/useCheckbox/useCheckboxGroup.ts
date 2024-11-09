@@ -58,6 +58,7 @@ export interface CheckboxGroupContext<TCheckbox> {
   useCheckboxRegistration(checkbox: CheckboxRegistration): void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const CheckboxGroupKey: InjectionKey<CheckboxGroupContext<any>> = Symbol('CheckboxGroupKey');
 
 export interface CheckboxGroupProps<TCheckbox = unknown> {

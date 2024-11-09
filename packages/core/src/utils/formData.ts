@@ -1,7 +1,7 @@
 import { isObject } from '../../../shared/src';
-import { isNullOrUndefined } from './common';
+import { isFile, isFileOrBlob, isNullOrUndefined } from './common';
 
-export function appendToFormData(jsonObject: Record<string, any>, formData: FormData, parentKey = ''): FormData {
+export function appendToFormData(jsonObject: Record<string, unknown>, formData: FormData, parentKey = ''): FormData {
   for (const key in jsonObject) {
     if (!Object.prototype.hasOwnProperty.call(jsonObject, key)) {
       continue;
@@ -10,8 +10,8 @@ export function appendToFormData(jsonObject: Record<string, any>, formData: Form
     const value = jsonObject[key];
     const newKey = parentKey ? `${parentKey}[${key}]` : key;
 
-    if (value instanceof File) {
-      formData.append(newKey, value, value.name);
+    if (isFileOrBlob(value)) {
+      formData.append(newKey, value, isFile(value) ? value.name : undefined);
       continue;
     }
 
@@ -35,7 +35,7 @@ export function appendToFormData(jsonObject: Record<string, any>, formData: Form
       continue;
     }
 
-    formData.append(newKey, value);
+    formData.append(newKey, String(value));
   }
 
   return formData;
