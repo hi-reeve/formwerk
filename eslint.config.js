@@ -22,12 +22,18 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['packages/**/dist/*', 'coverage/*'],
-  },
-  {
     files: ['packages/playground/postcss.config.js'],
     languageOptions: {
       sourceType: 'commonjs',
     },
+  },
+  {
+    files: ['packages/**/*.spec.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
+  {
+    ignores: ['packages/**/dist/*', 'coverage/*'],
   },
 );

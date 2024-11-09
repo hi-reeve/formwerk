@@ -3,7 +3,7 @@ import { consola } from 'consola';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
-import { rollup } from 'rollup';
+import { rollup, type RollupOptions, type OutputOptions } from 'rollup';
 import dts from 'rollup-plugin-dts';
 import tsconfig from '../tsconfig.json' assert { type: 'json' };
 import { pkgNameMap } from './config';
@@ -21,7 +21,7 @@ export async function generateDts(pkg) {
     declarationMap: false,
     emitDeclarationOnly: true,
     declarationDir,
-  } as any;
+  } as unknown as ts.CompilerOptions;
 
   const host = ts.createCompilerHost(options);
   const createdFiles = {};
@@ -58,8 +58,8 @@ async function bundleDts(declarationDir, pkg) {
     plugins: [dts()],
   };
 
-  const bundle = await rollup(config as any);
-  await bundle.write(config.output as any);
+  const bundle = await rollup(config as RollupOptions);
+  await bundle.write(config.output as OutputOptions);
   await fs.remove(`packages/${pkg}/dist/types`);
   consola.success(`👕 Bundled ${pkg} Declaration Files`);
 }
