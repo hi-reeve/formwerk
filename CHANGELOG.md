@@ -1,5 +1,14 @@
 # @formwerk/core
 
+## 0.1.26
+
+### Patch Changes
+
+- 07d8f23: feat: add aria-disabled on trigger select props
+- 729364a: feat: bump support for standard schema beta 4
+- 8f053c3: fix(types): Make slider constrains numberish for consistency
+- 7c4dcf8: fix(types): ensure produced field bindings are type safe
+
 ## 0.1.25
 
 ### Patch Changes
