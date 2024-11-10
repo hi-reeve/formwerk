@@ -37,6 +37,7 @@ export interface SelectTriggerDomProps extends AriaLabelableProps {
   id: string;
   role: 'combobox';
   'aria-haspopup': 'listbox';
+  'aria-disabled'?: boolean;
   'aria-expanded': boolean;
 }
 
@@ -221,6 +222,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
       role: 'combobox',
       'aria-haspopup': 'listbox',
       'aria-expanded': isPopupOpen.value,
+      'aria-disabled': isDisabled() || undefined,
       ...handlers,
     };
   });
