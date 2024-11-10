@@ -36,7 +36,7 @@ export interface SwitchDomInputProps
 
 export interface SwitchDOMProps extends AriaInputProps, AriaLabelableProps, AriaDescribableProps, InputEvents {
   id: string;
-  tabindex: '0';
+  tabindex: '0' | '-1';
   role: 'switch';
   'aria-checked'?: boolean;
 
@@ -64,7 +64,8 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.Switch);
   const inputEl = elementRef || shallowRef<HTMLInputElement>();
-  const isMutable = () => !toValue(props.readonly) && !toValue(props.disabled);
+  const isDisabled = () => toValue(props.disabled);
+  const isMutable = () => !toValue(props.readonly) && !isDisabled();
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
@@ -175,7 +176,7 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
       [isInput ? 'checked' : 'aria-checked']: isPressed.value || false,
       [isInput ? 'required' : 'aria-required']: toValue(props.required) || undefined,
       [isInput ? 'readonly' : 'aria-readonly']: toValue(props.readonly) || undefined,
-      [isInput ? 'disabled' : 'aria-disabled']: toValue(props.disabled) || undefined,
+      [isInput ? 'disabled' : 'aria-disabled']: isDisabled() || undefined,
       role: 'switch' as const,
     };
 
@@ -191,7 +192,7 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
     return {
       ...base,
       onClick,
-      tabindex: '0',
+      tabindex: isDisabled() ? '-1' : '0',
       onKeydown: handlers.onKeydown,
     };
   }
