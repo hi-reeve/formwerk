@@ -218,7 +218,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
       ...describedByProps.value,
       ...accessibleErrorProps.value,
       id: inputId,
-      tabindex: '0',
+      tabindex: isDisabled() ? '-1' : '0',
       role: 'combobox',
       'aria-haspopup': 'listbox',
       'aria-expanded': isPopupOpen.value,
