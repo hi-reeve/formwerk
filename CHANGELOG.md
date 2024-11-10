@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.1.27
+
+### Patch Changes
+
+- e5c4a82: fix: disallow focus from disabled select trigger
+- e0e11e9: fix: disallow focus from disabled switches
+
 ## 0.1.26
 
 ### Patch Changes
