@@ -203,12 +203,32 @@ export function useListBox<TOption, TValue = TOption>(
     focusNext();
   });
 
+  function mapOption(opt: OptionRegistration<TValue>) {
+    return {
+      id: opt.id,
+      value: opt.getValue(),
+      label: opt.getLabel(),
+    };
+  }
+
+  const selectedOption = computed(() => {
+    const opt = options.value.find(opt => opt.isSelected());
+
+    return opt ? mapOption(opt) : undefined;
+  });
+
+  const selectedOptions = computed(() => {
+    return options.value.filter(opt => opt.isSelected()).map(opt => mapOption(opt));
+  });
+
   return {
     listBoxProps,
     isPopupOpen: isOpen,
     options,
     isShiftPressed,
     listBoxEl,
+    selectedOption,
+    selectedOptions,
   };
 }
 
