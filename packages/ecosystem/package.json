@@ -4,6 +4,6 @@
   "dependencies": {
     "@formwerk/core": "workspace:*",
     "arktype": "2.0.0-rc.23",
-    "valibot": "1.0.0-beta.4"
+    "valibot": "1.0.0-beta.6"
   }
 }
