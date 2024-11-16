@@ -2,18 +2,17 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://formwerk.dev/logo-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="https://formwerk.dev/logo-light.svg">
-  <img alt="Formwerk Logo" src="https://formwerk.dev/logo-dark.svg">
+  <img alt="Formwerk Logo" src="https://formwerk.dev/logo-dark.svg" width="340">
 </picture>
 </p>
 
 <p align="center">
-
-[![Discord](https://img.shields.io/discord/1198932605740003388?logo=discord&logoColor=white)](https://discord.gg/gQ7wqpvT5X)
-
-</p>
-
-<p align="center">
-  <a href="https://formwerk.dev">📚 Documentation website</a>
+  <a href="https://formwerk.dev">
+    <img src="https://img.shields.io/badge/Documentation-02B361?logo=gitbook&logoColor=white" alt="Documentation">
+  </a>
+  <a href="https://discord.gg/gQ7wqpvT5X">
+    <img src="https://img.shields.io/discord/1198932605740003388?logo=discord&logoColor=white" alt="Discord">
+  </a>
 </p>
 
 # Formwerk
