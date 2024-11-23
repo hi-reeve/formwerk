@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "@formwerk/core": "workspace:*",
-    "arktype": "2.0.0-rc.23",
-    "valibot": "1.0.0-beta.6"
+    "arktype": "2.0.0-rc.24",
+    "valibot": "1.0.0-beta.8"
   }
 }
