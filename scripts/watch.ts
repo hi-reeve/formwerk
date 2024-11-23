@@ -1,7 +1,15 @@
 import { consola } from 'consola';
+import { fileURLToPath } from 'url';
 import { watch } from 'rollup';
 import { createConfig, pkgNameMap } from './config';
 import { generateDts } from './generate-dts';
+import path, { dirname } from 'path';
+import { ModuleFormat } from 'rollup';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const formats: ModuleFormat[] = ['es', 'iife', 'cjs'];
 
 (async function RunWatcher() {
   const arg = [...process.argv][2];
@@ -10,24 +18,28 @@ import { generateDts } from './generate-dts';
       .filter(pkg => {
         return arg === pkg || !arg;
       })
-      .map(async pkg => {
-        const config = await createConfig(pkg as keyof typeof pkgNameMap, 'es');
+      .map(pkg => {
+        return Promise.all(
+          formats.map(async f => {
+            const config = await createConfig(pkg as keyof typeof pkgNameMap, f);
 
-        return {
-          pkg,
-          config,
-        };
+            return {
+              config,
+              pkg: pkg as keyof typeof pkgNameMap,
+            };
+          }),
+        );
       }),
   );
 
   const watcher = watch(
-    packages.map(({ pkg, config }) => {
+    packages.flat().map(({ pkg, config }) => {
       return {
         input: config.input.input,
         plugins: config.input.plugins,
         output: {
           ...config.output,
-          file: `packages/${pkgNameMap[pkg]}/dist/${config.bundleName}`,
+          file: path.join(__dirname, `../packages/${pkgNameMap[pkg]}/dist/${config.bundleName}`),
         },
         external: config.input.external,
       };
@@ -38,13 +50,13 @@ import { generateDts } from './generate-dts';
 
   watcher.on('change', async (file, { event }) => {
     if (event === 'update') {
-      consola.info(`📦 ${file} changed, rebuilding...`);
+      info(`📦 ${file} changed, rebuilding...`);
     }
     if (event === 'create') {
-      consola.info(`📦 ${file} created, rebuilding...`);
+      info(`📦 ${file} created, rebuilding...`);
     }
     if (event === 'delete') {
-      consola.info(`📦 ${file} deleted, rebuilding...`);
+      info(`📦 ${file} deleted, rebuilding...`);
     }
 
     const pkgRE = /packages\/([^/]+)\//;
@@ -59,3 +71,10 @@ import { generateDts } from './generate-dts';
     }
   });
 })();
+
+function info(message: string) {
+  consola.info({
+    message,
+    date: new Date(),
+  });
+}
