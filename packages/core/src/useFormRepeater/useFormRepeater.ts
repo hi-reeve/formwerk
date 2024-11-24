@@ -162,14 +162,12 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     return records.value.length - count >= min;
   }
 
-  /**
-   * Adds an item to the repeater.
-   */
   function add(count = 1) {
     if (!canAdd(count)) {
       if (__DEV__) {
         warn(`Cannot add ${count} item(s) to repeater since max is ${toValue(repeaterProps.max)}`);
       }
+
       return;
     }
 
@@ -180,14 +178,12 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     });
   }
 
-  /**
-   * Removes an item from the repeater.
-   */
   function remove(index: number) {
     if (!canRemove()) {
       if (__DEV__) {
         warn(`Cannot remove item from repeater since min is ${toValue(repeaterProps.min)}`);
       }
+
       return;
     }
 
@@ -196,14 +192,20 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     });
   }
 
-  /**
-   * Inserts an item into the repeater at a given index.
-   */
   function insert(index: number) {
     if (!canAdd()) {
       if (__DEV__) {
         warn(`Cannot insert item to repeater since max is ${toValue(repeaterProps.max)}`);
       }
+
+      return;
+    }
+
+    if (index < 0 || index > records.value.length) {
+      if (__DEV__) {
+        warn(`Cannot insert item at index ${index} since it is out of bounds`);
+      }
+
       return;
     }
 
@@ -212,19 +214,45 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     });
   }
 
-  /**
-   * Moves an item in the repeater from one index to another.
-   */
   function move(from: number, to: number) {
+    if (from === to) {
+      if (__DEV__) {
+        warn('Cannot move item to the same index');
+      }
+
+      return;
+    }
+
+    if (from < 0 || from >= records.value.length || to < 0 || to >= records.value.length) {
+      if (__DEV__) {
+        warn(`Cannot move item from ${from} to ${to} since it is out of bounds`);
+      }
+
+      return;
+    }
+
     mutateWith(() => {
       records.value.splice(to, 0, records.value.splice(from, 1)[0]);
     });
   }
 
-  /**
-   * Swaps two items in the repeater.
-   */
   function swap(indexA: number, indexB: number) {
+    if (indexA === indexB) {
+      if (__DEV__) {
+        warn('Cannot swap item with itself');
+      }
+
+      return;
+    }
+
+    if (indexA < 0 || indexA >= records.value.length || indexB < 0 || indexB >= records.value.length) {
+      if (__DEV__) {
+        warn(`Cannot swap item from ${indexA} to ${indexB} since it is out of bounds`);
+      }
+
+      return;
+    }
+
     mutateWith(() => {
       const newRecords = [...records.value];
       newRecords[indexA] = records.value[indexB];
@@ -324,10 +352,25 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
      * Props for the add item button.
      */
     addButtonProps,
+    /**
+     * Adds a number of items to the repeater, defaulting to 1. Cannot exceed the max.
+     */
     add,
+    /**
+     * Swaps two items in the repeater.
+     */
     swap,
+    /**
+     * Removes an item from the repeater. Cannot go below the min.
+     */
     remove,
+    /**
+     * Moves an item in the repeater from one index to another.
+     */
     move,
+    /**
+     * Inserts an item into the repeater at a given index.
+     */
     insert,
     /**
      * The iteration component. You should use this component to wrap each repeated item.

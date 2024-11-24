@@ -4,7 +4,7 @@ import { useFormRepeater, FormRepeaterProps } from './useFormRepeater';
 import { flush } from '@test-utils/index';
 
 async function renderTest(props: FormRepeaterProps) {
-  const { addButtonProps, items, Iteration, swap, insert, remove } = useFormRepeater(props);
+  const { addButtonProps, items, Iteration, swap, insert, remove, move } = useFormRepeater(props);
 
   const TestComponent = defineComponent({
     components: { Iteration },
@@ -37,6 +37,7 @@ async function renderTest(props: FormRepeaterProps) {
     swap,
     insert,
     remove,
+    move,
   };
 }
 
@@ -345,4 +346,74 @@ test('renders Iteration component with correct props with custom element', async
 
   const content = screen.getByTestId('repeater-item');
   expect(content).toBeInTheDocument();
+});
+
+test('warns if move is called with the same index', async () => {
+  const { move } = await renderTest({
+    name: 'testRepeater',
+    min: 1,
+  });
+
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  move(0, 0);
+  await flush();
+
+  expect(warn).toHaveBeenCalledOnce();
+  warn.mockRestore();
+});
+
+test('warns if move is called with an out of bounds index', async () => {
+  const { move } = await renderTest({
+    name: 'testRepeater',
+    min: 1,
+  });
+
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  move(0, 10);
+  await flush();
+
+  expect(warn).toHaveBeenCalledOnce();
+  warn.mockRestore();
+});
+
+test('warns if insert is called with an out of bounds index', async () => {
+  const { insert } = await renderTest({
+    name: 'testRepeater',
+    min: 1,
+  });
+
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  insert(10);
+  await flush();
+
+  expect(warn).toHaveBeenCalledOnce();
+  warn.mockRestore();
+});
+
+test('warns if swap is called with the same index', async () => {
+  const { swap } = await renderTest({
+    name: 'testRepeater',
+    min: 1,
+  });
+
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  swap(0, 0);
+  await flush();
+
+  expect(warn).toHaveBeenCalledOnce();
+  warn.mockRestore();
+});
+
+test('warns if swap is called with an out of bounds index', async () => {
+  const { swap } = await renderTest({
+    name: 'testRepeater',
+    min: 1,
+  });
+
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  swap(0, 10);
+  await flush();
+
+  expect(warn).toHaveBeenCalledOnce();
+  warn.mockRestore();
 });
