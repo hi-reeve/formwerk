@@ -1,5 +1,17 @@
 # @formwerk/core
 
+## 0.2.0
+
+### Minor Changes
+
+- 3846584: feat: implement slider discrete values
+- bbba9bf: feat: implement disabled form tree
+- f39a332: feat: added toObject and make toJSON produce valid JSON output
+
+### Patch Changes
+
+- bd2adac: feat: added selectedOption and selectedOptions helpers
+
 ## 0.1.27
 
 ### Patch Changes
