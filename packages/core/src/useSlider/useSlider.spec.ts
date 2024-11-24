@@ -521,4 +521,52 @@ describe('discrete steps', () => {
     expect(sliders[0]).toHaveAttribute('aria-valuenow', '0');
     expect(sliders[1]).toHaveAttribute('aria-valuenow', '2');
   });
+
+  test('value text shows option value by default', async () => {
+    const Thumb = createThumbComponent({});
+
+    const DiscreteSlider = createSliderComponent({
+      label: 'Slider',
+      options: ['low', 'medium', 'high'],
+      modelValue: 'low',
+    });
+
+    await render({
+      components: { Thumb, DiscreteSlider },
+      template: `
+        <DiscreteSlider>
+          <Thumb />
+        </DiscreteSlider>
+    `,
+    });
+
+    await fireEvent.mouseDown(screen.getByTestId('track'), { clientX: 80, clientY: 1 });
+    expect(screen.getByTestId('slider-value')).toHaveTextContent('high');
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-valuetext', 'high');
+  });
+
+  test('value text shows formatted value if provided', async () => {
+    const Thumb = createThumbComponent({
+      formatValue: value => `Priority ${value}`,
+    });
+
+    const DiscreteSlider = createSliderComponent({
+      label: 'Slider',
+      options: ['low', 'medium', 'high'],
+      modelValue: 'low',
+    });
+
+    await render({
+      components: { Thumb, DiscreteSlider },
+      template: `
+        <DiscreteSlider>
+          <Thumb />
+        </DiscreteSlider>
+    `,
+    });
+
+    await fireEvent.mouseDown(screen.getByTestId('track'), { clientX: 80, clientY: 1 });
+    expect(screen.getByTestId('slider-value')).toHaveTextContent('high');
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-valuetext', 'Priority high');
+  });
 });

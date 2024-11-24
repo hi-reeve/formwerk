@@ -7,7 +7,7 @@ import { useLocale } from '../i18n';
 import { FieldTypePrefixes, NOOP } from '../constants';
 import { createDisabledContext } from '../helpers/createDisabledContext';
 
-export interface SliderThumbProps {
+export interface SliderThumbProps<TValue = number> {
   /**
    * The label text for the slider thumb.
    */
@@ -16,16 +16,24 @@ export interface SliderThumbProps {
   /**
    * The v-model value of the slider thumb.
    */
-  modelValue?: number;
+  modelValue?: TValue;
 
   /**
    * Whether the slider thumb is disabled.
    */
   disabled?: boolean;
+
+  /**
+   * A function to format the value text of the slider thumb. Used for setting the `aria-valuetext` attribute.
+   */
+  formatValue?: (value: TValue) => string;
 }
 
-export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?: Ref<HTMLElement>) {
-  const props = normalizeProps(_props);
+export function useSliderThumb<TValue = number>(
+  _props: Reactivify<SliderThumbProps<TValue>, 'formatValue'>,
+  elementRef?: Ref<HTMLElement>,
+) {
+  const props = normalizeProps(_props, ['formatValue']);
   const thumbEl = elementRef || ref<HTMLElement>();
   const isDisabled = createDisabledContext(props.disabled);
   const isDragging = ref(false);
@@ -64,7 +72,7 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
 
   const slider = inject(SliderInjectionKey, mockSlider, true).useSliderThumbRegistration(thumbContext);
   const thumbValue = computed(() => slider.getThumbValue());
-  const thumbRealValue = computed(() => slider.getRealThumbValue());
+  const thumbRealValue = computed(() => slider.getRealThumbValue() as TValue);
 
   if ('__isMock' in slider) {
     warn(
@@ -72,10 +80,17 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
     );
   }
 
+  const textValue = computed(() => {
+    const realValue = slider.getRealThumbValue() as TValue;
+
+    return props.formatValue ? props.formatValue(realValue) : String(realValue);
+  });
+
   const { spinButtonProps, applyClamp } = useSpinButton({
     current: thumbValue,
     disabled: isDisabled,
     orientation: 'both',
+    currentText: textValue,
     min: () => slider.getThumbRange().min,
     max: () => slider.getThumbRange().max,
     step: () => slider.getSliderStep(),
@@ -181,5 +196,9 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
      * Reference to the thumb element.
      */
     thumbEl,
+    /**
+     * The current formatted value of the thumb.
+     */
+    currentText: textValue,
   };
 }

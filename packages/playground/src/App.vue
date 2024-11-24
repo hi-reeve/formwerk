@@ -25,7 +25,7 @@ const stops: Step[] = ['One', 'Two', 'Three'];
 <template>
   <h2 class="text-2xl font-bold text-white">Registration Form</h2>
 
-  <MultiSlider v-model="value" :options="stops" />
+  <MultiSlider v-model="value" label="Select Steps" :options="stops" />
 
   {{ value }}
   <button>Submit</button>
