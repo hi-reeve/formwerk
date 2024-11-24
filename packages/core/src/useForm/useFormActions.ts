@@ -38,6 +38,29 @@ export interface SubmitContext {
   event?: Event | SubmitEvent;
 }
 
+export interface FormActions<TForm extends FormObject, TOutput extends FormObject> {
+  /**
+   * Creates a submit handler for the form.
+   * @example
+   * ```ts
+   * const onSubmit = actions.handleSubmit((data, { form }) => {
+   *   console.log(data.toObject(), form);
+   * });
+   * ```
+   */
+  handleSubmit: (
+    onSuccess: (payload: ConsumableData<TOutput>, ctx: SubmitContext) => MaybeAsync<unknown>,
+  ) => (e?: Event) => Promise<unknown>;
+  /**
+   * Resets the form to its initial state.
+   */
+  reset: (state?: Partial<ResetState<TForm>>, opts?: SetValueOptions) => Promise<void>;
+  /**
+   * Validates the form.
+   */
+  validate: () => Promise<FormValidationResult<TOutput>>;
+}
+
 export function useFormActions<TForm extends FormObject = FormObject, TOutput extends FormObject = TForm>(
   form: BaseFormContext<TForm>,
   { disabled, schema }: FormActionsOptions<TForm, TOutput>,
@@ -128,12 +151,14 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     return Promise.resolve();
   }
 
+  const actions: FormActions<TForm, TOutput> = {
+    handleSubmit,
+    reset,
+    validate,
+  };
+
   return {
-    actions: {
-      handleSubmit,
-      reset,
-      validate,
-    },
+    actions,
     requestValidation,
     onSubmitAttempt,
     onValidationDispatch,

@@ -17,7 +17,7 @@ import {
 } from '../types';
 import { createFormContext, BaseFormContext } from './formContext';
 import { FormTransactionManager, useFormTransactions } from './useFormTransactions';
-import { useFormActions } from './useFormActions';
+import { FormActions, useFormActions } from './useFormActions';
 import { useFormSnapshots } from './formSnapshot';
 import { findLeaf } from '../utils/path';
 import { getConfig } from '../config';
@@ -26,7 +26,7 @@ import { appendToFormData, clearFormData } from '../utils/formData';
 import { PartialDeep } from 'type-fest';
 import { createDisabledContext } from '../helpers/createDisabledContext';
 
-export interface FormOptions<TSchema extends GenericFormSchema, TInput extends FormObject = v1.InferInput<TSchema>> {
+export interface FormProps<TSchema extends GenericFormSchema, TInput extends FormObject = v1.InferInput<TSchema>> {
   /**
    * The form's unique identifier.
    */
@@ -81,16 +81,16 @@ export function useForm<
   TSchema extends GenericFormSchema,
   TInput extends FormObject = v1.InferInput<TSchema>,
   TOutput extends FormObject = v1.InferOutput<TSchema>,
->(opts?: Partial<FormOptions<TSchema, TInput>>) {
-  const touchedSnapshot = useFormSnapshots(opts?.initialTouched);
-  const valuesSnapshot = useFormSnapshots<TInput, TOutput>(opts?.initialValues, {
+>(props?: Partial<FormProps<TSchema, TInput>>) {
+  const touchedSnapshot = useFormSnapshots(props?.initialTouched);
+  const valuesSnapshot = useFormSnapshots<TInput, TOutput>(props?.initialValues, {
     onAsyncInit,
-    schema: opts?.schema as StandardSchema<TInput, TOutput>,
+    schema: props?.schema as StandardSchema<TInput, TOutput>,
   });
 
-  const id = opts?.id || useUniqId(FieldTypePrefixes.Form);
-  const isDisabled = createDisabledContext(opts?.disabled);
-  const isHtmlValidationDisabled = () => opts?.disableHtmlValidation ?? getConfig().disableHtmlValidation;
+  const id = props?.id || useUniqId(FieldTypePrefixes.Form);
+  const isDisabled = createDisabledContext(props?.disabled);
+  const isHtmlValidationDisabled = () => props?.disableHtmlValidation ?? getConfig().disableHtmlValidation;
   const values = reactive(cloneDeep(valuesSnapshot.originals.value)) as PartialDeep<TInput>;
   const touched = reactive(cloneDeep(touchedSnapshot.originals.value)) as TouchedSchema<TInput>;
   const disabled = {} as DisabledSchema<TInput>;
@@ -101,7 +101,7 @@ export function useForm<
     values: values as TInput,
     touched,
     disabled,
-    schema: opts?.schema as StandardSchema<TInput, TOutput>,
+    schema: props?.schema as StandardSchema<TInput, TOutput>,
     errors,
     snapshots: {
       values: valuesSnapshot,
@@ -128,7 +128,7 @@ export function useForm<
   const transactionsManager = useFormTransactions(ctx);
   const { actions, isSubmitting, ...privateActions } = useFormActions<TInput, TOutput>(ctx, {
     disabled,
-    schema: opts?.schema as StandardSchema<TInput, TOutput>,
+    schema: props?.schema as StandardSchema<TInput, TOutput>,
   });
 
   function getErrors() {
@@ -174,11 +174,15 @@ export function useForm<
     onFormdata,
   };
 
-  return {
+  const baseReturns = {
     /**
      * The current values of the form.
      */
     values: readonly(values),
+    /**
+     * The form context object, for internal use.
+     * @private
+     */
     context: ctx,
     /**
      * Whether the form is submitting.
@@ -244,6 +248,10 @@ export function useForm<
      * Props for the form element.
      */
     formProps,
-    ...actions,
   };
+
+  return {
+    ...baseReturns,
+    ...actions,
+  } as typeof baseReturns & FormActions<TInput, TOutput>;
 }

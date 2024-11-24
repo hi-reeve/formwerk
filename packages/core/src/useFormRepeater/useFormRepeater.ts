@@ -1,9 +1,10 @@
 import {
   computed,
+  type DefineComponent,
   defineComponent,
   h,
   inject,
-  MaybeRefOrGetter,
+  type MaybeRefOrGetter,
   nextTick,
   onMounted,
   readonly,
@@ -27,7 +28,6 @@ import {
 import { FieldTypePrefixes } from '../constants';
 import { createPathPrefixer } from '../helpers/usePathPrefixer';
 import { prefixPath } from '../utils/path';
-import { Simplify } from 'type-fest';
 
 export interface FormRepeaterProps {
   /**
@@ -81,12 +81,32 @@ export interface FormRepeaterButtonDomProps {
   onClick: () => void;
 }
 
-export interface FormRepeaterIterationSlotProps {
+export interface FormRepeaterIterationProps {
+  /**
+   * The index of the current repeated item. This is required.
+   */
   index: number;
-  path: string;
-  key: string;
+
+  /**
+   * The tag name to render the iteration as.
+   */
+  as?: string;
+}
+
+export interface FormRepeaterIterationSlotProps {
+  /**
+   * Props for the move item down button.
+   */
   moveDownButtonProps: FormRepeaterButtonDomProps;
+
+  /**
+   * Props for the move item up button.
+   */
   moveUpButtonProps: FormRepeaterButtonDomProps;
+
+  /**
+   * Props for the remove item button.
+   */
   removeButtonProps: FormRepeaterButtonDomProps;
 }
 
@@ -309,10 +329,13 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     remove,
     move,
     insert,
-    Iteration: Iteration as typeof Iteration & {
+    /**
+     * The iteration component. You should use this component to wrap each repeated item.
+     */
+    Iteration: Iteration as DefineComponent<FormRepeaterIterationProps> & {
       new (): {
         $slots: {
-          default: (args: Simplify<Omit<FormRepeaterIterationSlotProps, 'index' | 'path' | 'key'>>) => VNode[];
+          default: (args: FormRepeaterIterationSlotProps) => VNode[];
         };
       };
     },

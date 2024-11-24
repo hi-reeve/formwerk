@@ -1,4 +1,13 @@
-import { type CSSProperties, type InjectionKey, computed, onBeforeUnmount, provide, ref, toValue } from 'vue';
+import {
+  type CSSProperties,
+  ComputedRef,
+  type InjectionKey,
+  computed,
+  onBeforeUnmount,
+  provide,
+  ref,
+  toValue,
+} from 'vue';
 import { useLabel } from '../a11y/useLabel';
 import { AriaLabelableProps, Arrayable, Direction, Numberish, Orientation, Reactivify, StandardSchema } from '../types';
 import {
@@ -97,6 +106,37 @@ export interface ThumbRegistration {
 export interface ValueRange {
   min: number;
   max: number;
+}
+
+interface ThumbMetadata {
+  /**
+   * The current value of the thumb.
+   */
+  value: number;
+  /**
+   * The percent of the slider that the thumb is at.
+   */
+  percent: number;
+  /**
+   * The minimum value of the slider.
+   */
+  min: number;
+  /**
+   * The maximum value of the slider.
+   */
+  max: number;
+  /**
+   * The percent of the slider that the thumb is at.
+   */
+  sliderPercent: number;
+  /**
+   * The minimum value of the slider.
+   */
+  sliderMin: number;
+  /**
+   * The maximum value of the slider.
+   */
+  sliderMax: number;
 }
 
 export interface SliderRegistration<TValue = number> {
@@ -410,7 +450,7 @@ export function useSlider<TValue>(_props: Reactivify<SliderProps<TValue>, 'schem
   /**
    * Gets the metadata for a given thumb.
    */
-  function useThumbMetadata(idx: number) {
+  function useThumbMetadata(idx: number): ComputedRef<ThumbMetadata> {
     return computed(() => {
       const value = getThumbValue(idx);
       if (isNullOrUndefined(value)) {
@@ -430,35 +470,14 @@ export function useSlider<TValue>(_props: Reactivify<SliderProps<TValue>, 'schem
       const percent = (value - min) / (max - min);
 
       return {
-        /**
-         * The current value of the thumb.
-         */
         value,
-        /**
-         * The percent of the slider that the thumb is at.
-         */
         percent,
-        /**
-         * The minimum value of the slider.
-         */
         min,
-        /**
-         * The maximum value of the slider.
-         */
         max,
-        /**
-         * The percent of the slider that the thumb is at.
-         */
         sliderPercent: absolutePercent,
-        /**
-         * The minimum value of the slider.
-         */
         sliderMin: absoluteMin,
-        /**
-         * The maximum value of the slider.
-         */
         sliderMax: absoluteMax,
-      };
+      } satisfies ThumbMetadata;
     });
   }
 
