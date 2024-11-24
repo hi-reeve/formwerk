@@ -12,7 +12,7 @@ import {
   StandardIssue,
   WithId,
 } from '../types';
-import { AsyncReturnType } from 'type-fest';
+import { AsyncReturnType, Simplify } from 'type-fest';
 import { getDotPath } from '@standard-schema/utils';
 
 export function useUniqId(prefix?: string) {
@@ -25,7 +25,7 @@ export function createDescriptionProps(inputId: string): AriaDescriptionProps {
   };
 }
 
-export function createErrorProps(inputId: MaybeRefOrGetter<string>): Ref<WithId<AriaErrorMessageProps>> {
+export function createErrorProps(inputId: MaybeRefOrGetter<string>): Ref<Simplify<WithId<AriaErrorMessageProps>>> {
   return computed(() => ({
     id: `${toValue(inputId)}-r`,
     'aria-live': 'polite',
