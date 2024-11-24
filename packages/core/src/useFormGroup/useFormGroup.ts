@@ -177,17 +177,41 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   provide(FormGroupKey, ctx);
 
   return {
+    /**
+     * Reference to the group element.
+     */
     groupEl,
+    /**
+     * Props for the label element.
+     */
     labelProps,
+    /**
+     * Props for the group element.
+     */
     groupProps,
+    /**
+     * Whether the form group is dirty.
+     */
     isDirty,
+    /**
+     * Whether the form group is valid.
+     */
     isValid,
+    /**
+     * Whether the form group is touched.
+     */
     isTouched,
+    /**
+     * Whether the form group is disabled.
+     */
     isDisabled,
-    getErrors,
-    getValues,
-    getError,
+    /**
+     * Displays an error for a given field.
+     */
     displayError,
+    /**
+     * Validates the form group.
+     */
     validate,
   };
 }

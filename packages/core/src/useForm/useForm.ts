@@ -175,23 +175,74 @@ export function useForm<
   };
 
   return {
+    /**
+     * The current values of the form.
+     */
     values: readonly(values),
     context: ctx,
+    /**
+     * Whether the form is submitting.
+     */
     isSubmitting,
+    /**
+     * Whether the form is touched.
+     */
     isTouched,
+    /**
+     * Whether the form is dirty.
+     */
     isDirty,
+    /**
+     * Whether the form is valid.
+     */
     isValid,
+    /**
+     * Whether the form is disabled.
+     */
     isDisabled,
+    /**
+     * Whether the specified field is dirty.
+     */
     isFieldDirty: ctx.isFieldDirty,
+    /**
+     * Sets the value of a field.
+     */
     setFieldValue: ctx.setFieldValue,
+    /**
+     * Gets the value of a field.
+     */
     getFieldValue: ctx.getFieldValue,
+    /**
+     * Whether the specified field is touched.
+     */
     isFieldTouched: ctx.isFieldTouched,
+    /**
+     * Sets the touched state of a field.
+     */
     setFieldTouched: ctx.setFieldTouched,
+    /**
+     * Sets the errors for a field.
+     */
     setFieldErrors: ctx.setFieldErrors,
+    /**
+     * Sets the values of the form.
+     */
     setValues: ctx.setValues,
+    /**
+     * Gets the errors for a field.
+     */
     getError,
+    /**
+     * Displays an error for a field.
+     */
     displayError,
+    /**
+     * Gets all the errors for the form.
+     */
     getErrors,
+    /**
+     * Props for the form element.
+     */
     formProps,
     ...actions,
   };

@@ -42,9 +42,21 @@ export function useOptionGroup(_props: Reactivify<OptionGroupProps>, elementRef?
   });
 
   return {
+    /**
+     * Props for the label element.
+     */
     labelProps,
+    /**
+     * Props for the group element.
+     */
     groupProps,
+    /**
+     * Reference to the group element.
+     */
     groupEl,
+    /**
+     * Whether the option group is disabled.
+     */
     isDisabled,
   };
 }

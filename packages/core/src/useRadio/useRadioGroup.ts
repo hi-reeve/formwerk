@@ -270,10 +270,25 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
   provide(RadioGroupKey, context);
 
   return {
+    /**
+     * Props for the description element.
+     */
     descriptionProps,
+    /**
+     * Props for the error message element.
+     */
     errorMessageProps,
+    /**
+     * Props for the group element.
+     */
     groupProps,
+    /**
+     * Props for the label element.
+     */
     labelProps,
+    /**
+     * Validity details for the radio group.
+     */
     validityDetails,
     ...exposeField(field),
   };

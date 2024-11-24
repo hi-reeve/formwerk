@@ -241,11 +241,29 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
   }
 
   return {
+    /**
+     * Props for the error message element.
+     */
     errorMessageProps,
+    /**
+     * Reference to the input element.
+     */
     inputEl,
+    /**
+     * Props for the input element.
+     */
     inputProps,
+    /**
+     * Whether the switch is pressed.
+     */
     isPressed,
+    /**
+     * Props for the label element.
+     */
     labelProps,
+    /**
+     * Toggles the pressed state of the switch.
+     */
     togglePressed,
     ...exposeField(field),
   };

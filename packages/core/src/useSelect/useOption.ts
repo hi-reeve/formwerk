@@ -125,9 +125,21 @@ export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>, ele
   });
 
   return {
+    /**
+     * Props for the option element.
+     */
     optionProps,
+    /**
+     * Whether the option is selected.
+     */
     isSelected,
+    /**
+     * Reference to the option element.
+     */
     optionEl,
+    /**
+     * Whether the option is disabled.
+     */
     isDisabled,
   };
 }

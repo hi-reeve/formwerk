@@ -291,16 +291,49 @@ export function useNumberField(
 
   return {
     ...exposeField(field),
+    /**
+     * Decrements the number field value.
+     */
     decrement,
+    /**
+     * Props for the decrement button.
+     */
     decrementButtonProps,
+    /**
+     * Props for the description element.
+     */
     descriptionProps,
+    /**
+     * Props for the error message element.
+     */
     errorMessageProps,
+    /**
+     * Increments the number field value.
+     */
     increment,
+    /**
+     * Props for the increment button.
+     */
     incrementButtonProps,
+    /**
+     * Reference to the input element.
+     */
     inputEl,
+    /**
+     * Props for the input element.
+     */
     inputProps,
+    /**
+     * Props for the label element.
+     */
     labelProps,
+    /**
+     * Validity details for the number field.
+     */
     validityDetails,
+    /**
+     * The formatted text of the number field.
+     */
     formattedText,
   };
 }

@@ -161,10 +161,25 @@ export function useSliderThumb(_props: Reactivify<SliderThumbProps>, elementRef?
   }
 
   return {
+    /**
+     * Props for the thumb element.
+     */
     thumbProps,
+    /**
+     * The current value of the thumb.
+     */
     currentValue: thumbRealValue,
+    /**
+     * Whether the thumb is currently being dragged.
+     */
     isDragging,
+    /**
+     * Whether the thumb is disabled.
+     */
     isDisabled,
+    /**
+     * Reference to the thumb element.
+     */
     thumbEl,
   };
 }

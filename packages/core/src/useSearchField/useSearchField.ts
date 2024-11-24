@@ -229,12 +229,33 @@ export function useSearchField(
   );
 
   return {
+    /**
+     * Reference to the input element.
+     */
     inputEl,
+    /**
+     * Props for the input element.
+     */
     inputProps,
+    /**
+     * Props for the label element.
+     */
     labelProps,
+    /**
+     * Props for the error message element.
+     */
     errorMessageProps,
+    /**
+     * Props for the description element.
+     */
     descriptionProps,
+    /**
+     * Props for the clear button.
+     */
     clearBtnProps,
+    /**
+     * Validity details for the search field.
+     */
     validityDetails,
     ...exposeField(field),
   };

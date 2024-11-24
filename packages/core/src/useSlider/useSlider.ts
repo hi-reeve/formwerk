@@ -407,6 +407,9 @@ export function useSlider<TValue>(_props: Reactivify<SliderProps<TValue>, 'schem
 
   provide(SliderInjectionKey, { useSliderThumbRegistration });
 
+  /**
+   * Gets the metadata for a given thumb.
+   */
   function useThumbMetadata(idx: number) {
     return computed(() => {
       const value = getThumbValue(idx);
@@ -427,26 +430,65 @@ export function useSlider<TValue>(_props: Reactivify<SliderProps<TValue>, 'schem
       const percent = (value - min) / (max - min);
 
       return {
+        /**
+         * The current value of the thumb.
+         */
         value,
+        /**
+         * The percent of the slider that the thumb is at.
+         */
         percent,
+        /**
+         * The minimum value of the slider.
+         */
         min,
+        /**
+         * The maximum value of the slider.
+         */
         max,
+        /**
+         * The percent of the slider that the thumb is at.
+         */
         sliderPercent: absolutePercent,
+        /**
+         * The minimum value of the slider.
+         */
         sliderMin: absoluteMin,
+        /**
+         * The maximum value of the slider.
+         */
         sliderMax: absoluteMax,
       };
     });
   }
 
   return {
+    /**
+     * Reference to the track element.
+     */
     trackEl,
+    /**
+     * Props for the label element.
+     */
     labelProps,
+    /**
+     * Props for the root element for the slider component.
+     */
     groupProps,
+    /**
+     * Props for the output element.
+     */
     outputProps,
+    /**
+     * Props for the track element.
+     */
     trackProps,
+    /**
+     * Props for the error message element.
+     */
     errorMessageProps,
-    ...exposeField(field),
     useThumbMetadata,
+    ...exposeField(field),
   };
 }
 

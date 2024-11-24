@@ -283,12 +283,33 @@ export function useCheckbox<TValue = string>(
   const isGrouped = !!group;
 
   return {
+    /**
+     * Props for the error message element.
+     */
     errorMessageProps,
+    /**
+     * Reference to the input element.
+     */
     inputEl,
+    /**
+     * Props for the input element.
+     */
     inputProps,
+    /**
+     * Whether the checkbox is checked.
+     */
     isChecked: checked,
+    /**
+     * Whether the checkbox is grouped.
+     */
     isGrouped,
+    /**
+     * Props for the label element.
+     */
     labelProps,
+    /**
+     * Toggles the value of the checkbox.
+     */
     toggle: toggleValue,
     ...exposeField(field as FormField<TValue>),
   };

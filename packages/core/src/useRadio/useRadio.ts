@@ -131,10 +131,25 @@ export function useRadio<TValue = string>(
   const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl, elementRef));
 
   return {
+    /**
+     * Reference to the input element.
+     */
     inputEl,
+    /**
+     * Props for the input element.
+     */
     inputProps,
+    /**
+     * Whether the radio is checked.
+     */
     isChecked: checked,
+    /**
+     * Whether the radio is disabled.
+     */
     isDisabled,
+    /**
+     * Props for the label element.
+     */
     labelProps,
   };
 }

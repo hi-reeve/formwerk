@@ -142,6 +142,9 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     return records.value.length - count >= min;
   }
 
+  /**
+   * Adds an item to the repeater.
+   */
   function add(count = 1) {
     if (!canAdd(count)) {
       if (__DEV__) {
@@ -157,6 +160,9 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     });
   }
 
+  /**
+   * Removes an item from the repeater.
+   */
   function remove(index: number) {
     if (!canRemove()) {
       if (__DEV__) {
@@ -170,6 +176,9 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     });
   }
 
+  /**
+   * Inserts an item into the repeater at a given index.
+   */
   function insert(index: number) {
     if (!canAdd()) {
       if (__DEV__) {
@@ -183,12 +192,18 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     });
   }
 
+  /**
+   * Moves an item in the repeater from one index to another.
+   */
   function move(from: number, to: number) {
     mutateWith(() => {
       records.value.splice(to, 0, records.value.splice(from, 1)[0]);
     });
   }
 
+  /**
+   * Swaps two items in the repeater.
+   */
   function swap(indexA: number, indexB: number) {
     mutateWith(() => {
       const newRecords = [...records.value];
@@ -281,7 +296,13 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
   }
 
   return {
+    /**
+     * The items in the repeater.
+     */
     items: readonly(records),
+    /**
+     * Props for the add item button.
+     */
     addButtonProps,
     add,
     swap,
