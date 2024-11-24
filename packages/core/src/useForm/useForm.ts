@@ -27,12 +27,35 @@ import { PartialDeep } from 'type-fest';
 import { createDisabledContext } from '../helpers/createDisabledContext';
 
 export interface FormOptions<TSchema extends GenericFormSchema, TInput extends FormObject = v1.InferInput<TSchema>> {
-  id: string;
-  initialValues: MaybeGetter<MaybeAsync<TInput>>;
-  initialTouched: TouchedSchema<TInput>;
-  schema: TSchema;
-  disableHtmlValidation: boolean;
-  disabled: MaybeRefOrGetter<boolean | undefined>;
+  /**
+   * The form's unique identifier.
+   */
+  id?: string;
+
+  /**
+   * The initial values for the form fields.
+   */
+  initialValues?: MaybeGetter<MaybeAsync<TInput>>;
+
+  /**
+   * The initial touched state for form fields.
+   */
+  initialTouched?: TouchedSchema<TInput>;
+
+  /**
+   * The validation schema for the form.
+   */
+  schema?: TSchema;
+
+  /**
+   * Whether HTML5 validation should be disabled for this form.
+   */
+  disableHtmlValidation?: boolean;
+
+  /**
+   * Whether the form is disabled.
+   */
+  disabled?: MaybeRefOrGetter<boolean | undefined>;
 }
 
 export interface FormContext<TInput extends FormObject = FormObject, TOutput extends FormObject = TInput>

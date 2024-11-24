@@ -30,14 +30,39 @@ import { prefixPath } from '../utils/path';
 import { Simplify } from 'type-fest';
 
 export interface FormRepeaterProps {
+  /**
+   * The name/path of the repeater field.
+   */
   name: string;
 
+  /**
+   * The minimum number of iterations allowed.
+   */
   min?: Numberish;
+
+  /**
+   * The maximum number of iterations allowed.
+   */
   max?: Numberish;
 
+  /**
+   * The label for the add button.
+   */
   addButtonLabel?: string;
+
+  /**
+   * The label for the remove button.
+   */
   removeButtonLabel?: string;
+
+  /**
+   * The label for the move up button.
+   */
   moveUpButtonLabel?: string;
+
+  /**
+   * The label for the move down button.
+   */
   moveDownButtonLabel?: string;
 }
 

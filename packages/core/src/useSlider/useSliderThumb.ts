@@ -8,8 +8,19 @@ import { FieldTypePrefixes, NOOP } from '../constants';
 import { createDisabledContext } from '../helpers/createDisabledContext';
 
 export interface SliderThumbProps {
+  /**
+   * The label text for the slider thumb.
+   */
   label?: string;
+
+  /**
+   * The v-model value of the slider thumb.
+   */
   modelValue?: number;
+
+  /**
+   * Whether the slider thumb is disabled.
+   */
   disabled?: boolean;
 }
 

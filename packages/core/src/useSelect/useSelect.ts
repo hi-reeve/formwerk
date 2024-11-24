@@ -17,19 +17,59 @@ import { FieldTypePrefixes } from '../constants';
 import { exposeField } from '../utils/exposers';
 
 export interface SelectProps<TOption, TValue = TOption> {
+  /**
+   * The label text for the select field.
+   */
   label: string;
+
+  /**
+   * The name of the select field.
+   */
   name?: string;
+
+  /**
+   * Description text for the select field.
+   */
   description?: string;
+
+  /**
+   * Placeholder text when no option is selected.
+   */
   placeholder?: string;
 
+  /**
+   * The controlled value of the select field.
+   */
   value?: Arrayable<TValue>;
+
+  /**
+   * The v-model value of the select field.
+   */
   modelValue?: Arrayable<TValue>;
 
+  /**
+   * Whether the select field is disabled.
+   */
   disabled?: boolean;
+
+  /**
+   * Whether the select field is readonly.
+   */
   readonly?: boolean;
+
+  /**
+   * Whether multiple options can be selected.
+   */
   multiple?: boolean;
+
+  /**
+   * The orientation of the listbox popup (vertical or horizontal).
+   */
   orientation?: Orientation;
 
+  /**
+   * Schema for validating the select field value.
+   */
   schema?: StandardSchema<Arrayable<TValue>>;
 }
 

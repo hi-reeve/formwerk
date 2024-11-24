@@ -19,10 +19,29 @@ import { createPathPrefixer } from '../helpers/usePathPrefixer';
 import { createDisabledContext } from '../helpers/createDisabledContext';
 
 export interface FormGroupProps<TInput extends FormObject = FormObject, TOutput extends FormObject = TInput> {
+  /**
+   * The name/path of the form group.
+   */
   name: string;
+
+  /**
+   * The label for the form group.
+   */
   label?: string;
+
+  /**
+   * The validation schema for the form group.
+   */
   schema?: StandardSchema<TInput, TOutput>;
+
+  /**
+   * Whether the form group is disabled.
+   */
   disabled?: boolean;
+
+  /**
+   * Whether HTML5 validation should be disabled for this form group.
+   */
   disableHtmlValidation?: boolean;
 }
 

@@ -44,19 +44,54 @@ export interface SwitchDOMProps extends AriaInputProps, AriaLabelableProps, Aria
 }
 
 export type SwitchProps = {
-  label?: string;
+  /**
+   * The label text for the switch.
+   */
+  label: string;
+
+  /**
+   * The name attribute for the switch input.
+   */
   name?: string;
+
+  /**
+   * The v-model value of the switch.
+   */
   modelValue?: boolean;
 
+  /**
+   * Whether the switch is required.
+   */
   required?: boolean;
+
+  /**
+   * Whether the switch is readonly.
+   */
   readonly?: boolean;
+
+  /**
+   * Whether the switch is disabled.
+   */
   disabled?: boolean;
 
+  /**
+   * The value to use when the switch is checked.
+   */
   trueValue?: unknown;
+
+  /**
+   * The value to use when the switch is unchecked.
+   */
   falseValue?: unknown;
 
+  /**
+   * Schema for switch validation.
+   */
   schema?: StandardSchema<unknown>;
 
+  /**
+   * Whether to disable HTML5 validation.
+   */
   disableHtmlValidation?: boolean;
 };
 

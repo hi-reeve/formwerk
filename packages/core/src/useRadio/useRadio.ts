@@ -7,8 +7,19 @@ import { FieldTypePrefixes } from '../constants';
 import { createDisabledContext } from '../helpers/createDisabledContext';
 
 export interface RadioProps<TValue = string> {
+  /**
+   * The value associated with this radio button.
+   */
   value: TValue;
-  label?: string;
+
+  /**
+   * The label text for the radio button.
+   */
+  label: string;
+
+  /**
+   * Whether the radio button is disabled.
+   */
   disabled?: boolean;
 }
 

@@ -61,19 +61,54 @@ export interface CheckboxGroupContext<TCheckbox> {
 export const CheckboxGroupKey: InjectionKey<CheckboxGroupContext<any>> = Symbol('CheckboxGroupKey');
 
 export interface CheckboxGroupProps<TCheckbox = unknown> {
+  /**
+   * The text direction for the checkbox group.
+   */
   dir?: Direction;
+
+  /**
+   * The label for the checkbox group.
+   */
   label: string;
+
+  /**
+   * Optional description text for the checkbox group.
+   */
   description?: string;
 
+  /**
+   * The name/path of the checkbox group.
+   */
   name?: string;
+
+  /**
+   * The current value of the checkbox group.
+   */
   modelValue?: CheckboxGroupValue<TCheckbox>;
 
+  /**
+   * Whether the checkbox group is disabled.
+   */
   disabled?: boolean;
+
+  /**
+   * Whether the checkbox group is readonly.
+   */
   readonly?: boolean;
+
+  /**
+   * Whether the checkbox group is required.
+   */
   required?: boolean;
 
+  /**
+   * The validation schema for the checkbox group.
+   */
   schema?: StandardSchema<CheckboxGroupValue<TCheckbox>>;
 
+  /**
+   * Whether HTML5 validation should be disabled for this checkbox group.
+   */
   disableHtmlValidation?: boolean;
 }
 

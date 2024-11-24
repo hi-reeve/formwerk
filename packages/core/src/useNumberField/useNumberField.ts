@@ -43,30 +43,99 @@ export interface NumberInputDOMProps
 }
 
 export interface NumberFieldProps {
+  /**
+   * The label text for the number field.
+   */
   label: string;
+
+  /**
+   * The locale to use for number formatting.
+   */
   locale?: string;
+
+  /**
+   * The v-model value of the number field.
+   */
   modelValue?: number;
+
+  /**
+   * The description text for the number field.
+   */
   description?: string;
 
+  /**
+   * The label text for the increment button.
+   */
   incrementLabel?: string;
+
+  /**
+   * The label text for the decrement button.
+   */
   decrementLabel?: string;
 
+  /**
+   * The name attribute for the number field input.
+   */
   name?: string;
+
+  /**
+   * The value attribute of the number field input.
+   */
   value?: Numberish;
+
+  /**
+   * The minimum allowed value.
+   */
   min?: Numberish;
+
+  /**
+   * The maximum allowed value.
+   */
   max?: Numberish;
+
+  /**
+   * The amount to increment/decrement by.
+   */
   step?: Numberish;
+
+  /**
+   * Placeholder text shown when the number field is empty.
+   */
   placeholder?: string | undefined;
 
+  /**
+   * Whether the number field is required.
+   */
   required?: boolean;
+
+  /**
+   * Whether the number field is readonly.
+   */
   readonly?: boolean;
+
+  /**
+   * Whether the number field is disabled.
+   */
   disabled?: boolean;
 
+  /**
+   * Options for number formatting.
+   */
   formatOptions?: Intl.NumberFormatOptions;
 
+  /**
+   * Schema for number field validation.
+   */
   schema?: StandardSchema<number>;
 
+  /**
+   * Whether to disable mouse wheel input.
+   */
   disableWheel?: boolean;
+
+  /**
+   * Whether to disable HTML5 form validation.
+   */
   disableHtmlValidation?: boolean;
 }
 

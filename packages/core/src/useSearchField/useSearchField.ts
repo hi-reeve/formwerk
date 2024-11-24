@@ -39,26 +39,84 @@ export interface SearchInputDOMProps
 }
 
 export interface SearchFieldProps {
+  /**
+   * The label text for the search field.
+   */
   label: string;
+
+  /**
+   * The label text for the clear button.
+   */
   clearButtonLabel?: string;
+
+  /**
+   * The v-model value of the search field.
+   */
   modelValue?: string;
+
+  /**
+   * The description text for the search field.
+   */
   description?: string;
 
+  /**
+   * The name attribute for the search field input.
+   */
   name?: string;
+
+  /**
+   * The value attribute of the search field input.
+   */
   value?: string;
+
+  /**
+   * The maximum length of text allowed in the search field.
+   */
   maxLength?: Numberish;
+
+  /**
+   * The minimum length of text required in the search field.
+   */
   minLength?: Numberish;
+
+  /**
+   * A regular expression pattern that the search field's value must match.
+   */
   pattern?: string | undefined;
+
+  /**
+   * Placeholder text shown when the search field is empty.
+   */
   placeholder?: string | undefined;
 
+  /**
+   * Whether the search field is required.
+   */
   required?: boolean;
+
+  /**
+   * Whether the search field is readonly.
+   */
   readonly?: boolean;
+
+  /**
+   * Whether the search field is disabled.
+   */
   disabled?: boolean;
 
+  /**
+   * Schema for search field validation.
+   */
   schema?: StandardSchema<string>;
 
+  /**
+   * Handler called when the search field is submitted via the Enter key.
+   */
   onSubmit?: (value: string) => void;
 
+  /**
+   * Whether to disable HTML5 form validation.
+   */
   disableHtmlValidation?: boolean;
 }
 

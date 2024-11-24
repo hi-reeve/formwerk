@@ -24,22 +24,69 @@ import { useInputValidity } from '../validation';
 import { exposeField } from '../utils/exposers';
 
 export interface CheckboxProps<TValue = string> {
+  /**
+   * The name/path of the checkbox field.
+   */
   name?: string;
-  label?: string;
+
+  /**
+   * The label for the checkbox.
+   */
+  label: string;
+
+  /**
+   * The current value of the checkbox.
+   */
   modelValue?: TValue;
 
+  /**
+   * The value to use when part of a checkbox group.
+   */
   value?: TValue;
+
+  /**
+   * The value to use when checked.
+   */
   trueValue?: TValue;
+
+  /**
+   * The value to use when unchecked.
+   */
   falseValue?: TValue;
 
+  /**
+   * Whether the checkbox is required.
+   */
   required?: boolean;
+
+  /**
+   * Whether the checkbox is readonly.
+   */
   readonly?: boolean;
+
+  /**
+   * Whether the checkbox is disabled.
+   */
   disabled?: boolean;
+
+  /**
+   * Whether the checkbox is in an indeterminate state.
+   */
   indeterminate?: boolean;
+
+  /**
+   * Whether the checkbox should operate independently of any checkbox group.
+   */
   standalone?: boolean;
 
+  /**
+   * The validation schema for the checkbox.
+   */
   schema?: StandardSchema<TValue>;
 
+  /**
+   * Whether HTML5 validation should be disabled for this checkbox.
+   */
   disableHtmlValidation?: boolean;
 }
 

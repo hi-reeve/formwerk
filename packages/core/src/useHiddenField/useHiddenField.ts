@@ -6,9 +6,19 @@ import { useInputValidity } from '../validation';
 import { exposeField } from '../utils/exposers';
 
 export interface HiddenFieldProps<TValue = unknown> {
+  /**
+   * The name attribute for the hidden field.
+   */
   name: string;
+
+  /**
+   * The value of the hidden field.
+   */
   value: TValue;
 
+  /**
+   * Whether the hidden field is disabled.
+   */
   disabled?: boolean;
 }
 

@@ -49,20 +49,59 @@ export interface RadioRegistration {
 export const RadioGroupKey: InjectionKey<RadioGroupContext<any>> = Symbol('RadioGroupKey');
 
 export interface RadioGroupProps<TValue = string> {
+  /**
+   * The orientation of the radio group (horizontal or vertical).
+   */
   orientation?: Orientation;
+
+  /**
+   * The text direction of the radio group (ltr or rtl).
+   */
   dir?: Direction;
+
+  /**
+   * The label text for the radio group.
+   */
   label: string;
+
+  /**
+   * The description text for the radio group.
+   */
   description?: string;
 
+  /**
+   * The name attribute for the radio group.
+   */
   name?: string;
+
+  /**
+   * The v-model value of the radio group.
+   */
   modelValue?: TValue;
 
+  /**
+   * Whether the radio group is disabled.
+   */
   disabled?: boolean;
+
+  /**
+   * Whether the radio group is readonly.
+   */
   readonly?: boolean;
+
+  /**
+   * Whether the radio group is required.
+   */
   required?: boolean;
 
+  /**
+   * Schema for radio group validation.
+   */
   schema?: StandardSchema<TValue>;
 
+  /**
+   * Whether to disable HTML5 form validation.
+   */
   disableHtmlValidation?: boolean;
 }
 

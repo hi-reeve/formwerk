@@ -22,22 +22,69 @@ import { exposeField } from '../utils/exposers';
 import { useInputValidity } from '../validation';
 
 export interface SliderProps<TValue = number> {
-  label?: string;
+  /**
+   * The label text for the slider.
+   */
+  label: string;
+
+  /**
+   * The name attribute for the slider input.
+   */
   name?: string;
 
+  /**
+   * The orientation of the slider (horizontal or vertical).
+   */
   orientation?: Orientation;
+
+  /**
+   * The text direction of the slider (ltr or rtl).
+   */
   dir?: Direction;
+
+  /**
+   * The v-model value of the slider.
+   */
   modelValue?: Arrayable<TValue>;
+
+  /**
+   * The value attribute of the slider input.
+   */
   value?: Arrayable<TValue>;
+
+  /**
+   * The minimum value allowed for the slider. Ignored if `options` is provided.
+   */
   min?: Numberish;
+
+  /**
+   * The maximum value allowed for the slider. Ignored if `options` is provided.
+   */
   max?: Numberish;
+
+  /**
+   * The step increment between values. Ignored if `options` is provided.
+   */
   step?: Numberish;
 
+  /**
+   * Discrete values that the slider can accept.
+   */
   options?: TValue[];
 
+  /**
+   * Whether the slider is disabled.
+   */
   disabled?: boolean;
+
+  /**
+   * Whether the slider is readonly.
+   */
   readonly?: boolean;
 
+  /**
+   * Schema for slider validation.
+   */
   schema?: StandardSchema<TValue>;
 }
 

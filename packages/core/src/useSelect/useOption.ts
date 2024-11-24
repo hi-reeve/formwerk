@@ -20,9 +20,19 @@ interface OptionDomProps {
 }
 
 export interface OptionProps<TValue> {
-  label?: string;
+  /**
+   * The label text for the option.
+   */
+  label: string;
+
+  /**
+   * The value associated with this option.
+   */
   value: TValue;
 
+  /**
+   * Whether the option is disabled.
+   */
   disabled?: boolean;
 }
 
