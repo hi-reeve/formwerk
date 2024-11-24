@@ -18,10 +18,9 @@ import {
 } from '../types/common';
 import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel } from '../a11y/useLabel';
-import { useFormField } from '../useFormField';
+import { useFormField, exposeField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { StandardSchema } from '../types';
-import { exposeField } from '../utils/exposers';
 
 export type TextInputDOMType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'url';
 

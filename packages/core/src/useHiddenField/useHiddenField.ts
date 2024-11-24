@@ -1,9 +1,8 @@
 import { toValue, watch } from 'vue';
 import { Reactivify } from '../types';
-import { useFormField } from '../useFormField';
+import { exposeField, useFormField } from '../useFormField';
 import { normalizeProps } from '../utils/common';
 import { useInputValidity } from '../validation';
-import { exposeField } from '../utils/exposers';
 
 export interface HiddenFieldProps<TValue = unknown> {
   /**
@@ -42,7 +41,5 @@ export function useHiddenField<TValue = unknown>(_props: Reactivify<HiddenFieldP
     },
   );
 
-  return {
-    ...exposeField(field),
-  };
+  return exposeField(field);
 }

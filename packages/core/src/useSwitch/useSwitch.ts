@@ -19,10 +19,9 @@ import {
   withRefCapture,
 } from '../utils/common';
 import { useLabel } from '../a11y/useLabel';
-import { useFormField } from '../useFormField';
+import { useFormField, exposeField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { useInputValidity } from '../validation';
-import { exposeField } from '../utils/exposers';
 
 export interface SwitchDomInputProps
   extends InputBaseAttributes,

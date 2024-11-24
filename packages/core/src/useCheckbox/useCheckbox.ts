@@ -18,10 +18,9 @@ import {
 } from '../types';
 import { useLabel } from '../a11y/useLabel';
 import { CheckboxGroupContext, CheckboxGroupKey } from './useCheckboxGroup';
-import { FormField, useFormField } from '../useFormField';
+import { FormField, useFormField, exposeField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { useInputValidity } from '../validation';
-import { exposeField } from '../utils/exposers';
 
 export interface CheckboxProps<TValue = string> {
   /**

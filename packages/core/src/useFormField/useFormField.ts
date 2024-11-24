@@ -349,3 +349,76 @@ function createLocalValidity() {
     ...api,
   };
 }
+
+type ExposedField<TValue> = {
+  /**
+   * Display the error message for the field.
+   */
+  displayError: () => void;
+
+  /**
+   * The error message for the field.
+   */
+  errorMessage: Ref<string | undefined>;
+
+  /**
+   * The errors for the field.
+   */
+  errors: Ref<string[]>;
+
+  /**
+   * The value of the field.
+   */
+  fieldValue: Ref<TValue>;
+
+  /**
+   * Whether the field is dirty.
+   */
+  isDirty: Ref<boolean>;
+
+  /**
+   * Whether the field is touched.
+   */
+  isTouched: Ref<boolean>;
+
+  /**
+   * Whether the field is valid.
+   */
+  isValid: Ref<boolean>;
+
+  /**
+   * Whether the field is disabled.
+   */
+  isDisabled: Ref<boolean>;
+
+  /**
+   * Sets the errors for the field.
+   */
+  setErrors: (messages: Arrayable<string>) => void;
+
+  /**
+   * Sets the touched state for the field.
+   */
+  setTouched: (touched: boolean) => void;
+
+  /**
+   * Sets the value for the field.
+   */
+  setValue: (value: TValue) => void;
+};
+
+export function exposeField<TValue>(field: FormField<TValue>): ExposedField<TValue> {
+  return {
+    displayError: field.displayError,
+    errorMessage: field.errorMessage,
+    errors: field.errors,
+    fieldValue: field.fieldValue as Ref<TValue>,
+    isDirty: field.isDirty,
+    isTouched: field.isTouched,
+    isValid: field.isValid,
+    isDisabled: field.isDisabled,
+    setErrors: field.setErrors,
+    setTouched: field.setTouched,
+    setValue: field.setValue,
+  } satisfies ExposedField<TValue>;
+}

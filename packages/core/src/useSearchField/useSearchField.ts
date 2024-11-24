@@ -20,9 +20,8 @@ import {
 } from '../utils/common';
 import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel } from '../a11y/useLabel';
-import { useFormField } from '../useFormField';
+import { useFormField, exposeField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
-import { exposeField } from '../utils/exposers';
 import { createDisabledContext } from '../helpers/createDisabledContext';
 
 export interface SearchInputDOMAttributes extends TextInputBaseAttributes {

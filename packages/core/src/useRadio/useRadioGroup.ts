@@ -21,9 +21,8 @@ import {
   hasKeyCode,
 } from '../utils/common';
 import { useLocale } from '../i18n';
-import { useFormField } from '../useFormField';
+import { useFormField, exposeField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
-import { exposeField } from '../utils/exposers';
 
 export interface RadioGroupContext<TValue> {
   name: string;

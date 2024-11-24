@@ -1,5 +1,5 @@
 import { computed, InjectionKey, provide, toValue } from 'vue';
-import { useFormField } from '../useFormField';
+import { useFormField, exposeField } from '../useFormField';
 import { AriaLabelableProps, Arrayable, Orientation, Reactivify, StandardSchema } from '../types';
 import {
   createAccessibleErrorMessageProps,
@@ -14,7 +14,6 @@ import { useInputValidity } from '../validation';
 import { useListBox } from './useListBox';
 import { useLabel } from '../a11y/useLabel';
 import { FieldTypePrefixes } from '../constants';
-import { exposeField } from '../utils/exposers';
 
 export interface SelectProps<TOption, TValue = TOption> {
   /**

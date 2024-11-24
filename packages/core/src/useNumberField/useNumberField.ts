@@ -24,9 +24,8 @@ import { useLabel } from '../a11y/useLabel';
 import { useNumberParser } from '../i18n/useNumberParser';
 import { useSpinButton } from '../useSpinButton';
 import { useLocale } from '../i18n';
-import { useFormField } from '../useFormField';
+import { exposeField, useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
-import { exposeField } from '../utils/exposers';
 import { useEventListener } from '../helpers/useEventListener';
 
 export interface NumberInputDOMAttributes {
