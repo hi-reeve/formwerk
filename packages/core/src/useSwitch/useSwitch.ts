@@ -42,7 +42,7 @@ export interface SwitchDOMProps extends AriaInputProps, AriaLabelableProps, Aria
   onClick: EventHandler;
 }
 
-export type SwitchProps = {
+export type SwitchProps<TValue = boolean> = {
   /**
    * The label text for the switch.
    */
@@ -56,7 +56,7 @@ export type SwitchProps = {
   /**
    * The v-model value of the switch.
    */
-  modelValue?: boolean;
+  modelValue?: TValue;
 
   /**
    * Whether the switch is required.
@@ -76,12 +76,12 @@ export type SwitchProps = {
   /**
    * The value to use when the switch is checked.
    */
-  trueValue?: unknown;
+  trueValue?: TValue;
 
   /**
    * The value to use when the switch is unchecked.
    */
-  falseValue?: unknown;
+  falseValue?: TValue;
 
   /**
    * Schema for switch validation.
@@ -94,7 +94,10 @@ export type SwitchProps = {
   disableHtmlValidation?: boolean;
 };
 
-export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?: Ref<HTMLInputElement>) {
+export function useSwitch<TValue = boolean>(
+  _props: Reactivify<SwitchProps<TValue>, 'schema'>,
+  elementRef?: Ref<HTMLInputElement>,
+) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.Switch);
   const inputEl = elementRef || shallowRef<HTMLInputElement>();
@@ -240,31 +243,33 @@ export function useSwitch(_props: Reactivify<SwitchProps, 'schema'>, elementRef?
     isPressed.value = force ?? !isPressed.value;
   }
 
-  return {
-    /**
-     * Props for the error message element.
-     */
-    errorMessageProps,
-    /**
-     * Reference to the input element.
-     */
-    inputEl,
-    /**
-     * Props for the input element.
-     */
-    inputProps,
-    /**
-     * Whether the switch is pressed.
-     */
-    isPressed,
-    /**
-     * Props for the label element.
-     */
-    labelProps,
-    /**
-     * Toggles the pressed state of the switch.
-     */
-    togglePressed,
-    ...exposeField(field),
-  };
+  return exposeField(
+    {
+      /**
+       * Props for the error message element.
+       */
+      errorMessageProps,
+      /**
+       * Reference to the input element.
+       */
+      inputEl,
+      /**
+       * Props for the input element.
+       */
+      inputProps,
+      /**
+       * Whether the switch is pressed.
+       */
+      isPressed,
+      /**
+       * Props for the label element.
+       */
+      labelProps,
+      /**
+       * Toggles the pressed state of the switch.
+       */
+      togglePressed,
+    },
+    field,
+  );
 }

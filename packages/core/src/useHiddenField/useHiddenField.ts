@@ -41,5 +41,5 @@ export function useHiddenField<TValue = unknown>(_props: Reactivify<HiddenFieldP
     },
   );
 
-  return exposeField(field);
+  return exposeField({}, field);
 }

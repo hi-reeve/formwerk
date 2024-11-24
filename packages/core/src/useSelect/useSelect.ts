@@ -266,43 +266,45 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
     };
   });
 
-  return {
-    /**
-     * Whether the popup is open.
-     */
-    isPopupOpen,
-    /**
-     * Props for the trigger element.
-     */
-    triggerProps,
-    /**
-     * Props for the label element.
-     */
-    labelProps,
-    /**
-     * Props for the popup element.
-     */
-    popupProps: listBoxProps,
-    /**
-     * Props for the error message element.
-     */
-    errorMessageProps,
-    /**
-     * Props for the description element.
-     */
-    descriptionProps,
-    /**
-     * Reference to the popup element.
-     */
-    listBoxEl,
-    /**
-     * The currently selected option.
-     */
-    selectedOption,
-    /**
-     * The currently selected options.
-     */
-    selectedOptions,
-    ...exposeField(field),
-  };
+  return exposeField(
+    {
+      /**
+       * Whether the popup is open.
+       */
+      isPopupOpen,
+      /**
+       * Props for the trigger element.
+       */
+      triggerProps,
+      /**
+       * Props for the label element.
+       */
+      labelProps,
+      /**
+       * Props for the popup element.
+       */
+      popupProps: listBoxProps,
+      /**
+       * Props for the error message element.
+       */
+      errorMessageProps,
+      /**
+       * Props for the description element.
+       */
+      descriptionProps,
+      /**
+       * Reference to the popup element.
+       */
+      listBoxEl,
+      /**
+       * The currently selected option.
+       */
+      selectedOption,
+      /**
+       * The currently selected options.
+       */
+      selectedOptions,
+    },
+    field,
+  );
 }

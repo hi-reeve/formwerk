@@ -350,11 +350,11 @@ function createLocalValidity() {
   };
 }
 
-type ExposedField<TValue> = {
+export type ExposedField<TValue> = {
   /**
    * Display the error message for the field.
    */
-  displayError: () => void;
+  displayError: () => string | undefined;
 
   /**
    * The error message for the field.
@@ -407,8 +407,11 @@ type ExposedField<TValue> = {
   setValue: (value: TValue) => void;
 };
 
-export function exposeField<TValue>(field: FormField<TValue>): ExposedField<TValue> {
-  return {
+export function exposeField<TReturns extends object, TValue>(
+  obj: TReturns,
+  field: FormField<TValue>,
+): ExposedField<TValue> & TReturns {
+  const exposedField = {
     displayError: field.displayError,
     errorMessage: field.errorMessage,
     errors: field.errors,
@@ -421,4 +424,9 @@ export function exposeField<TValue>(field: FormField<TValue>): ExposedField<TVal
     setTouched: field.setTouched,
     setValue: field.setValue,
   } satisfies ExposedField<TValue>;
+
+  return {
+    ...obj,
+    ...exposedField,
+  } satisfies ExposedField<TValue> & TReturns;
 }

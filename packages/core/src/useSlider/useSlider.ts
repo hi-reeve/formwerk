@@ -462,34 +462,36 @@ export function useSlider<TValue>(_props: Reactivify<SliderProps<TValue>, 'schem
     });
   }
 
-  return {
-    /**
-     * Reference to the track element.
-     */
-    trackEl,
-    /**
-     * Props for the label element.
-     */
-    labelProps,
-    /**
-     * Props for the root element for the slider component.
-     */
-    groupProps,
-    /**
-     * Props for the output element.
-     */
-    outputProps,
-    /**
-     * Props for the track element.
-     */
-    trackProps,
-    /**
-     * Props for the error message element.
-     */
-    errorMessageProps,
-    useThumbMetadata,
-    ...exposeField(field),
-  };
+  return exposeField(
+    {
+      /**
+       * Reference to the track element.
+       */
+      trackEl,
+      /**
+       * Props for the label element.
+       */
+      labelProps,
+      /**
+       * Props for the root element for the slider component.
+       */
+      groupProps,
+      /**
+       * Props for the output element.
+       */
+      outputProps,
+      /**
+       * Props for the track element.
+       */
+      trackProps,
+      /**
+       * Props for the error message element.
+       */
+      errorMessageProps,
+      useThumbMetadata,
+    },
+    field,
+  );
 }
 
 function checkValidProps(props: Reactivify<SliderProps<unknown>, 'schema'>) {

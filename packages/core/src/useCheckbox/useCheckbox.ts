@@ -18,7 +18,7 @@ import {
 } from '../types';
 import { useLabel } from '../a11y/useLabel';
 import { CheckboxGroupContext, CheckboxGroupKey } from './useCheckboxGroup';
-import { FormField, useFormField, exposeField } from '../useFormField';
+import { useFormField, exposeField, FormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { useInputValidity } from '../validation';
 
@@ -282,37 +282,39 @@ export function useCheckbox<TValue = string>(
 
   const isGrouped = !!group;
 
-  return {
-    /**
-     * Props for the error message element.
-     */
-    errorMessageProps,
-    /**
-     * Reference to the input element.
-     */
-    inputEl,
-    /**
-     * Props for the input element.
-     */
-    inputProps,
-    /**
-     * Whether the checkbox is checked.
-     */
-    isChecked: checked,
-    /**
-     * Whether the checkbox is grouped.
-     */
-    isGrouped,
-    /**
-     * Props for the label element.
-     */
-    labelProps,
-    /**
-     * Toggles the value of the checkbox.
-     */
-    toggle: toggleValue,
-    ...exposeField(field as FormField<TValue>),
-  };
+  return exposeField(
+    {
+      /**
+       * Props for the error message element.
+       */
+      errorMessageProps,
+      /**
+       * Reference to the input element.
+       */
+      inputEl,
+      /**
+       * Props for the input element.
+       */
+      inputProps,
+      /**
+       * Whether the checkbox is checked.
+       */
+      isChecked: checked,
+      /**
+       * Whether the checkbox is grouped.
+       */
+      isGrouped,
+      /**
+       * Props for the label element.
+       */
+      labelProps,
+      /**
+       * Toggles the value of the checkbox.
+       */
+      toggle: toggleValue,
+    },
+    field as FormField<TValue>,
+  );
 }
 
 function useCheckboxField<TValue = string>(
