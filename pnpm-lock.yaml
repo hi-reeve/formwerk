@@ -176,6 +176,9 @@ importers:
       valibot:
         specifier: 1.0.0-beta.8
         version: 1.0.0-beta.8(typescript@5.7.2)
+      zod:
+        specifier: npm:@awaddev/zod@3.23.8-standard-schema
+        version: '@awaddev/zod@3.23.8-standard-schema'
 
   packages/playground:
     dependencies:
@@ -232,6 +235,9 @@ packages:
 
   '@ark/util@0.24.0':
     resolution: {integrity: sha512-YfXWkSinlhKdzoXAYxGVPvv2WMHzSN2Rrw5+Aoj79ksj8aPQdQagsMdnDTobaaynnlLxWz46hP/7JmVTo5QQ/A==}
+
+  '@awaddev/zod@3.23.8-standard-schema':
+    resolution: {integrity: sha512-EGOP6OT7x/zrxocEYqQPpPGVjUEaC4lHU8gJiTfWdf0t3McD8NLIxlUwKVT0xsJ1cV18gyZoUf7uG1Sxa9nEkA==}
 
   '@babel/code-frame@7.24.7':
     resolution: {integrity: sha512-BcYH1CVJBO9tvyIZ2jVeXgSIMvGZ2FDRvDdOIVQyuklNKSsx+eppDEBq/g47Ayw+RqNFE+URvOShmf+f/qwAlA==}
@@ -3968,6 +3974,8 @@ snapshots:
       '@ark/util': 0.24.0
 
   '@ark/util@0.24.0': {}
+
+  '@awaddev/zod@3.23.8-standard-schema': {}
 
   '@babel/code-frame@7.24.7':
     dependencies:

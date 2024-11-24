@@ -4,6 +4,7 @@
   "dependencies": {
     "@formwerk/core": "workspace:*",
     "arktype": "2.0.0-rc.24",
-    "valibot": "1.0.0-beta.8"
+    "valibot": "1.0.0-beta.8",
+    "zod": "npm:@awaddev/zod@3.23.8-standard-schema"
   }
 }
