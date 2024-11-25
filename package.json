@@ -17,6 +17,7 @@
     "docs:dev": "cd ./docs && pnpm dev && cd -",
     "postinstall": "husky install",
     "release": "./scripts/release.sh",
+    "prepublishOnly": "pnpm test && pnpm build",
     "playground:dev": "cd ./packages/playground && pnpm dev && cd -",
     "build:watch": "tsx scripts/watch.ts",
     "dev": "concurrently \"pnpm build:watch\" \"pnpm playground:dev\"",
