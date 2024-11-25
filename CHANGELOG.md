@@ -1,5 +1,13 @@
 # @formwerk/core
 
+## 0.2.1
+
+### Patch Changes
+
+- 3bb3ca5: docs: added comment for type props
+- 6590dba: fix: add bounds check to move, swap and insert ops
+- 9c0975f: feat: added ability to set valuetext for slider thumbs
+
 ## 0.2.0
 
 ### Minor Changes
