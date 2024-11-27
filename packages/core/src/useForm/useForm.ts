@@ -1,5 +1,5 @@
 import { computed, InjectionKey, MaybeRefOrGetter, onMounted, provide, reactive, readonly, Ref, ref } from 'vue';
-import type { v1 } from '@standard-schema/spec';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 import { cloneDeep, isEqual, useUniqId } from '../utils/common';
 import {
   FormObject,
@@ -26,7 +26,10 @@ import { appendToFormData, clearFormData } from '../utils/formData';
 import { PartialDeep } from 'type-fest';
 import { createDisabledContext } from '../helpers/createDisabledContext';
 
-export interface FormProps<TSchema extends GenericFormSchema, TInput extends FormObject = v1.InferInput<TSchema>> {
+export interface FormProps<
+  TSchema extends GenericFormSchema,
+  TInput extends FormObject = StandardSchemaV1.InferInput<TSchema>,
+> {
   /**
    * The form's unique identifier.
    */
@@ -79,8 +82,8 @@ export const FormKey: InjectionKey<FormContext<any>> = Symbol('Formwerk FormKey'
 
 export function useForm<
   TSchema extends GenericFormSchema,
-  TInput extends FormObject = v1.InferInput<TSchema>,
-  TOutput extends FormObject = v1.InferOutput<TSchema>,
+  TInput extends FormObject = StandardSchemaV1.InferInput<TSchema>,
+  TOutput extends FormObject = StandardSchemaV1.InferOutput<TSchema>,
 >(props?: Partial<FormProps<TSchema, TInput>>) {
   const touchedSnapshot = useFormSnapshots(props?.initialTouched);
   const valuesSnapshot = useFormSnapshots<TInput, TOutput>(props?.initialValues, {

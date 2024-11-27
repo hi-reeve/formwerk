@@ -1,12 +1,12 @@
 import { Schema, Simplify } from 'type-fest';
-import type { v1 } from '@standard-schema/spec';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 import { FormObject } from './common';
 import { Path } from './paths';
 import { FormValidationMode } from '../useForm/formContext';
 
-export type StandardIssue = v1.StandardIssue;
+export type StandardIssue = StandardSchemaV1.Issue;
 
-export type StandardSchema<TInput = unknown, TOutput = TInput> = v1.StandardSchema<TInput, TOutput>;
+export type StandardSchema<TInput = unknown, TOutput = TInput> = StandardSchemaV1<TInput, TOutput>;
 
 export type GenericFormSchema = StandardSchema<FormObject>;
 

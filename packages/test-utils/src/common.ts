@@ -1,9 +1,9 @@
-import { v1 } from '@standard-schema/spec';
+import { StandardSchemaV1 } from '@standard-schema/spec';
 
 export function defineStandardSchema<TInput, TOutput = TInput>(
-  validate: v1.StandardSchema<TInput, TOutput>['~standard']['validate'],
+  validate: StandardSchemaV1<TInput, TOutput>['~standard']['validate'],
 ) {
-  const schema: v1.StandardSchema<TInput, TOutput> = {
+  const schema: StandardSchemaV1<TInput, TOutput> = {
     '~standard': {
       vendor: 'custom',
       validate,
