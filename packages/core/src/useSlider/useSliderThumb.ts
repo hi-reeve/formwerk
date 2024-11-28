@@ -117,7 +117,8 @@ export function useSliderThumb<TValue = number>(
         'aria-label': ownLabel ?? undefined,
         ...(ownLabel ? {} : slider.getSliderLabelProps()),
         ...spinButtonProps.value,
-        onMousedown,
+        onMousedown: onPointerdown,
+        onTouchstart: onPointerdown,
         style: getPositionStyle(),
       },
       thumbEl,
@@ -148,29 +149,48 @@ export function useSliderThumb<TValue = number>(
     };
   }
 
-  function onMousedown(e: MouseEvent) {
-    if (e.button !== 0) {
-      return;
-    }
-
+  function onPointerdown(e: MouseEvent | TouchEvent) {
     e.preventDefault();
     e.stopPropagation();
     thumbEl.value?.focus();
 
-    document.addEventListener('mousemove', onMousemove);
-    document.addEventListener('mouseup', onMouseup);
+    if ('button' in e && e.button !== 0) {
+      return;
+    }
+
+    if ('touches' in e && e.touches.length > 1) {
+      return;
+    }
+
+    if (e.type === 'touchstart') {
+      document.addEventListener('touchmove', onPointermove);
+      document.addEventListener('touchend', onPointerup);
+    } else {
+      document.addEventListener('mousemove', onPointermove);
+      document.addEventListener('mouseup', onPointerup);
+    }
+
     isDragging.value = true;
   }
 
-  function onMousemove(e: MouseEvent) {
+  function onPointermove(e: MouseEvent | TouchEvent) {
+    const clientX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
+    const clientY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
+
     e.preventDefault();
     e.stopPropagation();
-    setValue(slider.getValueForPagePosition({ x: e.clientX, y: e.clientY }));
+    setValue(slider.getValueForPagePosition({ x: clientX, y: clientY }));
   }
 
-  function onMouseup() {
-    document.removeEventListener('mousemove', onMousemove);
-    document.removeEventListener('mouseup', onMouseup);
+  function onPointerup(e: MouseEvent | TouchEvent) {
+    if (e.type === 'touchend') {
+      document.removeEventListener('touchmove', onPointermove);
+      document.removeEventListener('touchend', onPointerup);
+    } else {
+      document.removeEventListener('mousemove', onPointermove);
+      document.removeEventListener('mouseup', onPointerup);
+    }
+
     isDragging.value = false;
     slider.setTouched(true);
   }

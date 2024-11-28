@@ -111,7 +111,7 @@ describe('should not have a11y errors', () => {
   });
 });
 
-describe('thumb behavior', () => {
+describe('thumb behavior with mouse', () => {
   const Thumb = createThumbComponent({});
   const Slider = createSliderComponent({
     label: 'Slider',
@@ -194,6 +194,105 @@ describe('thumb behavior', () => {
     await fireEvent.mouseDown(screen.getByRole('slider'), { button: 1, clientX: 0, clientY: 0 });
     await fireEvent.mouseMove(screen.getByRole('slider'), { clientX: 50, clientY: 0 });
     await fireEvent.mouseUp(screen.getByRole('slider'));
+
+    expect(screen.getByTestId('slider-value')).toHaveTextContent('');
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-valuenow', '0');
+  });
+});
+
+describe('thumb behavior with touch', () => {
+  const Thumb = createThumbComponent({});
+  const Slider = createSliderComponent({
+    label: 'Slider',
+  });
+
+  test('can be dragged to set value', async () => {
+    await render({
+      components: { Thumb, Slider },
+      template: `
+        <Slider>
+          <Thumb />
+        </Slider>
+    `,
+    });
+
+    await fireEvent.touchStart(screen.getByRole('slider'), { touches: [{ clientX: 0, clientY: 0 }] });
+    await fireEvent.touchMove(screen.getByRole('slider'), { touches: [{ clientX: 83, clientY: 0 }] });
+    await fireEvent.touchEnd(screen.getByRole('slider'));
+
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-valuenow', '83');
+    expect(screen.getByTestId('slider-value')).toHaveTextContent('83');
+  });
+
+  test('can be dragged to set value in RTL', async () => {
+    const RtlSlider = createSliderComponent({
+      label: 'Slider',
+      dir: 'rtl',
+    });
+
+    await render({
+      components: { Thumb, RtlSlider },
+      template: `
+        <RtlSlider>
+          <Thumb />
+        </RtlSlider>
+    `,
+    });
+
+    await fireEvent.touchStart(screen.getByRole('slider'), { touches: [{ clientX: 0, clientY: 0 }] });
+    await fireEvent.touchMove(screen.getByRole('slider'), { touches: [{ clientX: 17, clientY: 0 }] });
+    await fireEvent.touchEnd(screen.getByRole('slider'));
+
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-valuenow', '83');
+    expect(screen.getByTestId('slider-value')).toHaveTextContent('83');
+  });
+
+  test('does not respond to multi-touch', async () => {
+    await render({
+      components: { Thumb, Slider },
+      template: `
+        <Slider>
+          <Thumb />
+        </Slider>
+    `,
+    });
+
+    await fireEvent.touchStart(screen.getByRole('slider'), {
+      touches: [
+        { clientX: 0, clientY: 0 },
+        { clientX: 10, clientY: 0 },
+      ],
+    });
+    await fireEvent.touchMove(screen.getByRole('slider'), {
+      touches: [
+        { clientX: 50, clientY: 0 },
+        { clientX: 60, clientY: 0 },
+      ],
+    });
+    await fireEvent.touchEnd(screen.getByRole('slider'));
+
+    expect(screen.getByTestId('slider-value')).toHaveTextContent('');
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-valuenow', '0');
+  });
+
+  test('does not respond if slider is disabled', async () => {
+    const DisabledSlider = createSliderComponent({
+      label: 'Slider',
+      disabled: true,
+    });
+
+    await render({
+      components: { Thumb, DisabledSlider },
+      template: `
+        <DisabledSlider>
+          <Thumb />
+        </DisabledSlider>
+    `,
+    });
+
+    await fireEvent.touchStart(screen.getByRole('slider'), { touches: [{ clientX: 0, clientY: 0 }] });
+    await fireEvent.touchMove(screen.getByRole('slider'), { touches: [{ clientX: 50, clientY: 0 }] });
+    await fireEvent.touchEnd(screen.getByRole('slider'));
 
     expect(screen.getByTestId('slider-value')).toHaveTextContent('');
     expect(screen.getByRole('slider')).toHaveAttribute('aria-valuenow', '0');
