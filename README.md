@@ -7,11 +7,28 @@
 </p>
 
 <p align="center">
+  <a href="https://npmjs.com/package/@formwerk/core">
+    <img alt="NPM Version" src="https://img.shields.io/npm/v/%40formwerk%2Fcore">
+  </a>
+  <a href="https://npmjs.com/package/@formwerk/core">
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/%40formwerk%2Fcore">
+  </a>
   <a href="https://formwerk.dev">
     <img src="https://img.shields.io/badge/Documentation-02B361?logo=gitbook&logoColor=white" alt="Documentation">
   </a>
   <a href="https://discord.gg/gQ7wqpvT5X">
     <img src="https://img.shields.io/discord/1198932605740003388?logo=discord&logoColor=white" alt="Discord">
+  </a>
+  <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/formwerkjs/formwerk/ci?logo=githubactions&logoColor=white">
+  <a href="https://github.com/sponsors/logaretm">
+    <img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/logaretm?logo=githubsponsors&logoColor=white">
+  </a>
+  <img alt="License" src="https://img.shields.io/github/license/formwerkjs/formwerk">
+  <a href="https://bluesky.social/formwerk.dev">
+    <img alt="Follow us on BlueSky" src="https://img.shields.io/badge/Follow%20formwerk.dev-0284c7?style=flat&logo=bluesky&logoColor=white">
+  </a>
+  <a href="https://x.com/useformwerk">
+    <img alt="Follow us on X (formerly Twitter)" src="https://img.shields.io/badge/Follow%20@useformwerk-1f2937?style=flat&logo=x">
   </a>
 </p>
 
@@ -21,7 +38,7 @@ Formwerk is a Vue.js framework that simplifies forms by providing a comprehensiv
 
 Unlike other libraries, Formwerk deliberately excludes UI components, recognizing that design needs vary across projects. Instead, it provides a rock-solid foundation of accessibility, validation, state management, and interaction patterns that just work with your custom styling. This separation allows you to maintain complete creative control while ensuring your forms meet the highest standards of functionality and user experience.
 
-With Formwerk as your foundation, you get high-quality form capabilities without compromising on flexibility. Whether you're creating a design system or standalone application, Formwerk handles the intricate details of forms, empowering you to create forms that are both beautiful and delightful.
+With Formwerk as your foundation, you get high-quality form capabilities without compromising on flexibility. Whether you're creating a design system or standalone application, Formwerk handles the intricate details of forms, empowering you to create forms that are delightful to use.
 
 ## Contributing
 
@@ -35,7 +52,6 @@ Formwerk takes great inspiration from multiple projects in the ecosystem, most n
 
 - [React Aria](https://react-spectrum.adobe.com/)
 - [VeeValidate](https://vee-validate.logaretm.com/)
-- [Radix UI](https://www.radix-ui.com/)
 
 ## License
 
