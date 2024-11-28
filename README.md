@@ -28,7 +28,7 @@
     <img alt="Follow us on BlueSky" src="https://img.shields.io/badge/Follow%20formwerk.dev-0284c7?style=flat&logo=bluesky&logoColor=white">
   </a>
   <a href="https://x.com/useformwerk">
-    <img alt="Follow us on X (formerly Twitter)" src="https://img.shields.io/badge/Follow%20@useformwerk-1f2937?style=flat&logo=x">
+    <img alt="Follow us on X (formerly Twitter)" src="https://img.shields.io/badge/Follow%20@useformwerk-4b5563?style=flat&logo=x">
   </a>
 </p>
 
