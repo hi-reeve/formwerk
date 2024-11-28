@@ -26,7 +26,8 @@ jobs:
           pnpm ci:version
           git add .
           git commit -m "chore(release): publish"
-          pnpm tag
+          pnpm build
+          pnpm ci:tag
           pnpm ci:publish
           git push && git push --tags
         env:
