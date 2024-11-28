@@ -3,7 +3,6 @@ import { fileURLToPath } from 'url';
 import { ModuleFormat } from 'rollup';
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
-import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import { normalizePath, slashes } from './normalize-path';
@@ -48,13 +47,6 @@ const createPlugins = ({ version, format, pkg }: { version: string; format: Modu
     tsPlugin,
     resolve(),
     commonjs(),
-    terser({
-      compress: false,
-      mangle: false,
-      output: {
-        comments: false,
-      },
-    }),
   ];
 };
 
@@ -74,7 +66,9 @@ async function createConfig(pkg: keyof typeof pkgNameMap, format: ModuleFormat) 
     bundleName: `${pkgNameMap[pkg]}.${formatExt[format] ?? 'js'}`,
     input: {
       input: slashes(path.resolve(__dirname, `../packages/${pkg}/src/index.ts`)),
-      external: ['vue', isEsm ? '@vue/devtools-api' : undefined, 'yup', 'zod'].filter(Boolean) as string[],
+      external: ['vue', isEsm ? '@vue/devtools-api' : undefined, isEsm ? '@vue/devtools-kit' : undefined].filter(
+        Boolean,
+      ) as string[],
       plugins: createPlugins({ version, pkg, format }),
     },
     output: {
