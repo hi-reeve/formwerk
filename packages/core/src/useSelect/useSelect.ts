@@ -1,4 +1,4 @@
-import { computed, InjectionKey, provide, toValue } from 'vue';
+import { computed, InjectionKey, provide, ref, toValue } from 'vue';
 import { useFormField, exposeField } from '../useFormField';
 import { AriaLabelableProps, Arrayable, Orientation, Reactivify, StandardSchema } from '../types';
 import {
@@ -9,6 +9,7 @@ import {
   normalizeProps,
   toggleValueSelection,
   useUniqId,
+  withRefCapture,
 } from '../utils/common';
 import { useInputValidity } from '../validation';
 import { useListBox } from './useListBox';
@@ -251,19 +252,25 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
     },
   };
 
+  const triggerEl = ref<HTMLElement>();
+
   const triggerProps = computed<SelectTriggerDomProps>(() => {
-    return {
-      ...labelledByProps.value,
-      ...describedByProps.value,
-      ...accessibleErrorProps.value,
-      id: inputId,
-      tabindex: isDisabled.value ? '-1' : '0',
-      role: 'combobox',
-      'aria-haspopup': 'listbox',
-      'aria-expanded': isPopupOpen.value,
-      'aria-disabled': isDisabled.value || undefined,
-      ...handlers,
-    };
+    return withRefCapture(
+      {
+        ...labelledByProps.value,
+        ...describedByProps.value,
+        ...accessibleErrorProps.value,
+        id: inputId,
+        tabindex: isDisabled.value ? '-1' : '0',
+        type: triggerEl.value?.tagName === 'BUTTON' ? 'button' : undefined,
+        role: 'combobox' as const,
+        'aria-haspopup': 'listbox',
+        'aria-expanded': isPopupOpen.value,
+        'aria-disabled': isDisabled.value || undefined,
+        ...handlers,
+      },
+      triggerEl,
+    );
   });
 
   return exposeField(
