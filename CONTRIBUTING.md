@@ -80,7 +80,7 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## Additional Resources
 
-- [Project Documentation](https://formwerkjs.dev)
+- [Project Documentation](https://formwerk.dev)
 - [Issue Tracker](https://github.com/formwerkjs/formwerk/issues)
 - [Discord Server](https://discord.gg/gQ7wqpvT5X)
 - [Formwerk on X (formerly Twitter)](https://x.com/useformwerk)
@@ -124,20 +124,20 @@ Usually bug fixes are `patch` and new features are `minor`. However, a maintaine
 
 <summary>I'm building an open-source library, a product, or a tool that integrates with or uses Formwerk, can I get help with it?</summary>
 
-One of the main Formwerk audiences is library authors. We are always happy to help and support you in building your library and getting it listed in the [libraries section](https://formwerkjs.dev/libraries) of the documentation, as well as promoting it in our ecosystem, homepage, or social media.
+One of the main Formwerk audiences is library authors. We are always happy to help and support you in building your library and getting it listed in the [libraries section](https://formwerk.dev/libraries/) of the documentation, as well as promoting it in our ecosystem, homepage, or social media.
 
 </details>
 
 <details>
 <summary>I created something cool with Formwerk, can I add it to the showcase?</summary>
 
-Absolutely! We love to see what people build with Formwerk. Post your cool projects in the [Discord server](https://discord.gg/gQ7wqpvT5X) and we will check it out and potentially add it to the showcase on the documentation showcase page.
+Absolutely! We love to see what people build with Formwerk. Post your cool projects in the [Discord server](https://discord.gg/gQ7wqpvT5X) and we will check it out and potentially add it to the showcase on the documentation [showcase page](https://formwerk.dev/showcase/).
 
 </details>
 
 <details>
 <summary>I created a tutorial, a video, or an article about Formwerk, can I add it to the showcase?</summary>
 
-Absolutely! We have a dedicated [resources](https://formwerkjs.dev/resources) page on the documentation where we list all the tutorials, videos and articles about Formwerk. If you want to add yours, post it in the [Discord server](https://discord.gg/gQ7wqpvT5X) and we will check it out and add it to the resources page.
+Absolutely! We have a dedicated [resources](https://formwerk.dev/resources/) page on the documentation where we list all the tutorials, videos and articles about Formwerk. If you want to add yours, post it in the [Discord server](https://discord.gg/gQ7wqpvT5X) and we will check it out and add it to the resources page.
 
 </details>
