@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.2.2
+
+### Patch Changes
+
+- 78491b4: fix(slider): handle touch events for the slider
+- 253da9b: chore: upgrade standard-schema spec to beta.4
+
 ## 0.2.1
 
 ### Patch Changes

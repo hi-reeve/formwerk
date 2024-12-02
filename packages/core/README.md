@@ -28,7 +28,7 @@
     <img alt="Follow us on BlueSky" src="https://img.shields.io/badge/Follow%20formwerk.dev-0284c7?style=flat&logo=bluesky&logoColor=white">
   </a>
   <a href="https://x.com/useformwerk">
-    <img alt="Follow us on X (formerly Twitter)" src="https://img.shields.io/badge/Follow%20@useformwerk-1f2937?style=flat&logo=x">
+    <img alt="Follow us on X (formerly Twitter)" src="https://img.shields.io/badge/Follow%20@useformwerk-4b5563?style=flat&logo=x">
   </a>
 </p>
 
@@ -36,13 +36,13 @@
 
 Formwerk is a Vue.js framework that simplifies forms by providing a comprehensive suite of composables for building accessible, high-quality, and scalable form components.
 
-Unlike other libraries, Formwerk deliberately excludes UI components, recognizing that design needs vary across projects. Instead, it provides a rock-solid foundation of accessibility, validation, state management, and interaction patterns that just work with your custom styling. This separation allows you to maintain complete creative control while ensuring your forms meet the highest standards of functionality and user experience.
+Unlike other libraries, Formwerk deliberately excludes UI components, recognizing that design needs vary across projects. Instead, it provides a rock-solid foundation of accessibility, validation, state management, and interaction patterns that work seamlessly with your custom styling. This separation allows you to maintain complete creative control while ensuring your forms meet the highest standards of functionality and user experience.
 
-With Formwerk as your foundation, you get high-quality form capabilities without compromising on flexibility. Whether you're creating a design system or standalone application, Formwerk handles the intricate details of forms, empowering you to create forms that are delightful to use.
+With Formwerk as your foundation, you get high-quality form capabilities without compromising on flexibility. Whether you're creating a design system or a standalone application, Formwerk handles the intricate details of forms, empowering you to create forms that are delightful to use.
 
 ## Contributing
 
-You can contribute to Formwerk by reporting bugs, suggesting features, or submitting code changes. If you wish to submit code changes, please first discuss the change you wish to make via [GitHub issues](https://github.com/formwerkjs/formwerk/issues), [Discord](https://discord.gg/gQ7wqpvT5X), or other method.
+You can contribute to Formwerk by reporting bugs, suggesting features, or submitting code changes. If you wish to submit code changes, please first discuss the change you wish to make via [GitHub issues](https://github.com/formwerkjs/formwerk/issues), [Discord](https://discord.gg/gQ7wqpvT5X), or any other method.
 
 You can visit the [contributing guide](./CONTRIBUTING.md) for more information on how to contribute to Formwerk and how to get started.
 
