@@ -19,3 +19,4 @@ version.output.txt
 *.tsbuildinfo
 .rollup.cache
 
+packages/core/LICENSE
