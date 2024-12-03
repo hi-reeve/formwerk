@@ -13,6 +13,7 @@ export * from './useForm';
 export * from './useFormGroup';
 export * from './useFormRepeater';
 export * from './validation';
+export * from './i18n/useLocale';
 export { version } from './constants';
 export { normalizePath } from './utils/path';
 
