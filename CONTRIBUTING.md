@@ -18,16 +18,16 @@ Any help is appreciated, and we have several ways you can contribute:
 
 If you plan to submit code changes, please make sure the changes are discussed in an issue first.
 
-- If you are fixing a bug, it needs to be reported and acknowledged to be a bug by the maintainers.
-- If you are adding a new feature, it needs to be discussed in an issue or on Discord and you should get the go-ahead from the maintainers.
+- If you are fixing a bug, it needs to be reported and acknowledged as a bug by the maintainers.
+- If you are adding a new feature, it needs to be discussed in an issue or on Discord, and you should get the go-ahead from the maintainers.
 
 Check the [FAQ](#faq) section for more information on how to pick an issue to work on, and other questions you might have.
 
 ## Development Setup
 
-1. Fork and clone the repository
-2. Install dependencies with `pnpm install -r`
-3. Run `pnpm dev` to start the development environment which will:
+1. Fork and clone the repository.
+2. Install dependencies with `pnpm install -r`.
+3. Run `pnpm dev` to start the development environment, which will:
    - Watch and rebuild as you make changes.
    - Fire up the playground app at [http://localhost:5173](http://localhost:5173).
    - Run tests in watch mode so you can see if your changes break anything.
@@ -39,14 +39,14 @@ Check the [FAQ](#faq) section for more information on how to pick an issue to wo
 - `pnpm format`: Formats code with Prettier.
 - `pnpm build`: Builds packages.
 - `pnpm typecheck`: Type checks TypeScript code.
-- `pnpm playground:dev`: Runs playground app locally.
+- `pnpm playground:dev`: Runs the playground app locally.
 - `pnpm changeset`: Generates a changeset for the current changes.
 
 ## Pull Request Guidelines
 
-1. Create a branch from `main`
+1. Create a branch from `main`.
 2. If adding a new feature:
-   - Add accompanying test case(s)
+   - Add accompanying test case(s).
    - Provide a convincing reason for adding the feature or cite the issue or Discord discussion.
 3. If fixing a bug:
    - Provide a detailed description of the bug in the PR.
@@ -68,15 +68,15 @@ We use [Conventional Commits](https://www.conventionalcommits.org/) for commit m
 [optional footer(s)]
 ```
 
-- **type**: The type of change (e.g., `feat`, `fix`, `style`, `refactor`, `test`, `chore`)
-- **scope**: The scope of the change, usually has to do with the component or package that is being changed.
+- **type**: The type of change (e.g., `feat`, `fix`, `style`, `refactor`, `test`, `chore`).
+- **scope**: The scope of the change, usually related to the component or package being changed.
 - **description**: A short description of the change.
 - **body**: A more detailed explanation of the change (optional).
 - **footer**: Any additional information, such as breaking changes or issues closed (optional).
 
 ## Code of Conduct
 
-Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project, you agree to abide by its terms.
 
 ## Additional Resources
 
@@ -93,51 +93,50 @@ Thank you for contributing!
 <details>
 <summary>How do I pick an issue to work on?</summary>
 
-Issues have multiple labels that can you help you which issues to pick. If you are a new comer you most likely want to start with issues labeled as `bug` and `good first issue`.
+Issues have multiple labels that can help you decide which issues to pick. If you are a newcomer, you most likely want to start with issues labeled as `bug` and `good first issue`.
 
-Issues have priority labels that can help you decide the severity and the urgency of the issue, `p0` is the highest priority and `p3` is the lowest.
+Issues have priority labels that can help you decide the severity and urgency of the issue. `p0` is the highest priority, and `p3` is the lowest.
 
 </details>
 
 <details>
 <summary>How do I contribute to the documentation?</summary>
 
-The documentation lives in another repository, [formwerk.dev](https://github.com/formwerkjs/formwerk.dev) with its own guidelines and contribution process.
+The documentation lives in another repository, [formwerk.dev](https://github.com/formwerkjs/formwerk.dev), with its own guidelines and contribution process.
 
 </details>
 
 <details>
 <summary>Is there a guide for the playground app?</summary>
 
-The playground app is a Vue.js app that is used to test and showcase the Formwerk library. There is no requirements on its state, as long as the CI isn't complaining. It is there so that you can test your changes live.
+The playground app is a Vue.js app used to test and showcase the Formwerk library. There are no requirements on its state, as long as the CI isn't complaining. It is there so that you can test your changes live.
 
 </details>
 
 <details>
 <summary>How do I determine the changeset version type (major, minor, patch)?</summary>
 
-Usually bug fixes are `patch` and new features are `minor`. However, a maintainer should help you determine the correct version type in the PR and will assign a label to the PR to reflect that, the labels are named `patch`, `minor`, and `major`.
+Usually, bug fixes are `patch`, and new features are `minor`. However, a maintainer should help you determine the correct version type in the PR and will assign a label to the PR to reflect that. The labels are named `patch`, `minor`, and `major`.
 
 </details>
 
 <details>
-
-<summary>I'm building an open-source library, a product, or a tool that integrates with or uses Formwerk, can I get help with it?</summary>
+<summary>I'm building an open-source library, a product, or a tool that integrates with or uses Formwerk. Can I get help with it?</summary>
 
 One of the main Formwerk audiences is library authors. We are always happy to help and support you in building your library and getting it listed in the [libraries section](https://formwerk.dev/libraries/) of the documentation, as well as promoting it in our ecosystem, homepage, or social media.
 
 </details>
 
 <details>
-<summary>I created something cool with Formwerk, can I add it to the showcase?</summary>
+<summary>I created something cool with Formwerk. Can I add it to the showcase?</summary>
 
-Absolutely! We love to see what people build with Formwerk. Post your cool projects in the [Discord server](https://discord.gg/gQ7wqpvT5X) and we will check it out and potentially add it to the showcase on the documentation [showcase page](https://formwerk.dev/showcase/).
+Absolutely! We love to see what people build with Formwerk. Post your cool projects in the [Discord server](https://discord.gg/gQ7wqpvT5X), and we will check it out and potentially add it to the showcase on the documentation [showcase page](https://formwerk.dev/showcase/).
 
 </details>
 
 <details>
-<summary>I created a tutorial, a video, or an article about Formwerk, can I add it to the showcase?</summary>
+<summary>I created a tutorial, a video, or an article about Formwerk. Can I add it to the showcase?</summary>
 
-Absolutely! We have a dedicated [resources](https://formwerk.dev/resources/) page on the documentation where we list all the tutorials, videos and articles about Formwerk. If you want to add yours, post it in the [Discord server](https://discord.gg/gQ7wqpvT5X) and we will check it out and add it to the resources page.
+Absolutely! We have a dedicated [resources](https://formwerkjs.dev/resources) page on the documentation where we list all the tutorials, videos, and articles about Formwerk. If you want to add yours, post it in the [Discord server](https://discord.gg/gQ7wqpvT5X), and we will check it out and add it to the resources page.
 
 </details>
