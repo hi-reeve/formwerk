@@ -39,3 +39,11 @@ export function createEventDispatcher<TPayload>(eventName?: string) {
 
   return [dispatch, addListener] as const;
 }
+
+export function onlyMainMouseButton(cb: () => unknown) {
+  return (event: MouseEvent) => {
+    if (event.button === 0) {
+      cb();
+    }
+  };
+}

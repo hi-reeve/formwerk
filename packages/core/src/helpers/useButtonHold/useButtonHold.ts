@@ -2,8 +2,8 @@ import { MaybeRefOrGetter, toValue } from 'vue';
 import { tryOnScopeDispose } from '../../utils/common';
 
 export interface ButtonHoldOptions {
-  onHoldTick: () => void;
-  onClick: () => void;
+  onHoldTick: (e: MouseEvent) => void;
+  onClick: (e: MouseEvent) => void;
 
   disabled?: MaybeRefOrGetter<boolean>;
 
@@ -18,27 +18,27 @@ export function useButtonHold(opts: ButtonHoldOptions) {
   let timeout: number;
   let isTicking = false;
 
-  function executeHoldTick() {
+  function executeHoldTick(e: MouseEvent) {
     if (toValue(opts.disabled)) {
       clearAll();
       return;
     }
 
-    opts.onHoldTick();
+    opts.onHoldTick(e);
   }
 
-  function onMousedown() {
+  function onMousedown(e: MouseEvent) {
     if (isTicking || toValue(opts.disabled)) {
       return;
     }
 
     clearAll();
-    opts.onClick();
+    opts.onClick(e);
     const tickRate = opts.tickRate || 100;
     document.addEventListener('mouseup', onMouseup, { once: true });
     timeout = window.setTimeout(() => {
       isTicking = true;
-      interval = window.setInterval(executeHoldTick, tickRate);
+      interval = window.setInterval(() => executeHoldTick(e), tickRate);
     }, tickRate);
   }
 
