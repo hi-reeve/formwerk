@@ -44,7 +44,9 @@
     "@standard-schema/spec": "^1.0.0-beta.4",
     "@standard-schema/utils": "^0.3.0",
     "klona": "^2.0.6",
-    "type-fest": "^4.27.0",
+    "type-fest": "^4.30.0"
+  },
+  "peerDependencies": {
     "vue": ">=3.5.0"
   }
 }
