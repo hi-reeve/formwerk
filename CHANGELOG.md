@@ -1,5 +1,16 @@
 # @formwerk/core
 
+## 0.3.0
+
+### Minor Changes
+
+- 9760517: feat(forms): implement scroll to first error
+
+### Patch Changes
+
+- dbaf982: feat: expose useLocale composable
+- ef35098: fix: auto handle trigger button props for selects
+
 ## 0.2.2
 
 ### Patch Changes

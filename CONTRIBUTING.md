@@ -137,6 +137,6 @@ Absolutely! We love to see what people build with Formwerk. Post your cool proje
 <details>
 <summary>I created a tutorial, a video, or an article about Formwerk. Can I add it to the showcase?</summary>
 
-Absolutely! We have a dedicated [resources](https://formwerkjs.dev/resources) page on the documentation where we list all the tutorials, videos, and articles about Formwerk. If you want to add yours, post it in the [Discord server](https://discord.gg/gQ7wqpvT5X), and we will check it out and add it to the resources page.
+Absolutely! We have a dedicated [resources](https://formwerkjs.dev/extras/resources) page on the documentation where we list all the tutorials, videos, and articles about Formwerk. If you want to add yours, post it in the [Discord server](https://discord.gg/gQ7wqpvT5X), and we will check it out and add it to the resources page.
 
 </details>
