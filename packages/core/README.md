@@ -32,6 +32,12 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/sponsors/logaretm">
+    <img src='https://sponsors.logaretm.com/sponsors.svg'>
+  </a>
+</p>
+
 # Formwerk
 
 Formwerk is a Vue.js framework that simplifies forms by providing a comprehensive suite of composables for building accessible, high-quality, and scalable form components.
@@ -39,6 +45,10 @@ Formwerk is a Vue.js framework that simplifies forms by providing a comprehensiv
 Unlike other libraries, Formwerk deliberately excludes UI components, recognizing that design needs vary across projects. Instead, it provides a rock-solid foundation of accessibility, validation, state management, and interaction patterns that work seamlessly with your custom styling. This separation allows you to maintain complete creative control while ensuring your forms meet the highest standards of functionality and user experience.
 
 With Formwerk as your foundation, you get high-quality form capabilities without compromising on flexibility. Whether you're creating a design system or a standalone application, Formwerk handles the intricate details of forms, empowering you to create forms that are delightful to use.
+
+## 📚 Documentation
+
+Check out the [documentation and demos](https://formwerk.dev).
 
 ## Contributing
 

@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.3.1
+
+### Patch Changes
+
+- 4f21ebf: fix: do not apply hold or click events for right mouse buttons
+
 ## 0.3.0
 
 ### Minor Changes
