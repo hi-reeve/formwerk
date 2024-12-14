@@ -19,7 +19,7 @@
   <a href="https://discord.gg/gQ7wqpvT5X">
     <img src="https://img.shields.io/discord/1198932605740003388?logo=discord&logoColor=white" alt="Discord">
   </a>
-  <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/formwerkjs/formwerk/ci?logo=githubactions&logoColor=white">
+  <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/formwerkjs/formwerk/ci.yml?logo=githubactions&logoColor=white">
   <a href="https://github.com/sponsors/logaretm">
     <img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/logaretm?logo=githubsponsors&logoColor=white">
   </a>
