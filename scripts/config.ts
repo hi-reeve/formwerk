@@ -45,7 +45,9 @@ const createPlugins = ({ version, format, pkg }: { version: string; format: Modu
       },
     }),
     tsPlugin,
-    resolve(),
+    resolve({
+      dedupe: ['klona', 'klona/full'],
+    }),
     commonjs(),
   ];
 };
@@ -66,9 +68,14 @@ async function createConfig(pkg: keyof typeof pkgNameMap, format: ModuleFormat) 
     bundleName: `${pkgNameMap[pkg]}.${formatExt[format] ?? 'js'}`,
     input: {
       input: slashes(path.resolve(__dirname, `../packages/${pkg}/src/index.ts`)),
-      external: ['vue', isEsm ? '@vue/devtools-api' : undefined, isEsm ? '@vue/devtools-kit' : undefined].filter(
-        Boolean,
-      ) as string[],
+      external: [
+        'vue',
+        isEsm ? '@vue/devtools-api' : undefined,
+        isEsm ? '@vue/devtools-kit' : undefined,
+        'klona',
+        '@standard-schema/utils',
+        '@standard-schema/spec',
+      ].filter(Boolean) as string[],
       plugins: createPlugins({ version, pkg, format }),
     },
     output: {
