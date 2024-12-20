@@ -106,6 +106,11 @@ export function useInputValidity(opts: InputValidityOptions) {
 
   useEventListener(opts.inputEl, opts?.events || ['change', 'blur'], updateValidity);
 
+  watch(opts.field.isDisabled, async () => {
+    await nextTick();
+    validateNative(true);
+  });
+
   // It shouldn't mutate the field if the validation is sourced by the form.
   // The form will handle the mutation later once it aggregates all the results.
   (formGroup || form)?.onValidationDispatch(enqueue => {
