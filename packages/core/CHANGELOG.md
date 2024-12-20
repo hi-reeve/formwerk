@@ -1,5 +1,15 @@
 # @formwerk/core
 
+## 0.4.0
+
+### Minor Changes
+
+- bf710e4: feat!: disabled fields no longer particpate in form validation state
+
+### Patch Changes
+
+- c6d8352: chore(bundle): chore: externalize standard schema and klona properly
+
 ## 0.3.1
 
 ### Patch Changes
