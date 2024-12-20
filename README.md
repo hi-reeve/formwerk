@@ -46,6 +46,21 @@ Unlike other libraries, Formwerk deliberately excludes UI components, recognizin
 
 With Formwerk as your foundation, you get high-quality form capabilities without compromising on flexibility. Whether you're creating a design system or a standalone application, Formwerk handles the intricate details of forms, empowering you to create forms that are delightful to use.
 
+## ✨ Features
+
+- 🔌 **Headless Architecture**: Build form components with complete control over markup and styling.
+- 🌳 **Tree-shakable**: Only include the composables you actually use.
+- 🎮 **Built-in Behaviors**: Native-like keyboard interactions and focus management.
+- 🎨 **Framework Agnostic**: Works with any CSS framework or plain CSS.
+- ⚡ **SSR Ready**: Full support for Server Side Rendering environments.
+- ✅ **Form Validation**: Native HTML5 and [Standard Schema](https://github.com/standard-schema/standard-schema) libraries support.
+- 📦 **Comprehensive**: Ready-made composables for all common form elements.
+- 🔄 **State Management**: Automatic form state and value tracking.
+- 🏗 **Organization**: Form groups and repeatable field arrays.
+- 🎯 **Type Safe**: Full TypeScript support with generic typing.
+- 🌐 **i18n Ready**: Built-in internationalization with RTL and number formatting support.
+- ♿ **Accessible**: ARIA compliant with full keyboard navigation and semantic markup.
+
 ## 📚 Documentation
 
 Check out the [documentation and demos](https://formwerk.dev).
