@@ -48,18 +48,18 @@ With Formwerk as your foundation, you get high-quality form capabilities without
 
 ## ✨ Features
 
-- 🔌 **Headless Architecture**: Build form components with complete control over markup and styling.
-- 🌳 **Tree-shakable**: Only include the composables you actually use.
-- 🎮 **Built-in Behaviors**: Native-like keyboard interactions and focus management.
-- 🎨 **Framework Agnostic**: Works with any CSS framework or plain CSS.
-- ⚡ **SSR Ready**: Full support for Server Side Rendering environments.
-- ✅ **Form Validation**: Native HTML5 and [Standard Schema](https://github.com/standard-schema/standard-schema) libraries support.
 - 📦 **Comprehensive**: Ready-made composables for all common form elements.
-- 🔄 **State Management**: Automatic form state and value tracking.
-- 🏗 **Organization**: Form groups and repeatable field arrays.
-- 🎯 **Type Safe**: Full TypeScript support with generic typing.
-- 🌐 **i18n Ready**: Built-in internationalization with RTL and number formatting support.
 - ♿ **Accessible**: ARIA compliant with full keyboard navigation and semantic markup.
+- 🌐 **i18n Ready**: Built-in internationalization with RTL and number formatting support.
+- 🔌 **Headless Architecture**: Build form components with complete control over markup and styling.
+- ✅ **Form Validation**: Native HTML5 and [Standard Schema](https://github.com/standard-schema/standard-schema) libraries support.
+- 🎨 **Styling Agnostic**: Works with any CSS framework or plain CSS.
+- 🎮 **Built-in Behaviors**: Native-like keyboard interactions and focus management.
+- 🏗 **Organization**: Form groups and repeatable field arrays.
+- ⚡ **SSR Ready**: Full support for Server Side Rendering environments.
+- 🔄 **State Management**: Automatic form state and value tracking.
+- 🌳 **Tree-shakable**: Only include the composables you actually use.
+- 🎯 **Type Safe**: Full TypeScript support with generic typing.
 
 ## 📚 Documentation
 
