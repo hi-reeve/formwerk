@@ -26,6 +26,8 @@ export type FormField<TValue> = {
   isDisabled: Ref<boolean>;
   errors: Ref<string[]>;
   errorMessage: Ref<string>;
+  submitErrors: Ref<string[]>;
+  submitErrorMessage: Ref<string | undefined>;
   schema: StandardSchema<TValue> | undefined;
   validate(mutate?: boolean): Promise<ValidationResult>;
   getPath: Getter<string | undefined>;
@@ -49,7 +51,9 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
   const initialValue = opts?.initialValue;
   const { fieldValue, pathlessValue, setValue } = useFieldValue(getPath, form, initialValue);
   const { isTouched, pathlessTouched, setTouched } = useFieldTouched(getPath, form);
-  const { errors, setErrors, isValid, errorMessage, pathlessValidity } = useFieldValidity(getPath, isDisabled, form);
+  const { errors, setErrors, isValid, errorMessage, pathlessValidity, submitErrors, submitErrorMessage } =
+    useFieldValidity(getPath, isDisabled, form);
+
   const { displayError } = useErrorDisplay(errorMessage, isTouched);
 
   const isDirty = computed(() => {
@@ -126,6 +130,8 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
     setTouched,
     setErrors,
     displayError,
+    submitErrors,
+    submitErrorMessage,
   };
 
   if (!form) {
@@ -191,6 +197,7 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
 function useFieldValidity(getPath: Getter<string | undefined>, isDisabled: Ref<boolean>, form?: FormContext | null) {
   const validity = form ? createFormValidityRef(getPath, form) : createLocalValidity();
   const errorMessage = computed(() => (isDisabled.value ? '' : (validity.errors.value[0] ?? '')));
+  const submitErrorMessage = computed(() => (isDisabled.value ? '' : (validity.submitErrors.value[0] ?? '')));
   const isValid = computed(() => (isDisabled.value ? true : validity.errors.value.length === 0));
 
   return {
@@ -198,6 +205,7 @@ function useFieldValidity(getPath: Getter<string | undefined>, isDisabled: Ref<b
     errors: computed(() => (isDisabled.value ? [] : validity.errors.value)),
     isValid,
     errorMessage,
+    submitErrorMessage,
   };
 }
 
@@ -326,6 +334,12 @@ function createFormValidityRef(getPath: Getter<string | undefined>, form: FormCo
     return path ? form.getFieldErrors(path) : pathlessValidity.errors.value;
   }) as Ref<string[]>;
 
+  const submitErrors = computed(() => {
+    const path = getPath();
+
+    return path ? form.getFieldSubmitErrors(path) : [];
+  });
+
   function setErrors(messages: Arrayable<string>) {
     pathlessValidity.setErrors(messages);
     const path = getPath();
@@ -338,14 +352,17 @@ function createFormValidityRef(getPath: Getter<string | undefined>, form: FormCo
     pathlessValidity,
     errors,
     setErrors,
+    submitErrors,
   };
 }
 
 function createLocalValidity() {
   const errors = shallowRef<string[]>([]);
+  const submitErrors = shallowRef<string[]>([]);
 
   const api = {
     errors,
+    submitErrors,
     setErrors(messages: Arrayable<string>) {
       errors.value = messages ? normalizeArrayable(messages) : [];
     },
@@ -372,7 +389,14 @@ export type ExposedField<TValue> = {
    * The errors for the field.
    */
   errors: Ref<string[]>;
-
+  /**
+   * The errors for the field from the last submit attempt.
+   */
+  submitErrors: Ref<string[]>;
+  /**
+   * The error message for the field from the last submit attempt.
+   */
+  submitErrorMessage: Ref<string | undefined>;
   /**
    * The value of the field.
    */
@@ -422,6 +446,8 @@ export function exposeField<TReturns extends object, TValue>(
     displayError: field.displayError,
     errorMessage: field.errorMessage,
     errors: field.errors,
+    submitErrors: field.submitErrors,
+    submitErrorMessage: field.submitErrorMessage,
     fieldValue: field.fieldValue as Ref<TValue>,
     isDirty: field.isDirty,
     isTouched: field.isTouched,
