@@ -68,6 +68,7 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
   { disabled, schema, scrollToInvalidFieldOnSubmit }: FormActionsOptions<TForm, TOutput>,
 ) {
   const isSubmitting = shallowRef(false);
+  const submitAttemptsCount = shallowRef(0);
   const [dispatchSubmit, onSubmitAttempt] = createEventDispatcher<void>('submit');
   const {
     validate: _validate,
@@ -84,6 +85,7 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     return async function onSubmit(e?: Event) {
       e?.preventDefault();
       isSubmitting.value = true;
+      submitAttemptsCount.value += 1;
 
       // No need to wait for this event to propagate, it is used for non-validation stuff like setting touched state.
       dispatchSubmit();
@@ -144,6 +146,8 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
 
     form.revertValues();
     form.revertTouched();
+    submitAttemptsCount.value = 0;
+
     if (state?.revalidate ?? true) {
       await validate();
       return;
@@ -167,6 +171,7 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     onValidationDispatch,
     onValidationDone,
     isSubmitting,
+    submitAttemptsCount,
   };
 }
 
