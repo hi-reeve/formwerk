@@ -625,6 +625,63 @@ describe('form submit', () => {
       expect(wasSubmitted.value).toBe(false);
     }
   });
+
+  test('Can detect wether was attempted to submit or not ', async () => {
+    const { isSubmitAttempted, handleSubmit } = await renderSetup(() => {
+      return useForm({ initialValues: { foo: 'bar' } });
+    });
+
+    const cb = vi.fn();
+    const onSubmit = handleSubmit(v => cb(v.toObject()));
+
+    expect(isSubmitAttempted.value).toBe(false);
+    await onSubmit(new Event('submit'));
+    expect(isSubmitAttempted.value).toBe(true);
+  });
+
+  test('Can detect wether it attempt to submit even the validation fails', async () => {
+    const { isSubmitAttempted, handleSubmit } = await renderSetup(() => {
+      return useForm({ initialValues: { foo: 'bar' } });
+    });
+
+    const cb = vi.fn();
+    const onSubmit = handleSubmit(v => cb(v.toObject()));
+
+    expect(isSubmitAttempted.value).toBe(false);
+    await onSubmit(new Event('submit'));
+    expect(isSubmitAttempted.value).toBe(true);
+  });
+
+  test('Can detect wether it attempt to submit even the submission fails', async () => {
+    const { isSubmitAttempted, handleSubmit } = await renderSetup(() => {
+      return useForm({ initialValues: { foo: 'bar' } });
+    });
+
+    try {
+      const cb = vi.fn(() => Promise.reject());
+      const onSubmit = handleSubmit(() => cb());
+
+      expect(isSubmitAttempted.value).toBe(false);
+      await onSubmit(new Event('submit'));
+    } catch {
+      expect(isSubmitAttempted.value).toBe(true);
+    }
+  });
+
+  test('Can reset the is submit attempt state', async () => {
+    const { isSubmitAttempted, handleSubmit, reset } = await renderSetup(() => {
+      return useForm({ initialValues: { foo: 'bar' } });
+    });
+
+    const cb = vi.fn();
+    const onSubmit = handleSubmit(v => cb(v.toObject()));
+
+    expect(isSubmitAttempted.value).toBe(false);
+    await onSubmit(new Event('submit'));
+    expect(isSubmitAttempted.value).toBe(true);
+    await reset();
+    expect(isSubmitAttempted.value).toBe(false);
+  });
 });
 
 describe('form dirty state', () => {
