@@ -123,7 +123,7 @@ Usually, bug fixes are `patch`, and new features are `minor`. However, a maintai
 <details>
 <summary>I'm building an open-source library, a product, or a tool that integrates with or uses Formwerk. Can I get help with it?</summary>
 
-One of the main Formwerk audiences is library authors. We are always happy to help and support you in building your library and getting it listed in the [libraries section](https://formwerk.dev/libraries/) of the documentation, as well as promoting it in our ecosystem, homepage, or social media.
+One of the main Formwerk audiences is library authors. We are always happy to help and support you in building your library as well as promoting it in our ecosystem, homepage, or social media.
 
 </details>
 
