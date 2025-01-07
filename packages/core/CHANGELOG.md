@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.5.1
+
+### Patch Changes
+
+- c9c5b1e: fix: use deep ref for selectedOptions reactivity closes #100
+
 ## 0.5.0
 
 ### Minor Changes
