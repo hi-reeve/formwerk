@@ -19,10 +19,6 @@ test('Arktype schemas are supported', async () => {
         },
       });
 
-      // values.email;
-
-      // values.password;
-
       return {
         getError,
         onSubmit: handleSubmit(v => {

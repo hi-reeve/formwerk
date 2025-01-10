@@ -375,7 +375,7 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
     /**
      * The iteration component. You should use this component to wrap each repeated item.
      */
-    Iteration: Iteration as DefineComponent<FormRepeaterIterationProps> & {
+    Iteration: Iteration as unknown as DefineComponent<FormRepeaterIterationProps> & {
       new (): {
         $slots: {
           default: (args: FormRepeaterIterationSlotProps) => VNode[];

@@ -7,7 +7,7 @@ import { describe } from 'vitest';
 describe('with input as base element', () => {
   const label = 'Subscribe to our newsletter';
 
-  async function renderSwitch(props: Partial<SwitchProps> = {}) {
+  async function renderSwitch(props: Partial<SwitchProps<any>> = {}) {
     await render({
       setup() {
         const { inputProps, labelProps, isPressed, errorMessageProps, errorMessage, fieldValue } = useSwitch({

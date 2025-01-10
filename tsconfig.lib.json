@@ -12,6 +12,7 @@
     "declarationMap": true,
     "noImplicitAny": true,
     "strict": true,
+    "skipLibCheck": true,
     "strictNullChecks": true,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
