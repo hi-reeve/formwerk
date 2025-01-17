@@ -53,8 +53,7 @@ const {
       <div v-if="isListEmpty" class="text-white text-gray-400">No options found</div>
     </div>
 
-    <p v-if="errorMessage" v-bind="errorMessageProps" class="error-message">{{ errorMessage }}</p>
-    <p v-else-if="description" v-bind="descriptionProps">{{ description }}</p>
+    <p class="hint" :class="{ 'is-error': !!errorMessage }">{{ errorMessage || description }}</p>
   </div>
 </template>
 
@@ -68,7 +67,7 @@ label {
 }
 
 input {
-  @apply h-full py-3 pl-4 bg-transparent focus:outline-none w-full;
+  @apply h-full py-3 pl-4 bg-transparent focus:outline-none w-full placeholder:text-zinc-500 placeholder:font-normal;
 }
 
 button {
@@ -115,5 +114,13 @@ button {
 
 .trigger {
   anchor-name: v-bind(anchorId);
+}
+
+.hint {
+  @apply text-white text-gray-400;
+
+  &.is-error {
+    @apply text-red-500;
+  }
 }
 </style>

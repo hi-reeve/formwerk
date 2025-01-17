@@ -66,6 +66,6 @@ const onSubmit = handleSubmit(data => {
 
 <template>
   <div class="flex flex-col">
-    <ComboBox name="combo" label="Combo" :options="options" />
+    <ComboBox name="combo" label="Country" :options="options" required placeholder="Select a country" />
   </div>
 </template>
