@@ -2,6 +2,7 @@
 import { useSelect, SelectProps } from '@formwerk/core';
 import OptionItem from './OptionItem.vue';
 import OptionGroup from './OptionGroup.vue';
+import { watchEffect } from 'vue';
 
 export interface TheProps<TOption, TValue> extends SelectProps<TOption, TValue> {
   groups?: { items: TOption[]; label: string }[];
@@ -11,8 +12,17 @@ export interface TheProps<TOption, TValue> extends SelectProps<TOption, TValue> 
 
 const props = defineProps<TheProps<TOption, TValue>>();
 
-const { triggerProps, labelProps, errorMessageProps, isTouched, displayError, fieldValue, popupProps } =
-  useSelect(props);
+const {
+  triggerProps,
+  labelProps,
+  errorMessageProps,
+  isTouched,
+  displayError,
+  fieldValue,
+  listBoxProps,
+  selectedOptions,
+  selectedOption,
+} = useSelect(props);
 </script>
 
 <template>
@@ -31,7 +41,7 @@ const { triggerProps, labelProps, errorMessageProps, isTouched, displayError, fi
       </span>
     </div>
 
-    <div v-bind="popupProps" popover class="listbox">
+    <div v-bind="listBoxProps" popover class="listbox">
       <slot>
         <template v-if="groups">
           <OptionGroup v-for="group in groups" :key="group.label" :label="group.label">
