@@ -21,6 +21,7 @@ const {
   errorMessage,
   descriptionProps,
   isListEmpty,
+  comboBoxGroupProps,
 } = useComboBox(props, {
   filter: contains,
 });
@@ -30,10 +31,8 @@ const {
   <div class="select-field">
     <p v-bind="labelProps">{{ label }}</p>
 
-    <div class="flex items-center gap-2">
-      <div class="flex items-center gap-1">
-        <input v-bind="inputProps" type="text" />
-      </div>
+    <div class="inline-flex items-center gap-2" v-bind="comboBoxGroupProps">
+      <input v-bind="inputProps" type="text" />
 
       <button v-bind="buttonProps">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
@@ -67,14 +66,10 @@ button {
 }
 
 [popover] {
-  position-anchor: --combobox;
   position-area: bottom;
   inset: 0;
   margin: 0;
+  margin-top: 2px;
   background: black;
-}
-
-input {
-  anchor-name: --combobox;
 }
 </style>

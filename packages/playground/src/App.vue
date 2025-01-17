@@ -66,16 +66,6 @@ const onSubmit = handleSubmit(data => {
 
 <template>
   <div class="flex flex-col">
-    <ComboBox name="combo" label="Combo" :options="options" @new-value="onNewValue" />
-
-    <ComboBox name="combo2" label="Combo">
-      <OptionItem v-for="option in options" :key="option.label" :label="option.label" :value="option" />
-    </ComboBox>
-
-    <pre>
-      {{ values }}
-    </pre>
-
-    <button class="bg-blue-500 text-white p-2 rounded-md" @click="onSubmit">Submit</button>
+    <ComboBox name="combo" label="Combo" :options="options" />
   </div>
 </template>
