@@ -415,3 +415,17 @@ export function debounce<TFunction extends (...args: any[]) => any>(ms: number, 
     timer = window.setTimeout(() => fn(...args), ms);
   };
 }
+
+/**
+ * Checks if an element is in the viewport of another element.
+ */
+export function isInViewport(el: Maybe<HTMLElement>, reference: Maybe<HTMLElement>) {
+  if (!el || !reference) {
+    return false;
+  }
+
+  const rect = el.getBoundingClientRect();
+  const referenceRect = reference.getBoundingClientRect();
+
+  return rect.top >= referenceRect.top && rect.bottom <= referenceRect.bottom;
+}

@@ -86,7 +86,9 @@ export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>, ele
           return;
         }
 
-        optionEl.value?.scrollIntoView();
+        if (!listManager?.isInViewport(optionEl.value)) {
+          optionEl.value?.scrollIntoView();
+        }
       });
     },
   });

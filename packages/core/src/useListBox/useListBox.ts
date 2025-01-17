@@ -1,6 +1,6 @@
 import { computed, InjectionKey, nextTick, onBeforeUnmount, provide, ref, Ref, toValue, watch } from 'vue';
 import { AriaLabelableProps, Maybe, Orientation, Reactivify } from '../types';
-import { hasKeyCode, normalizeProps, removeFirst, useUniqId, withRefCapture } from '../utils/common';
+import { hasKeyCode, isInViewport, normalizeProps, removeFirst, useUniqId, withRefCapture } from '../utils/common';
 import { useKeyPressed } from '../helpers/useKeyPressed';
 import { isMac } from '../utils/platform';
 import { usePopoverController } from '../helpers/usePopoverController';
@@ -56,6 +56,7 @@ export interface ListManagerCtx<TValue = unknown> {
   toggleValue(value: TValue, force?: boolean): void;
   getFocusStrategy(): FocusStrategy;
   isPopupOpen(): boolean;
+  isInViewport(element: Maybe<HTMLElement>): boolean;
 }
 
 export interface OptionElement<TValue = unknown> extends HTMLElement {
@@ -100,6 +101,7 @@ export function useListBox<TOption, TValue = TOption>(
     toggleValue: props.handleToggleValue,
     getFocusStrategy: () => toValue(props.focusStrategy) ?? 'FOCUS_DOM',
     isPopupOpen: () => isOpen.value,
+    isInViewport: (element: Maybe<HTMLElement>) => isInViewport(element, listBoxEl.value),
   };
 
   provide(ListManagerKey, listManager);
