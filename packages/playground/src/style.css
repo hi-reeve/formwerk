@@ -10,7 +10,7 @@
 
 html,
 body {
-  font-family: 'Monaspace Neon Var';
+  /* font-family: 'Monaspace Neon Var'; */
   @apply h-full w-full;
 }
 

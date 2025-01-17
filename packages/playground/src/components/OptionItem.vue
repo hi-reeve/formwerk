@@ -14,18 +14,22 @@ const { optionProps } = useOption(props);
 
 <style scoped>
 .option {
-  @apply border border-transparent select-none text-white font-normal cursor-pointer;
+  @apply border-2 border-transparent select-none text-white font-normal cursor-pointer;
 
   &:focus {
     @apply bg-emerald-500 outline-none text-red-500;
   }
 
   &[aria-selected='true'] {
-    @apply bg-emerald-500 text-white;
+    @apply border-emerald-500 text-white;
   }
 
   &[aria-checked='true'] {
-    @apply bg-purple-500 text-white;
+    @apply bg-emerald-500 text-white;
+
+    &[aria-selected='true'] {
+      @apply bg-purple-600 text-white;
+    }
   }
 }
 </style>
