@@ -1,5 +1,17 @@
 # @formwerk/core
 
+## 0.6.0
+
+### Minor Changes
+
+- eb2f547: feat: implement useComboBox
+- cbb5b23: feat: Implement `useCustomField` closes #96
+
+### Patch Changes
+
+- 10ba736: fix: only scroll the option into view if it is not visible
+- 6b83ee2: feat: Expose the validate function on custom fields
+
 ## 0.5.1
 
 ### Patch Changes
