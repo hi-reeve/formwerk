@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.6.1
+
+### Patch Changes
+
+- 7d16bd2: fix: useCustomField validation not running form schema
+
 ## 0.6.0
 
 ### Minor Changes
