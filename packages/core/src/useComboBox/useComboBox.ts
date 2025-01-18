@@ -176,7 +176,7 @@ export function useComboBox<TOption, TValue = TOption>(
         return;
       }
 
-      findClosestOptionAndSetValue(inputValue.value);
+      findClosestOptionAndSetValue(inputValue.value, false);
     },
     onKeydown(evt: KeyboardEvent) {
       if (isDisabled.value) {
@@ -198,7 +198,17 @@ export function useComboBox<TOption, TValue = TOption>(
       if (hasKeyCode(evt, 'Enter')) {
         if (isPopupOpen.value) {
           evt.preventDefault();
-          findFocusedOption()?.toggleSelected();
+          const option = findFocusedOption();
+          if (option) {
+            option.toggleSelected();
+            return;
+          }
+
+          if (inputValue.value) {
+            findClosestOptionAndSetValue(inputValue.value);
+          }
+
+          return;
         }
 
         return;
@@ -242,7 +252,7 @@ export function useComboBox<TOption, TValue = TOption>(
     },
   };
 
-  function findClosestOptionAndSetValue(search: string) {
+  function findClosestOptionAndSetValue(search: string, addNew = true) {
     // Try to find if the search matches an option's label.
     let item = renderedOptions.value.find(i => i?.getLabel() === search);
 
@@ -251,7 +261,7 @@ export function useComboBox<TOption, TValue = TOption>(
       item = renderedOptions.value.find(i => i?.getLabel() === search.trim());
     }
 
-    if (props.onNewValue) {
+    if (props.onNewValue && addNew) {
       const newOptionValue = props.onNewValue(inputValue.value);
       setValue(newOptionValue.value);
       inputValue.value = newOptionValue.label;
