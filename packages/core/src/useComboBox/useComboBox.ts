@@ -81,6 +81,11 @@ export interface ComboBoxProps<TOption, TValue = TOption> {
   disableHtmlValidation?: boolean;
 
   /**
+   * Whether to open the popup when the input is focused.
+   */
+  openOnFocus?: boolean;
+
+  /**
    * Function to create a new option from the user input.
    */
   onNewValue?(value: string): Maybe<{ label: string; value: TValue }>;
@@ -161,7 +166,7 @@ export function useComboBox<TOption, TValue = TOption>(
     },
   });
 
-  const handlers: InputEvents & { onKeydown(evt: KeyboardEvent): void } = {
+  const handlers: InputEvents & { onKeydown(evt: KeyboardEvent): void; onFocus(): void } = {
     onInput(evt) {
       inputValue.value = (evt.target as HTMLInputElement).value;
     },
@@ -256,6 +261,11 @@ export function useComboBox<TOption, TValue = TOption>(
       }
 
       if (!isPopupOpen.value) {
+        isPopupOpen.value = true;
+      }
+    },
+    onFocus() {
+      if (toValue(props.openOnFocus)) {
         isPopupOpen.value = true;
       }
     },

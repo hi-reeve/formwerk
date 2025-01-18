@@ -428,6 +428,38 @@ describe('keyboard features', () => {
     await flush();
     expect(getInput()).not.toHaveValue('Two');
   });
+
+  test('Should open menu when focused if openOnFocus is true', async () => {
+    await render({
+      components: {
+        MyComboBox: createComboBox({ openOnFocus: true }),
+      },
+      setup() {
+        const options = [{ label: 'One' }, { label: 'Two' }, { label: 'Three' }];
+        return { options };
+      },
+      template: `
+        <div data-testid="fixture">
+          <MyComboBox
+            label="Field"
+            :options="options"
+          />
+        </div>
+      `,
+    });
+
+    const input = getInput();
+
+    // Initially menu should be closed
+    expect(input).toHaveAttribute('aria-expanded', 'false');
+
+    // Focus the input
+    await fireEvent.focus(input);
+    await flush();
+
+    // Menu should be open
+    expect(input).toHaveAttribute('aria-expanded', 'true');
+  });
 });
 
 describe('filtering', () => {
