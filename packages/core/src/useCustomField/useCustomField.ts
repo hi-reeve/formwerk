@@ -4,6 +4,7 @@ import { Reactivify, StandardSchema } from '../types';
 import { exposeField, useFormField } from '../useFormField';
 import { createDescribedByProps, normalizeProps, propsToValues, useUniqId, withRefCapture } from '../utils/common';
 import { useLabel, useErrorMessage } from '../a11y';
+import { useInputValidity } from '../validation';
 
 export interface CustomFieldProps<TValue = unknown> {
   /**
@@ -62,6 +63,7 @@ export function useCustomField<TValue = unknown>(
   });
 
   const { errorMessage, isDisabled } = field;
+  const { updateValidity } = useInputValidity({ field });
 
   const { labelProps, labelledByProps } = useLabel({
     for: controlId,
@@ -114,9 +116,9 @@ export function useCustomField<TValue = unknown>(
        */
       controlProps,
       /**
-       * Validates the field, pass `false` to not mutate the field errors.
+       * Validates the field.
        */
-      validate: (mutate = true) => field.validate(mutate),
+      validate: updateValidity,
     },
     field,
   );

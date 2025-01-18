@@ -204,17 +204,5 @@ describe('useCustomField', () => {
       await validate();
       expect(errorMessage.value).toBe('Value is required');
     });
-
-    test('does not mutate the field errors when validate is called with false', async () => {
-      const { validate, errorMessage } = await renderSetup(() => {
-        const { validate, errorMessage } = useCustomField({ label: 'Custom Field', schema });
-
-        return { validate, errorMessage };
-      });
-
-      expect(errorMessage.value).toBe('');
-      await validate(false);
-      expect(errorMessage.value).toBe('');
-    });
   });
 });
