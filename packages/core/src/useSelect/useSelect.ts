@@ -110,6 +110,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
     selectedOption,
     selectedOptions,
     listBoxId,
+    findFocusedOption,
   } = useListBox<TOption, TValue>({
     labeledBy: () => labelledByProps.value['aria-labelledby'],
     disabled: isDisabled,
@@ -264,7 +265,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
         'aria-haspopup': 'listbox',
         'aria-expanded': isPopupOpen.value,
         'aria-disabled': isDisabled.value || undefined,
-        'aria-activedescendant': selectedOption.value?.id,
+        'aria-activedescendant': findFocusedOption()?.id ?? undefined,
         'aria-controls': listBoxId,
         ...handlers,
       },
