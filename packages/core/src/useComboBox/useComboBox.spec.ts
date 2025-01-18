@@ -528,3 +528,42 @@ test('Should use onNewValue handler instead of reverting when provided', async (
   // Should show the modified value from onNewValue handler
   expect(getInput()).toHaveValue('Something new!');
 });
+
+test('Can reject new values if onNewValue returns undefined', async () => {
+  const onNewValueSpy = vi.fn(() => undefined);
+
+  await render({
+    components: {
+      MyComboBox: createComboBox({ onNewValue: onNewValueSpy }),
+    },
+    setup() {
+      const options = [{ label: 'One' }, { label: 'Two' }, { label: 'Three' }];
+      return { options };
+    },
+    template: `
+      <div data-testid="fixture">
+        <MyComboBox
+          label="Field"
+          :options="options"
+        />
+      </div>
+    `,
+  });
+
+  const input = getInput();
+
+  // Type some text that doesn't match any option
+  await fireEvent.input(input, { target: { value: 'Something new' } });
+  await flush();
+
+  // Blur the input to trigger the new value handler
+  await fireEvent.keyDown(input, { code: 'Tab' });
+  await flush();
+
+  // Should have called the handler with the input value
+  expect(onNewValueSpy).toHaveBeenCalledWith('Something new');
+  expect(onNewValueSpy).toHaveBeenCalledTimes(1);
+
+  // Should show the modified value from onNewValue handler
+  expect(getInput()).not.toHaveValue('Something new!');
+});

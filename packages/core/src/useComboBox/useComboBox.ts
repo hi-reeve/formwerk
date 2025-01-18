@@ -1,5 +1,5 @@
 import { computed, ref, toValue, watch } from 'vue';
-import { InputEvents, Reactivify, StandardSchema } from '../types';
+import { InputEvents, Maybe, Reactivify, StandardSchema } from '../types';
 import { Orientation } from '../types';
 import {
   createDescribedByProps,
@@ -83,7 +83,7 @@ export interface ComboBoxProps<TOption, TValue = TOption> {
   /**
    * Function to create a new option from the user input.
    */
-  onNewValue?(value: string): { label: string; value: TValue };
+  onNewValue?(value: string): Maybe<{ label: string; value: TValue }>;
 }
 
 export interface ComboBoxCollectionOptions {
@@ -263,10 +263,13 @@ export function useComboBox<TOption, TValue = TOption>(
 
     if (props.onNewValue && addNew) {
       const newOptionValue = props.onNewValue(inputValue.value);
-      setValue(newOptionValue.value);
-      inputValue.value = newOptionValue.label;
 
-      return;
+      if (newOptionValue) {
+        setValue(newOptionValue.value);
+        inputValue.value = newOptionValue.label;
+
+        return;
+      }
     }
 
     // Find an option with a matching value to the last one selected.
