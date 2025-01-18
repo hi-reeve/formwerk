@@ -134,19 +134,20 @@ describe('should not have a11y errors', () => {
 });
 
 describe('keyboard features', () => {
-  async function renderComboBox(opts?: { label: string; disabled?: boolean }[]) {
+  async function renderComboBox(opts?: { label: string; disabled?: boolean }[], props?: { readonly?: boolean }) {
     await render({
       components: {
         MyComboBox: createComboBox(),
       },
       setup() {
         const options = opts || [{ label: 'One' }, { label: 'Two' }, { label: 'Three' }];
+        const readonly = props?.readonly || false;
 
-        return { options };
+        return { options, readonly };
       },
       template: `
         <div data-testid="fixture">
-          <MyComboBox label="Field" :options="options" />
+          <MyComboBox label="Field" :options="options" :readonly="readonly" />
         </div>
       `,
     });
@@ -417,6 +418,15 @@ describe('keyboard features', () => {
     // Input value should be cleared
     expect(getInput()).toHaveValue('');
     expect(getInput()).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('Should not change value when readonly', async () => {
+    const { open } = await renderComboBox([{ label: 'One' }, { label: 'Two' }, { label: 'Three' }], { readonly: true });
+    await open();
+
+    await fireEvent.click(screen.getAllByRole('option')[1]);
+    await flush();
+    expect(getInput()).not.toHaveValue('Two');
   });
 });
 

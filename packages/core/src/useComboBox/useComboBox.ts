@@ -102,6 +102,7 @@ export function useComboBox<TOption, TValue = TOption>(
   const buttonEl = ref<HTMLElement>();
   const inputValue = ref('');
   const inputId = useUniqId(FieldTypePrefixes.ComboBox);
+  const isReadOnly = () => toValue(props.readonly);
   const field = useFormField<TValue>({
     path: props.name,
     initialValue: (toValue(props.modelValue) ?? toValue(props.value)) as TValue,
@@ -150,6 +151,10 @@ export function useComboBox<TOption, TValue = TOption>(
       return isEqual(fieldValue.value, value);
     },
     handleToggleValue: value => {
+      if (isReadOnly()) {
+        return;
+      }
+
       setValue(value);
       inputValue.value = selectedOption.value?.label ?? '';
       isPopupOpen.value = false;
@@ -162,6 +167,10 @@ export function useComboBox<TOption, TValue = TOption>(
     },
     async onBlur(evt) {
       setTouched(true);
+      if (isReadOnly()) {
+        return;
+      }
+
       // If an option was clicked, then it would blur the field and so we want to select the clicked option via the `relatedTarget` property.
       let relatedTarget = (evt as any).relatedTarget as HTMLElement | null;
       if (relatedTarget) {
@@ -196,7 +205,7 @@ export function useComboBox<TOption, TValue = TOption>(
       }
 
       if (hasKeyCode(evt, 'Enter')) {
-        if (isPopupOpen.value) {
+        if (isPopupOpen.value && !isReadOnly()) {
           evt.preventDefault();
           const option = findFocusedOption();
           if (option) {
@@ -261,7 +270,7 @@ export function useComboBox<TOption, TValue = TOption>(
       item = renderedOptions.value.find(i => i?.getLabel() === search.trim());
     }
 
-    if (props.onNewValue && addNew) {
+    if (props.onNewValue && addNew && !isReadOnly()) {
       const newOptionValue = props.onNewValue(inputValue.value);
 
       if (newOptionValue) {

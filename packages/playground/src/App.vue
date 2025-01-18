@@ -18,7 +18,7 @@ function onNewDrink(value: string) {
 </script>
 
 <template>
-  <ComboBox label="Select a drink" placeholder="Search..." @new-value="onNewDrink">
+  <ComboBox label="Select a drink" placeholder="Search..." @new-value="onNewDrink" readonly>
     <OptionItem v-for="drink in drinks" :key="drink.value" :label="drink.label" :value="drink.value" />
   </ComboBox>
 </template>
