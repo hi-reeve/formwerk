@@ -518,7 +518,7 @@ test('Should use onNewValue handler instead of reverting when provided', async (
   await flush();
 
   // Blur the input to trigger the new value handler
-  await fireEvent.blur(input);
+  await fireEvent.keyDown(input, { code: 'Tab' });
   await flush();
 
   // Should have called the handler with the input value
