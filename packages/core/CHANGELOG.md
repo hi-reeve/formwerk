@@ -1,5 +1,16 @@
 # @formwerk/core
 
+## 0.6.2
+
+### Patch Changes
+
+- db5b16c: fix: prefer initial values inferring from schema rather than itself
+- 8b5056c: feat(combobox): added the ability to reject new values
+- 697f921: fix(combobox,select): activedecendant should highlight the focused not the selected
+- 698ea26: fix(combobox): readonly should not allow value mutation
+- ff7164a: fix(combobox): prevent creating new options on blur
+- 3bdc80d: feat(combobox): added openOnFocus prop
+
 ## 0.6.1
 
 ### Patch Changes
