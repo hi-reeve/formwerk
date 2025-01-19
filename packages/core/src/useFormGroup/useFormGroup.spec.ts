@@ -505,3 +505,59 @@ describe('disabling HTML validation', () => {
     });
   });
 });
+
+describe('group props rendering', () => {
+  test('renders correct attributes on fieldset element', async () => {
+    const FieldsetGroup = {
+      template: `<fieldset v-bind="groupProps" data-testid="group"><slot /></fieldset>`,
+      setup() {
+        const { groupProps } = useFormGroup({ name: 'test', label: 'Test Group' });
+        return { groupProps };
+      },
+    };
+
+    await render({
+      components: { FieldsetGroup },
+      template: `
+        <FieldsetGroup>
+          <div>Content</div>
+        </FieldsetGroup>
+      `,
+    });
+
+    const fieldset = screen.getByTestId('group');
+    expect(fieldset).toHaveAttribute('id');
+    // Fieldset should not have role or aria-labelledby
+    expect(fieldset).not.toHaveAttribute('role');
+    expect(fieldset).not.toHaveAttribute('aria-labelledby');
+  });
+
+  test('renders correct attributes on non-fieldset element', async () => {
+    const DivGroup = {
+      template: `
+        <div>
+          <label v-bind="labelProps">Test Group</label>
+          <div v-bind="groupProps" data-testid="group"><slot /></div>
+        </div>
+      `,
+      setup() {
+        const { groupProps, labelProps } = useFormGroup({ name: 'test', label: 'Test Group' });
+        return { groupProps, labelProps };
+      },
+    };
+
+    await render({
+      components: { DivGroup },
+      template: `
+        <DivGroup>
+          <div>Content</div>
+        </DivGroup>
+      `,
+    });
+
+    const div = screen.getByTestId('group');
+    expect(div).toHaveAttribute('id');
+    expect(div).toHaveAttribute('role', 'group');
+    expect(div).toHaveAttribute('aria-labelledby');
+  });
+});

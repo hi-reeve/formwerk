@@ -1,4 +1,4 @@
-import { defineComponent, Ref } from 'vue';
+import { defineComponent, ref, Ref } from 'vue';
 import { ComboBoxProps, useComboBox } from '.';
 import { useOption } from '../useOption';
 import { fireEvent, render, screen } from '@testing-library/vue';
@@ -608,4 +608,53 @@ test('Can reject new values if onNewValue returns undefined', async () => {
 
   // Should show the modified value from onNewValue handler
   expect(getInput()).not.toHaveValue('Something new!');
+});
+
+test('Should not accept new value on Enter when readonly', async () => {
+  const MyComboBox = createComboBox();
+  await render({
+    components: { MyComboBox },
+    setup() {
+      const options = [{ label: 'One' }, { label: 'Two' }, { label: 'Three' }];
+      const readonly = ref(false);
+
+      return {
+        options,
+        readonly,
+      };
+    },
+    template: `
+      <div data-testid="fixture">
+        <MyComboBox
+          label="Field"
+          :options="options"
+          :readonly="readonly"
+        />
+      </div>
+    `,
+  });
+
+  const input = getInput();
+
+  // First select an option
+  await fireEvent.click(getButton());
+  await flush();
+  await fireEvent.click(screen.getAllByRole('option')[1]);
+  await flush();
+  expect(input).toHaveValue('Two');
+
+  // Enable readonly
+  await fireEvent.click(getButton());
+  await flush();
+
+  // Try to type something new
+  await fireEvent.input(input, { target: { value: 'Something new' } });
+  await flush();
+
+  // Try to accept the new value with Enter
+  await fireEvent.keyDown(input, { code: 'Enter' });
+  await flush();
+
+  // Should revert back to previously selected value
+  expect(input).toHaveValue('Two');
 });
