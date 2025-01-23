@@ -1,5 +1,13 @@
 # @formwerk/core
 
+## 0.6.3
+
+### Patch Changes
+
+- 272ad5c: Add group awareness to setInPath
+- a33b351: allow nesting form groups
+- dac9149: fix: propagate validation upwards in nested groups
+
 ## 0.6.2
 
 ### Patch Changes
