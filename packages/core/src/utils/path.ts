@@ -1,4 +1,4 @@
-import { isIndex, isObject } from '../../../shared/src';
+import { isIndex, isObject, isObjectLike } from '../../../shared/src';
 import { isNullOrUndefined } from './common';
 
 export function isContainerValue(value: unknown): value is Record<string, unknown> {
@@ -103,7 +103,7 @@ export function getLastReachableValue<TValue = unknown>(
 /**
  * Sets a nested property value in a path, creates the path properties if it doesn't exist
  */
-export function setInPath(object: NestedRecord, path: string, value: unknown): void {
+export function setInPath(object: NestedRecord, path: string, value: unknown, setAllChildren?: boolean): void {
   if (isEscapedPath(path)) {
     object[cleanupNonNestedPath(path)] = value;
     return;
@@ -115,7 +115,13 @@ export function setInPath(object: NestedRecord, path: string, value: unknown): v
   for (let i = 0; i < keys.length; i++) {
     // Last key, set it
     if (i === keys.length - 1) {
-      acc[keys[i]] = value;
+      const targetKey = keys[i];
+      // If setAllChildren is true and the value is an object, set all children to the value
+      if (setAllChildren && isObjectLike(acc[targetKey])) {
+        setAllChildrenToValue(acc[targetKey] as Record<string, unknown>, value);
+      } else {
+        acc[targetKey] = value;
+      }
       return;
     }
 
@@ -126,6 +132,16 @@ export function setInPath(object: NestedRecord, path: string, value: unknown): v
     }
 
     acc = acc[keys[i]] as Record<string, unknown>;
+  }
+}
+
+function setAllChildrenToValue(obj: Record<string, unknown>, value: unknown): void {
+  for (const key in obj) {
+    if (isObjectLike(obj[key])) {
+      setAllChildrenToValue(obj[key] as Record<string, unknown>, value);
+    } else {
+      obj[key] = value;
+    }
   }
 }
 

@@ -91,7 +91,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
   }
 
   function setFieldTouched<TPath extends Path<TForm>>(path: TPath, value: boolean) {
-    setInPath(touched, path, value);
+    setInPath(touched, path, value, true);
   }
 
   function getFieldValue<TPath extends Path<TForm>>(path: TPath) {
