@@ -230,7 +230,7 @@ describe('form touched', () => {
     // Using escaped path notation
     setFieldTouched('[parent.child]', true);
     expect(isFieldTouched('[parent.child]')).toBe(true);
-    expect(isFieldTouched('[parent.child.nested]')).toBe(true);
+    expect(isFieldTouched('[parent.child.nested]')).toBe(false);
 
     // Ensure it doesn't accidentally match unescaped paths
     expect(isFieldTouched('parent.child')).toBe(false);
