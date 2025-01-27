@@ -7,7 +7,7 @@ test('valibot schemas are supported', async () => {
   const handler = vi.fn();
   const schema = v.object({
     email: v.optional(v.pipe(v.string(), v.email())),
-    password: v.pipe(v.string('not a string'), v.minLength(8)),
+    password: v.pipe(v.string(), v.minLength(8)),
   });
 
   await render({
@@ -41,7 +41,7 @@ test('valibot schemas are supported', async () => {
   await fireEvent.click(screen.getByText('Submit'));
   await flush();
   expect(screen.getByTestId('form-err-1').textContent).toBe('');
-  expect(screen.getByTestId('form-err-2').textContent).toBe('not a string');
+  expect(screen.getByTestId('form-err-2').textContent).toBe('Invalid key: Expected "password" but received undefined');
   expect(handler).not.toHaveBeenCalled();
 });
 
