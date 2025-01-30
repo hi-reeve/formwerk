@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.6.4
+
+### Patch Changes
+
+- ba8616a: fix: avoid on input elements when using label element
+
 ## 0.6.3
 
 ### Patch Changes
