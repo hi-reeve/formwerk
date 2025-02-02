@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.6.6
+
+### Patch Changes
+
+- eabaac6: fix: add autocomplete to useTextField
+
 ## 0.6.5
 
 ### Patch Changes
