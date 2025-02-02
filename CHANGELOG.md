@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.6.5
+
+### Patch Changes
+
+- d1e5013: Enhance getErrors function to filter errors by path if provided. We also check for path prefix errors if no direct path errors exist.
+
 ## 0.6.4
 
 ### Patch Changes
