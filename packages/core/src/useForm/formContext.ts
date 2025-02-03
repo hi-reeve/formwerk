@@ -46,7 +46,7 @@ export interface BaseFormContext<TForm extends FormObject = FormObject> {
   setFieldErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>): void;
   setFieldSubmitErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>): void;
   getValidationMode(): FormValidationMode;
-  getErrors: () => IssueCollection[];
+  getErrors: <TPath extends Path<TForm>>(path?: TPath) => IssueCollection[];
   getSubmitErrors: () => IssueCollection[];
   clearErrors: (path?: string) => void;
   clearSubmitErrors: (path?: string) => void;
@@ -158,10 +158,16 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     return typeof value === 'boolean' ? value : false;
   }
 
-  function getErrors(): IssueCollection[] {
-    return Object.entries(errors.value)
+  function getErrors<TPath extends Path<TForm>>(path?: TPath): IssueCollection[] {
+    const allErrors = Object.entries(errors.value)
       .map<IssueCollection>(([key, value]) => ({ path: key, messages: value as string[] }))
       .filter(e => e.messages.length > 0);
+
+    if (!path) {
+      return allErrors;
+    }
+
+    return allErrors.filter(e => e.path.startsWith(path));
   }
 
   function getSubmitErrors(): IssueCollection[] {

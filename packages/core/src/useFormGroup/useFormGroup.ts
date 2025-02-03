@@ -137,10 +137,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   }
 
   function getErrors() {
-    const path = getPath();
-    const allErrors = form?.getErrors() || [];
-
-    return allErrors.filter(e => e.path.startsWith(path));
+    return form?.getErrors(getPath()) ?? [];
   }
 
   const isValid = computed(() => getErrors().length === 0);

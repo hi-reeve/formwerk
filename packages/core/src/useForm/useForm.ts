@@ -144,13 +144,7 @@ export function useForm<
     });
 
   function getErrors<TPath extends Path<TInput>>(path?: TPath) {
-    const allErrors = ctx.getErrors();
-
-    if (!path) {
-      return allErrors;
-    }
-
-    return allErrors.filter(e => e.path.startsWith(path));
+    return ctx.getErrors(path);
   }
 
   function getError<TPath extends Path<TInput>>(path: TPath): string | undefined {
