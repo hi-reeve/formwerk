@@ -15,6 +15,6 @@ import { FormGroupProps, useFormGroup } from '@formwerk/core';
 
 const props = defineProps<FormGroupProps>();
 
-const { labelProps, groupProps, getErrors, getError, displayError, getValues, isValid, isDirty, isTouched } =
+const { labelProps, groupProps, getErrors, getError, displayError, getValue, isValid, isDirty, isTouched } =
   useFormGroup(props);
 </script>

@@ -87,7 +87,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
     toValue(props.disableHtmlValidation) ?? form?.isHtmlValidationDisabled() ?? getConfig().disableHtmlValidation;
   const { validate, onValidationDispatch, defineValidationRequest, onValidationDone, dispatchValidateDone } =
     useValidationProvider({
-      getValues,
+      getValues: () => getValue(),
       getPath,
       schema: props.schema,
       type: 'GROUP',
@@ -132,12 +132,12 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
     );
   });
 
-  function getValues(): TInput {
-    return form?.getValue(getPath()) ?? {};
-  }
-
   function getErrors() {
     return form?.getErrors(getPath()) ?? [];
+  }
+
+  function getValue(path?: string) {
+    return form?.getValue(prefixPath(path) ?? '');
   }
 
   const isValid = computed(() => getErrors().length === 0);
@@ -145,11 +145,11 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   const isDirty = computed(() => {
     const path = getPath();
 
-    return !isEqual(getValues(), form?.getFieldOriginalValue(path) ?? {});
+    return !isEqual(getValue(), form?.getFieldOriginalValue(path) ?? {});
   });
 
-  function getError(name: string) {
-    return form?.getErrors(prefixPath(name) ?? '')?.[0];
+  function getError(path: string) {
+    return form?.getErrors(prefixPath(path) ?? '')?.[0];
   }
 
   function displayError(name: string) {
@@ -228,5 +228,17 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
      * Validates the form group.
      */
     validate,
+    /**
+     * Gets the errors for the form group.
+     */
+    getErrors,
+    /**
+     * Gets the group's value, passing in a path will return the value of that field.
+     */
+    getValue,
+    /**
+     * Gets the error for a given field.
+     */
+    getError,
   };
 }
