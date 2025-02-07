@@ -194,7 +194,8 @@ export function useForm<
      */
     isSubmitting,
     /**
-     * Whether the form is valid.
+     * Checks if the form is valid, or if a form path is valid. Validity is defined as the absence of errors.
+     * @param path - The path to check. If not provided, the form as a whole will be checked.
      */
     isValid,
     /**
@@ -214,7 +215,8 @@ export function useForm<
      */
     isSubmitAttempted,
     /**
-     * Whether the path is dirty.
+     * Checks if the form is dirty, which is true if any field's value has changed from the initial values. Accepts an optional path to check if a specific form path is dirty.
+     * @param path - The path to check. If not provided, the form as a whole will be checked.
      */
     isDirty: ctx.isDirty,
     /**
@@ -226,15 +228,20 @@ export function useForm<
      */
     getValue: ctx.getValue,
     /**
-     * Whether the path is touched.
+     * Checks if the form is touched, which is true if any field has been touched. Accepts an optional path to check if a specific form path is touched.
+     * @param path - The path to check. If not provided, the form as a whole will be checked.
      */
     isTouched: ctx.isTouched,
     /**
-     * Sets the touched state of a field.
+     * Sets the touched state of the form. Alternatively, pass a path to set the touched state of a specific form path.
+     * @param path - The path to set the touched state of. If a boolean is passed, the touched state of all form fields will be set to that value.
+     * @param value - The value to set the touched state to.
      */
     setTouched: ctx.setTouched,
     /**
-     * Sets the errors for a field.
+     * Sets the errors for a form path.
+     * @param path - The path to set the errors for.
+     * @param message - The message to set the errors to.
      */
     setErrors: ctx.setErrors,
     /**
