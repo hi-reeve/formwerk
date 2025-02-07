@@ -61,21 +61,21 @@ describe('form values', () => {
   });
 
   test('can set specific field value', async () => {
-    const { values, setFieldValue } = await renderSetup(() => {
+    const { values, setValue } = await renderSetup(() => {
       return useForm({ initialValues: { foo: 'bar' } });
     });
 
-    setFieldValue('foo', 'baz');
+    setValue('foo', 'baz');
 
     expect(values).toEqual({ foo: 'baz' });
   });
 
   test('can set nested field value', async () => {
-    const { values, setFieldValue } = await renderSetup(() => {
+    const { values, setValue } = await renderSetup(() => {
       return useForm<any>({ initialValues: {} });
     });
 
-    setFieldValue('foo.bar', 'baz');
+    setValue('foo.bar', 'baz');
 
     expect(values).toEqual({ foo: { bar: 'baz' } });
   });
@@ -102,47 +102,47 @@ describe('form values', () => {
 
 describe('form touched', () => {
   test('can set field touched state', async () => {
-    const { setFieldTouched, isFieldTouched } = await renderSetup(() => {
+    const { setTouched, isTouched } = await renderSetup(() => {
       return useForm({ initialValues: { foo: 'bar' } });
     });
 
-    expect(isFieldTouched('foo')).toBe(false);
-    setFieldTouched('foo', true);
-    expect(isFieldTouched('foo')).toBe(true);
+    expect(isTouched('foo')).toBe(false);
+    setTouched('foo', true);
+    expect(isTouched('foo')).toBe(true);
   });
 
   test('can set nested field touched state', async () => {
-    const { setFieldTouched, isFieldTouched } = await renderSetup(() => {
+    const { setTouched, isTouched } = await renderSetup(() => {
       return useForm<any>();
     });
 
-    expect(isFieldTouched('foo.bar')).toBe(false);
-    setFieldTouched('foo.bar', true);
-    expect(isFieldTouched('foo.bar')).toBe(true);
+    expect(isTouched('foo.bar')).toBe(false);
+    setTouched('foo.bar', true);
+    expect(isTouched('foo.bar')).toBe(true);
   });
 
   test('can set initial touched state', async () => {
-    const { isFieldTouched } = await renderSetup(() => {
+    const { isTouched } = await renderSetup(() => {
       return useForm({ initialValues: { foo: 'bar' }, initialTouched: { foo: true } });
     });
 
-    expect(isFieldTouched('foo')).toBe(true);
+    expect(isTouched('foo')).toBe(true);
   });
 
   test('has a form-level computed isTouched state', async () => {
-    const { isTouched, setFieldTouched } = await renderSetup(() => {
+    const { isTouched, setTouched } = await renderSetup(() => {
       return useForm({ initialValues: { foo: 'bar' } });
     });
 
-    expect(isTouched.value).toBe(false);
-    setFieldTouched('foo', true);
-    expect(isTouched.value).toBe(true);
-    setFieldTouched('foo', false);
-    expect(isTouched.value).toBe(false);
+    expect(isTouched()).toBe(false);
+    setTouched('foo', true);
+    expect(isTouched()).toBe(true);
+    setTouched('foo', false);
+    expect(isTouched()).toBe(false);
   });
 
   test('sets touched state correctly for discriminated union paths', async () => {
-    const { setFieldTouched, isFieldTouched, setFieldValue, values } = await renderSetup(() => {
+    const { setTouched, isTouched, setValue, values } = await renderSetup(() => {
       return useForm<any>({
         initialValues: {
           someConfig: {
@@ -160,27 +160,27 @@ describe('form touched', () => {
      * internally through the `useFormField` hook, which is not used in this test.
      * Order of operations is important here.
      */
-    setFieldTouched('someConfig.nestedField1', false);
-    setFieldTouched('someConfig.nestedField2', false);
-    setFieldTouched('someConfig', false);
+    setTouched('someConfig.nestedField1', false);
+    setTouched('someConfig.nestedField2', false);
+    setTouched('someConfig', false);
 
     // Touch the parent - should touch all children
-    setFieldTouched('someConfig', true);
-    expect(isFieldTouched('someConfig')).toBe(true);
-    expect(isFieldTouched('someConfig.nestedField1')).toBe(true);
-    expect(isFieldTouched('someConfig.nestedField2')).toBe(true);
+    setTouched('someConfig', true);
+    expect(isTouched('someConfig')).toBe(true);
+    expect(isTouched('someConfig.nestedField1')).toBe(true);
+    expect(isTouched('someConfig.nestedField2')).toBe(true);
 
     // Change someConfig to a boolean (discriminated union case)
-    setFieldValue('someConfig', false);
-    setFieldTouched('someConfig', true);
+    setValue('someConfig', false);
+    setTouched('someConfig', true);
 
     // Should still work as expected with boolean value
-    expect(isFieldTouched('someConfig')).toBe(true);
+    expect(isTouched('someConfig')).toBe(true);
     expect(values.someConfig).toBe(false);
   });
 
   test('handles nested touched states independently', async () => {
-    const { setFieldTouched, isFieldTouched } = await renderSetup(() => {
+    const { setTouched, isTouched } = await renderSetup(() => {
       return useForm<any>({
         initialValues: {
           parent: {
@@ -192,20 +192,20 @@ describe('form touched', () => {
     });
 
     // Touch just one nested field
-    setFieldTouched('parent.child1', true);
-    expect(isFieldTouched('parent.child1')).toBe(true);
-    expect(isFieldTouched('parent.child2')).toBe(false);
-    expect(isFieldTouched('parent')).toBe(true); // parent should be considered touched
+    setTouched('parent.child1', true);
+    expect(isTouched('parent.child1')).toBe(true);
+    expect(isTouched('parent.child2')).toBe(false);
+    expect(isTouched('parent')).toBe(true); // parent should be considered touched
 
     // Untouching parent should untouching children
-    setFieldTouched('parent', false);
-    expect(isFieldTouched('parent')).toBe(false);
-    expect(isFieldTouched('parent.child1')).toBe(false);
-    expect(isFieldTouched('parent.child2')).toBe(false);
+    setTouched('parent', false);
+    expect(isTouched('parent')).toBe(false);
+    expect(isTouched('parent.child1')).toBe(false);
+    expect(isTouched('parent.child2')).toBe(false);
   });
 
   test('handles escaped paths correctly for touched state', async () => {
-    const { setFieldTouched, isFieldTouched } = await renderSetup(() => {
+    const { setTouched, isTouched } = await renderSetup(() => {
       return useForm<any>({
         initialValues: {
           parent: {
@@ -224,47 +224,47 @@ describe('form touched', () => {
      * internally through the `useFormField` hook, which is not used in this test.
      * Order of operations is important here.
      */
-    setFieldTouched('[parent.child.nested]', false);
-    setFieldTouched('[parent.child]', false);
+    setTouched('[parent.child.nested]', false);
+    setTouched('[parent.child]', false);
 
     // Using escaped path notation
-    setFieldTouched('[parent.child]', true);
-    expect(isFieldTouched('[parent.child]')).toBe(true);
-    expect(isFieldTouched('[parent.child.nested]')).toBe(false);
+    setTouched('[parent.child]', true);
+    expect(isTouched('[parent.child]')).toBe(true);
+    expect(isTouched('[parent.child.nested]')).toBe(false);
 
     // Ensure it doesn't accidentally match unescaped paths
-    expect(isFieldTouched('parent.child')).toBe(false);
+    expect(isTouched('parent.child')).toBe(false);
   });
 });
 
 describe('form reset', () => {
   test('can reset form values and touched to their original state', async () => {
-    const { values, reset, setFieldValue, isFieldTouched, setFieldTouched } = await renderSetup(() => {
+    const { values, reset, setValue, isTouched, setTouched } = await renderSetup(() => {
       return useForm({ initialValues: { foo: 'bar' }, initialTouched: { foo: true } });
     });
 
-    setFieldValue('foo', '');
-    setFieldTouched('foo', false);
+    setValue('foo', '');
+    setTouched('foo', false);
     expect(values).toEqual({ foo: '' });
-    expect(isFieldTouched('foo')).toBe(false);
+    expect(isTouched('foo')).toBe(false);
     reset();
     expect(values).toEqual({ foo: 'bar' });
-    expect(isFieldTouched('foo')).toBe(true);
+    expect(isTouched('foo')).toBe(true);
   });
 
   test('can reset form values and touched to a new state', async () => {
-    const { values, reset, setFieldValue, isFieldTouched, setFieldTouched } = await renderSetup(() => {
+    const { values, reset, setValue, isTouched, setTouched } = await renderSetup(() => {
       return useForm({ initialValues: { foo: 'bar' } });
     });
 
     reset({ values: { foo: 'baz' }, touched: { foo: true } });
     expect(values).toEqual({ foo: 'baz' });
-    expect(isFieldTouched('foo')).toBe(true);
-    setFieldTouched('foo', false);
-    setFieldValue('foo', '');
+    expect(isTouched('foo')).toBe(true);
+    setTouched('foo', false);
+    setValue('foo', '');
     reset();
     expect(values).toEqual({ foo: 'baz' });
-    expect(isFieldTouched('foo')).toBe(true);
+    expect(isTouched('foo')).toBe(true);
   });
 });
 
@@ -296,11 +296,11 @@ describe('form submit', () => {
       },
     );
 
-    expect(form.isFieldTouched('field')).toBe(false);
+    expect(form.isTouched('field')).toBe(false);
     const cb = vi.fn();
     const onSubmit = form.handleSubmit(cb);
     await onSubmit(new Event('submit'));
-    expect(form.isFieldTouched('field')).toBe(true);
+    expect(form.isTouched('field')).toBe(true);
   });
 
   test('submitting sets the isSubmitting flag', async () => {
@@ -781,15 +781,15 @@ describe('form submit', () => {
 
 describe('form dirty state', () => {
   test('isDirty is true when the current values are different than the originals', async () => {
-    const { isDirty, setFieldValue, reset } = await renderSetup(() => {
+    const { isDirty, setValue, reset } = await renderSetup(() => {
       return useForm({ initialValues: { foo: 'bar' } });
     });
 
-    expect(isDirty.value).toBe(false);
-    setFieldValue('foo', 'baz');
-    expect(isDirty.value).toBe(true);
+    expect(isDirty()).toBe(false);
+    setValue('foo', 'baz');
+    expect(isDirty()).toBe(true);
     reset();
-    expect(isDirty.value).toBe(false);
+    expect(isDirty()).toBe(false);
   });
 
   test('pathless fields do not contribute their dirty state to the form', async () => {
@@ -802,17 +802,17 @@ describe('form dirty state', () => {
       },
     );
 
-    expect(form.isDirty.value).toBe(false);
-    form.setFieldValue('field', 'bar');
-    expect(form.isDirty.value).toBe(true);
+    expect(form.isDirty()).toBe(false);
+    form.setValue('field', 'bar');
+    expect(form.isDirty()).toBe(true);
 
     expect(field.isDirty.value).toBe(false);
     field.setValue('foo');
     expect(field.isDirty.value).toBe(true);
 
-    form.setFieldValue('field', 'foo');
+    form.setValue('field', 'foo');
     field.setValue('bar');
-    expect(form.isDirty.value).toBe(false);
+    expect(form.isDirty()).toBe(false);
     expect(field.isDirty.value).toBe(false);
   });
 
@@ -827,10 +827,10 @@ describe('form dirty state', () => {
     );
 
     expect(field.isDirty.value).toBe(false);
-    expect(form.isDirty.value).toBe(false);
+    expect(form.isDirty()).toBe(false);
     field.setValue('bar');
     expect(field.isDirty.value).toBe(true);
-    expect(form.isDirty.value).toBe(true);
+    expect(form.isDirty()).toBe(true);
     field.setValue('foo');
     expect(field.isDirty.value).toBe(false);
   });
@@ -845,13 +845,13 @@ describe('form dirty state', () => {
       },
     );
 
-    expect(form.isFieldDirty('foo')).toBe(false);
-    expect(form.isFieldDirty('field')).toBe(false);
+    expect(form.isDirty('foo')).toBe(false);
+    expect(form.isDirty('field')).toBe(false);
 
-    form.setFieldValue('foo', 'baz');
-    form.setFieldValue('field', 'something');
-    expect(form.isFieldDirty('foo')).toBe(true);
-    expect(form.isFieldDirty('field')).toBe(true);
+    form.setValue('foo', 'baz');
+    form.setValue('field', 'something');
+    expect(form.isDirty('foo')).toBe(true);
+    expect(form.isDirty('field')).toBe(true);
   });
 });
 
@@ -941,7 +941,7 @@ describe('form validation', () => {
       <form>
         <Child />
 
-        <span v-if="isValid">Form is valid</span>
+        <span v-if="isValid()">Form is valid</span>
         <span v-else>Form is invalid</span>
       </form>
     `,
@@ -1101,11 +1101,11 @@ describe('form validation', () => {
       await render({
         components: { Child: createInputComponent() },
         setup() {
-          const { handleSubmit, getError, setFieldErrors } = useForm({
+          const { handleSubmit, getError, setErrors } = useForm({
             schema,
           });
 
-          setFieldErrors('test', 'error');
+          setErrors('test', 'error');
 
           return { getError, onSubmit: handleSubmit(v => handler(v.toObject())) };
         },
@@ -1142,11 +1142,11 @@ describe('form validation', () => {
       await render({
         components: { Child: createInputComponent() },
         setup() {
-          const { handleSubmit, getError, setFieldErrors } = useForm({
+          const { handleSubmit, getError, setErrors } = useForm({
             schema,
           });
 
-          setFieldErrors('test', 'error');
+          setErrors('test', 'error');
 
           return { getError, onSubmit: handleSubmit(v => handler(v.toObject())) };
         },
@@ -1301,13 +1301,13 @@ describe('form validation', () => {
   });
 
   test('displays errors if the field is touched', async () => {
-    const { setFieldTouched, displayError, setFieldErrors } = await renderSetup(() => {
+    const { setTouched, displayError, setErrors } = await renderSetup(() => {
       return useForm();
     });
 
-    setFieldErrors('test', 'error');
+    setErrors('test', 'error');
     expect(displayError('test')).toBeUndefined();
-    setFieldTouched('test', true);
+    setTouched('test', true);
     expect(displayError('test')).toBe('error');
   });
 
@@ -1323,8 +1323,8 @@ describe('form validation', () => {
     });
 
     // Set some errors
-    form.setFieldErrors('address.street', "Address street can't be empty");
-    form.setFieldErrors('address.city', "Address city can't be empty");
+    form.setErrors('address.street', "Address street can't be empty");
+    form.setErrors('address.city', "Address city can't be empty");
 
     expect(form.getError('address.street')).toBe("Address street can't be empty");
     expect(form.getError('address.city')).toBe("Address city can't be empty");
@@ -1343,9 +1343,9 @@ describe('form validation', () => {
     });
 
     // Set some errors
-    form.setFieldErrors('address.street', "Address street can't be empty");
-    form.setFieldErrors('address.city', "Address city can't be empty");
-    form.setFieldErrors('name', "Name can't be empty");
+    form.setErrors('address.street', "Address street can't be empty");
+    form.setErrors('address.city', "Address city can't be empty");
+    form.setErrors('name', "Name can't be empty");
 
     const allErrors = form.getErrors();
     const addressErrors = form.getErrors('address');

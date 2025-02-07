@@ -49,10 +49,7 @@ const TransactionKind = {
 export interface FormTransactionManager<TForm extends FormObject> {
   transaction(
     tr: (
-      formCtx: Pick<
-        BaseFormContext<TForm>,
-        'getValues' | 'getFieldValue' | 'isFieldSet' | 'isFieldTouched' | 'getFieldErrors'
-      >,
+      formCtx: Pick<BaseFormContext<TForm>, 'getValues' | 'getValue' | 'isFieldSet' | 'isTouched' | 'getErrors'>,
       codes: typeof TransactionKind,
     ) => FormTransaction<TForm> | null,
   ): void;
@@ -90,10 +87,10 @@ export function useFormTransactions<TForm extends FormObject>(form: BaseFormCont
 
     for (const tr of trs) {
       if (tr.kind === TransactionKind.SET_PATH) {
-        form.setFieldValue(tr.path, tr.value);
-        form.setFieldTouched(tr.path, tr.touched);
+        form.setValue(tr.path, tr.value);
+        form.setTouched(tr.path, tr.touched);
         form.setFieldDisabled(tr.path, tr.disabled);
-        form.setFieldErrors(tr.path, tr.errors);
+        form.setErrors(tr.path, tr.errors);
         continue;
       }
 
@@ -109,11 +106,11 @@ export function useFormTransactions<TForm extends FormObject>(form: BaseFormCont
 
       if (tr.kind === TransactionKind.INIT_PATH) {
         const formInit = form.getFieldInitialValue(tr.path);
-        form.setFieldValue(tr.path, tr.value ?? formInit);
+        form.setValue(tr.path, tr.value ?? formInit);
         form.setFieldDisabled(tr.path, tr.disabled);
-        form.setFieldTouched(tr.path, tr.touched);
+        form.setTouched(tr.path, tr.touched);
         form.unsetInitialValue(tr.path);
-        form.setFieldErrors(tr.path, tr.errors);
+        form.setErrors(tr.path, tr.errors);
         continue;
       }
     }

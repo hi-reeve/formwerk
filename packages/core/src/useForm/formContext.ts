@@ -27,13 +27,14 @@ export type FormValidationMode = 'aggregate' | 'schema';
 
 export interface BaseFormContext<TForm extends FormObject = FormObject> {
   id: string;
-  getFieldValue<TPath extends Path<TForm>>(path: TPath): PathValue<TForm, TPath>;
-  setFieldValue<TPath extends Path<TForm>>(path: TPath, value: PathValue<TForm, TPath> | undefined): void;
+  getValue<TPath extends Path<TForm>>(path: TPath): PathValue<TForm, TPath>;
+  setValue<TPath extends Path<TForm>>(path: TPath, value: PathValue<TForm, TPath> | undefined): void;
   destroyPath<TPath extends Path<TForm>>(path: TPath): void;
   unsetPath<TPath extends Path<TForm>>(path: TPath): void;
-  setFieldTouched<TPath extends Path<TForm>>(path: TPath, value: boolean): void;
-  isFieldTouched<TPath extends Path<TForm>>(path: TPath): boolean;
-  isFieldDirty<TPath extends Path<TForm>>(path: TPath): boolean;
+  setTouched(value: boolean): void;
+  setTouched<TPath extends Path<TForm>>(path: TPath, value: boolean): void;
+  isTouched<TPath extends Path<TForm>>(path?: TPath): boolean;
+  isDirty<TPath extends Path<TForm>>(path?: TPath): boolean;
   isFieldSet<TPath extends Path<TForm>>(path: TPath): boolean;
   getFieldInitialValue<TPath extends Path<TForm>>(path: TPath): PathValue<TForm, TPath>;
   getFieldOriginalValue<TPath extends Path<TForm>>(path: TPath): PathValue<TForm, TPath>;
@@ -41,16 +42,14 @@ export interface BaseFormContext<TForm extends FormObject = FormObject> {
   setInitialValues: (newValues: Partial<TForm>, opts?: SetValueOptions) => void;
   setInitialTouched: (newTouched: Partial<TouchedSchema<TForm>>, opts?: SetValueOptions) => void;
   setFieldDisabled<TPath extends Path<TForm>>(path: TPath, value: boolean): void;
-  getFieldErrors<TPath extends Path<TForm>>(path: TPath): string[];
+  getErrors<TPath extends Path<TForm>>(path?: TPath): string[];
   getFieldSubmitErrors<TPath extends Path<TForm>>(path: TPath): string[];
-  setFieldErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>): void;
+  setErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>): void;
   setFieldSubmitErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>): void;
   getValidationMode(): FormValidationMode;
-  getErrors: <TPath extends Path<TForm>>(path?: TPath) => IssueCollection[];
   getSubmitErrors: () => IssueCollection[];
   clearErrors: (path?: string) => void;
   clearSubmitErrors: (path?: string) => void;
-  hasErrors: () => boolean;
   getValues: () => TForm;
   setValues: (newValues: Partial<TForm>, opts?: SetValueOptions) => void;
   revertValues: () => void;
@@ -86,19 +85,34 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
   touched,
   snapshots,
 }: FormContextCreateOptions<TForm, TOutput>): BaseFormContext<TForm> {
-  function setFieldValue<TPath extends Path<TForm>>(path: TPath, value: PathValue<TForm, TPath> | undefined) {
+  function setValue<TPath extends Path<TForm>>(path: TPath, value: PathValue<TForm, TPath> | undefined) {
     setInPath(values, path, cloneDeep(value));
   }
 
-  function setFieldTouched<TPath extends Path<TForm>>(path: TPath, value: boolean) {
-    setInPath(touched, path, value, true);
+  function setTouched(value: boolean);
+  function setTouched<TPath extends Path<TForm>>(path: TPath, value: boolean);
+  function setTouched<TPath extends Path<TForm>>(pathOrValue: TPath | boolean, valueOrUndefined?: boolean) {
+    // If the pathOrValue is a boolean, we want to set all touched fields to that value
+    if (typeof pathOrValue === 'boolean') {
+      for (const key in touched) {
+        setInPath(touched, key, pathOrValue, true);
+      }
+
+      return;
+    }
+
+    setInPath(touched, pathOrValue, valueOrUndefined, true);
   }
 
-  function getFieldValue<TPath extends Path<TForm>>(path: TPath) {
+  function getValue<TPath extends Path<TForm>>(path: TPath) {
     return getFromPath(values, path) as PathValue<TForm, TPath>;
   }
 
-  function isFieldTouched<TPath extends Path<TForm>>(path: TPath) {
+  function isTouched<TPath extends Path<TForm>>(path?: TPath) {
+    if (!path) {
+      return !!findLeaf(touched, l => l === true);
+    }
+
     const value = getFromPath(touched, path);
     if (isObject(value)) {
       return !!findLeaf(value, v => !!v);
@@ -107,8 +121,12 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     return !!value;
   }
 
-  function isFieldDirty<TPath extends Path<TForm>>(path: TPath) {
-    return !isEqual(getFieldValue(path), getFieldOriginalValue(path));
+  function isDirty<TPath extends Path<TForm>>(path?: TPath) {
+    if (!path) {
+      return !isEqual(values, snapshots.values.originals.value);
+    }
+
+    return !isEqual(getValue(path), getFieldOriginalValue(path));
   }
 
   function isFieldSet<TPath extends Path<TForm>>(path: TPath) {
@@ -145,29 +163,10 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     setInPath(disabled, escapePath(path), value);
   }
 
-  function hasErrors() {
-    return !!findLeaf(
-      errors.value,
-      (l, path) => !isPathDisabled(path as Path<TForm>) && Array.isArray(l) && l.length > 0,
-    );
-  }
-
   function isPathDisabled(path: Path<TForm>) {
     const value = getLastReachableValue(disabled, path);
 
     return typeof value === 'boolean' ? value : false;
-  }
-
-  function getErrors<TPath extends Path<TForm>>(path?: TPath): IssueCollection[] {
-    const allErrors = Object.entries(errors.value)
-      .map<IssueCollection>(([key, value]) => ({ path: key, messages: value as string[] }))
-      .filter(e => e.messages.length > 0);
-
-    if (!path) {
-      return allErrors;
-    }
-
-    return allErrors.filter(e => e.path.startsWith(path));
   }
 
   function getSubmitErrors(): IssueCollection[] {
@@ -218,24 +217,24 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
 
     // We escape paths automatically
     Object.keys(newValues).forEach(key => {
-      setFieldValue(escapePath(key) as Path<TForm>, newValues[key] as PathValue<TForm, Path<TForm>>);
+      setValue(escapePath(key) as Path<TForm>, newValues[key] as PathValue<TForm, Path<TForm>>);
     });
   }
 
-  function getFieldErrors<TPath extends Path<TForm>>(path: TPath) {
-    // First check for direct errors at this path
-    const directErrors = getFromPath<string[]>(errors.value, escapePath(path), []);
+  function getErrors<TPath extends Path<TForm>>(path?: TPath) {
+    const allErrors = Object.entries(errors.value)
+      .map<IssueCollection>(([key, value]) => ({ path: key, messages: value as string[] }))
+      .filter(e => e.messages.length > 0);
 
-    if (directErrors?.length) {
-      return [...directErrors];
+    if (!path) {
+      return allErrors.map(e => e.messages).flat();
     }
 
-    // Check if there are any errors in the path prefix
-    const allErrors = getErrors();
+    // // Check if there are any errors in the path prefix
     const pathPrefixErrors = allErrors.filter(e => e.path.startsWith(path));
 
     if (pathPrefixErrors.length > 0) {
-      return [pathPrefixErrors[0].messages[0]];
+      return pathPrefixErrors.map(e => e.messages).flat();
     }
 
     return [];
@@ -245,7 +244,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     return [...(getFromPath<string[]>(submitErrors.value, escapePath(path), []) || [])];
   }
 
-  function setFieldErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>) {
+  function setErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>) {
     setInPath(errors.value, escapePath(path), message ? normalizeArrayable(message) : []);
   }
 
@@ -253,7 +252,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     setInPath(submitErrors.value, escapePath(path), message ? normalizeArrayable(message) : []);
   }
 
-  function setTouched(newTouched: Partial<TouchedSchema<TForm>>, opts?: SetValueOptions) {
+  function updateTouched(newTouched: Partial<TouchedSchema<TForm>>, opts?: SetValueOptions) {
     if (opts?.behavior === 'merge') {
       merge(touched, newTouched);
 
@@ -299,7 +298,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
   }
 
   function revertTouched() {
-    setTouched(cloneDeep(snapshots.touched.originals.value), { behavior: 'replace' });
+    updateTouched(cloneDeep(snapshots.touched.originals.value), { behavior: 'replace' });
   }
 
   function getValidationMode(): FormValidationMode {
@@ -309,12 +308,12 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
   return {
     id,
     getValues: () => cloneDeep(values),
-    setFieldValue,
+    setValue,
     getFieldInitialValue,
-    setFieldTouched,
-    getFieldValue,
-    isFieldTouched,
-    isFieldDirty,
+    setTouched,
+    getValue,
+    isTouched,
+    isDirty,
     isFieldSet,
     destroyPath,
     unsetPath,
@@ -326,12 +325,10 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     setInitialTouched,
     getFieldOriginalValue,
     setFieldDisabled,
-    setFieldErrors,
+    setErrors,
     setFieldSubmitErrors,
-    getFieldErrors,
-    getFieldSubmitErrors,
-    hasErrors,
     getErrors,
+    getFieldSubmitErrors,
     getSubmitErrors,
     clearErrors,
     clearSubmitErrors,

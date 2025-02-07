@@ -1,6 +1,6 @@
-import { computed, InjectionKey, MaybeRefOrGetter, onMounted, provide, reactive, readonly, Ref, ref } from 'vue';
+import { InjectionKey, MaybeRefOrGetter, onMounted, provide, reactive, readonly, Ref, ref } from 'vue';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import { cloneDeep, isEqual, useUniqId } from '../utils/common';
+import { cloneDeep, useUniqId } from '../utils/common';
 import {
   FormObject,
   MaybeAsync,
@@ -19,7 +19,6 @@ import { createFormContext, BaseFormContext } from './formContext';
 import { FormTransactionManager, useFormTransactions } from './useFormTransactions';
 import { FormActions, useFormActions } from './useFormActions';
 import { useFormSnapshots } from './formSnapshot';
-import { findLeaf } from '../utils/path';
 import { getConfig } from '../config';
 import { FieldTypePrefixes } from '../constants';
 import { appendToFormData, clearFormData } from '../utils/formData';
@@ -119,17 +118,11 @@ export function useForm<
     },
   });
 
-  const isTouched = computed(() => {
-    return !!findLeaf(touched, l => l === true);
-  });
+  function isValid<TPath extends Path<TInput>>(path?: TPath) {
+    const pathErrors = ctx.getErrors(path);
 
-  const isDirty = computed(() => {
-    return !isEqual(values, valuesSnapshot.originals.value);
-  });
-
-  const isValid = computed(() => {
-    return !ctx.hasErrors();
-  });
+    return pathErrors.length === 0;
+  }
 
   function onAsyncInit(v: TInput) {
     ctx.setValues(v, { behavior: 'merge' });
@@ -143,16 +136,8 @@ export function useForm<
       scrollToInvalidFieldOnSubmit: props?.scrollToInvalidFieldOnSubmit ?? true,
     });
 
-  function getErrors<TPath extends Path<TInput>>(path?: TPath) {
-    return ctx.getErrors(path);
-  }
-
   function getError<TPath extends Path<TInput>>(path: TPath): string | undefined {
-    return ctx.isPathDisabled(path) ? undefined : ctx.getFieldErrors(path)[0];
-  }
-
-  function getSubmitErrors() {
-    return ctx.getSubmitErrors();
+    return ctx.isPathDisabled(path) ? undefined : ctx.getErrors(path)[0];
   }
 
   function getSubmitError<TPath extends Path<TInput>>(path: TPath): string | undefined {
@@ -160,7 +145,7 @@ export function useForm<
   }
 
   function displayError(path: Path<TInput>) {
-    return ctx.isFieldTouched(path) && !ctx.isPathDisabled(path) ? getError(path) : undefined;
+    return ctx.isTouched(path) && !ctx.isPathDisabled(path) ? getError(path) : undefined;
   }
 
   provide(FormKey, {
@@ -209,14 +194,6 @@ export function useForm<
      */
     isSubmitting,
     /**
-     * Whether the form is touched.
-     */
-    isTouched,
-    /**
-     * Whether the form is dirty.
-     */
-    isDirty,
-    /**
      * Whether the form is valid.
      */
     isValid,
@@ -237,29 +214,29 @@ export function useForm<
      */
     isSubmitAttempted,
     /**
-     * Whether the specified field is dirty.
+     * Whether the path is dirty.
      */
-    isFieldDirty: ctx.isFieldDirty,
+    isDirty: ctx.isDirty,
     /**
      * Sets the value of a field.
      */
-    setFieldValue: ctx.setFieldValue,
+    setValue: ctx.setValue,
     /**
      * Gets the value of a field.
      */
-    getFieldValue: ctx.getFieldValue,
+    getValue: ctx.getValue,
     /**
-     * Whether the specified field is touched.
+     * Whether the path is touched.
      */
-    isFieldTouched: ctx.isFieldTouched,
+    isTouched: ctx.isTouched,
     /**
      * Sets the touched state of a field.
      */
-    setFieldTouched: ctx.setFieldTouched,
+    setTouched: ctx.setTouched,
     /**
      * Sets the errors for a field.
      */
-    setFieldErrors: ctx.setFieldErrors,
+    setErrors: ctx.setErrors,
     /**
      * Sets the values of the form.
      */
@@ -275,7 +252,7 @@ export function useForm<
     /**
      * Gets all the errors for the form.
      */
-    getErrors,
+    getErrors: ctx.getErrors,
     /**
      * Gets the submit errors for a field.
      */
@@ -283,7 +260,7 @@ export function useForm<
     /**
      * Gets all the submit errors for the form.
      */
-    getSubmitErrors,
+    getSubmitErrors: ctx.getSubmitErrors,
     /**
      * Props for the form element.
      */

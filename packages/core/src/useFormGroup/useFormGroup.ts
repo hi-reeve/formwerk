@@ -97,7 +97,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
     // Clears Errors in that path before proceeding.
     form?.clearErrors(toValue(props.name));
     for (const entry of res.errors) {
-      form?.setFieldErrors(entry.path, entry.messages);
+      form?.setErrors(entry.path, entry.messages);
     }
 
     const parent = parentGroup || form;
@@ -133,7 +133,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   });
 
   function getValues(): TInput {
-    return form?.getFieldValue(getPath()) ?? {};
+    return form?.getValue(getPath()) ?? {};
   }
 
   function getErrors() {
@@ -141,7 +141,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   }
 
   const isValid = computed(() => getErrors().length === 0);
-  const isTouched = computed(() => form?.isFieldTouched(getPath()) ?? false);
+  const isTouched = computed(() => form?.isTouched(getPath()) ?? false);
   const isDirty = computed(() => {
     const path = getPath();
 
@@ -149,14 +149,14 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
   });
 
   function getError(name: string) {
-    return form?.getFieldErrors(prefixPath(name) ?? '')?.[0];
+    return form?.getErrors(prefixPath(name) ?? '')?.[0];
   }
 
   function displayError(name: string) {
     const msg = getError(name);
     const path = prefixPath(name) ?? '';
 
-    return form?.isFieldTouched(path) ? msg : undefined;
+    return form?.isTouched(path) ? msg : undefined;
   }
 
   function prefixPath(path: string | undefined) {

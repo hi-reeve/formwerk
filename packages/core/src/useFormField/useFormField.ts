@@ -173,10 +173,10 @@ export function useFormField<TValue = unknown>(opts?: Partial<FormFieldOptions<T
         return {
           kind: SET_PATH,
           path: newPath,
-          value: cloneDeep(oldPath ? tf.getFieldValue(oldPath) : pathlessValue.value),
-          touched: oldPath ? tf.isFieldTouched(oldPath) : pathlessTouched.value,
+          value: cloneDeep(oldPath ? tf.getValue(oldPath) : pathlessValue.value),
+          touched: oldPath ? tf.isTouched(oldPath) : pathlessTouched.value,
           disabled: isDisabled.value,
-          errors: [...(oldPath ? tf.getFieldErrors(oldPath) : pathlessValidity.errors.value)],
+          errors: [...(oldPath ? tf.getErrors(oldPath) : pathlessValidity.errors.value)],
         };
       });
     }
@@ -238,7 +238,7 @@ function createFormTouchedRef(getPath: Getter<string | undefined>, form: FormCon
   const isTouched = computed(() => {
     const path = getPath();
 
-    return path ? form.isFieldTouched(path) : pathlessTouched.value;
+    return path ? form.isTouched(path) : pathlessTouched.value;
   }) as Ref<boolean>;
 
   function setTouched(value: boolean) {
@@ -247,7 +247,7 @@ function createFormTouchedRef(getPath: Getter<string | undefined>, form: FormCon
     pathlessTouched.value = value;
     // Only update it if the value is actually different, this avoids unnecessary path traversal/creation
     if (path && isDifferent) {
-      form.setFieldTouched(path, value);
+      form.setTouched(path, value);
     }
   }
 
@@ -268,14 +268,14 @@ function createFormValueRef<TValue = unknown>(
   const fieldValue = computed(() => {
     const path = getPath();
 
-    return path ? form.getFieldValue(path) : pathlessValue.value;
+    return path ? form.getValue(path) : pathlessValue.value;
   }) as Ref<TValue | undefined>;
 
   function setValue(value: TValue | undefined) {
     const path = getPath();
     pathlessValue.value = value;
     if (path) {
-      form.setFieldValue(path, value);
+      form.setValue(path, value);
     }
   }
 
@@ -321,7 +321,7 @@ function initFormPathIfNecessary(
       value: initialValue ?? form.getFieldInitialValue(path),
       touched: initialTouched,
       disabled: toValue(isDisabled),
-      errors: [...tf.getFieldErrors(path)],
+      errors: [...tf.getErrors(path)],
     }));
   });
 }
@@ -331,7 +331,7 @@ function createFormValidityRef(getPath: Getter<string | undefined>, form: FormCo
   const errors = computed(() => {
     const path = getPath();
 
-    return path ? form.getFieldErrors(path) : pathlessValidity.errors.value;
+    return path ? form.getErrors(path) : pathlessValidity.errors.value;
   }) as Ref<string[]>;
 
   const submitErrors = computed(() => {
@@ -344,7 +344,7 @@ function createFormValidityRef(getPath: Getter<string | undefined>, form: FormCo
     pathlessValidity.setErrors(messages);
     const path = getPath();
     if (path) {
-      form.setFieldErrors(path, messages);
+      form.setErrors(path, messages);
     }
   }
 
