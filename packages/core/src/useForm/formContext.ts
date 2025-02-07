@@ -89,9 +89,9 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     setInPath(values, path, cloneDeep(value));
   }
 
-  function setTouched(value: boolean);
-  function setTouched<TPath extends Path<TForm>>(path: TPath, value: boolean);
-  function setTouched<TPath extends Path<TForm>>(pathOrValue: TPath | boolean, valueOrUndefined?: boolean) {
+  function setTouched(value: boolean): void;
+  function setTouched<TPath extends Path<TForm>>(path: TPath, value: boolean): void;
+  function setTouched<TPath extends Path<TForm>>(pathOrValue: TPath | boolean, valueOrUndefined?: boolean): void {
     // If the pathOrValue is a boolean, we want to set all touched fields to that value
     if (typeof pathOrValue === 'boolean') {
       for (const key in touched) {
