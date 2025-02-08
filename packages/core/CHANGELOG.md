@@ -1,5 +1,24 @@
 # @formwerk/core
 
+## 0.7.0
+
+### Minor Changes
+
+- f4f4384: Use consistent API for query/set methods
+  - `isDirty()`, `isTouched()` and `isValid()` are now methods which can accept an optional path
+  - `getFieldValue()` is renamed to `getValue()`
+  - `setFieldErrors()` is renamed to `setErrors()`
+  - `setFieldValue()` is renamed to `setValue()`
+  - `setFieldTouched()` is renamed to `setTouched()`
+  - `getFieldvalue()` is renamed to `getValue()`
+  - `getFieldErrors()` is renmaed to `getErrors()`
+    - `getErrors()` now only returns an array of error messages as `string[]`
+
+### Patch Changes
+
+- 3c955de: fix: track dirty state manually
+- e873ea0: feat: expose getError, getValue, getErrors on form groups
+
 ## 0.6.6
 
 ### Patch Changes
