@@ -1,11 +1,11 @@
-name: Publish Approved Pull Requests
+name: On-Demand Releases
 on:
   pull_request_review:
     types: [submitted]
   workflow_dispatch:
 
 jobs:
-  approved:
+  Release:
     if: github.event.review.state == 'APPROVED' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
