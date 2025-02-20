@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.8.0
+
+### Minor Changes
+
+- 20001c5: feat: implement useDateTimeField
+
 ## 0.7.0
 
 ### Minor Changes
