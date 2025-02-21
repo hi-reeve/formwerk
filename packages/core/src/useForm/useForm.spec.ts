@@ -976,7 +976,7 @@ describe('form validation', () => {
         setup() {
           const { getSubmitErrors, handleSubmit } = useForm();
 
-          return { getSubmitErrors, onSubmit: handleSubmit(() => ({})) };
+          return { getSubmitErrors, onSubmit: handleSubmit(() => {}) };
         },
         template: `
       <form @submit="onSubmit" novalidate>
