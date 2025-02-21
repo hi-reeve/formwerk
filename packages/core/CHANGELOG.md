@@ -1,5 +1,11 @@
 # @formwerk/core
 
+## 0.8.1
+
+### Patch Changes
+
+- 4a9be13: fix: return Promise<void> instead of Promise<unknown>
+
 ## 0.8.0
 
 ### Minor Changes
