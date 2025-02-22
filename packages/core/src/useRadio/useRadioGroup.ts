@@ -1,4 +1,5 @@
 import { InjectionKey, toValue, computed, onBeforeUnmount, reactive, provide, ref } from 'vue';
+import { registerField } from '@formwerk/devtools';
 import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel, useErrorMessage } from '../a11y';
 import {
@@ -267,6 +268,10 @@ export function useRadioGroup<TValue = string>(_props: Reactivify<RadioGroupProp
   });
 
   provide(RadioGroupKey, context);
+
+  if (__DEV__) {
+    registerField(field, 'Radio');
+  }
 
   return exposeField(
     {

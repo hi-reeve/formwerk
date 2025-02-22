@@ -12,10 +12,12 @@ const __dirname = dirname(__filename);
 
 const formatNameMap = {
   core: 'Formwerk',
+  devtools: 'FormwerkDevtools',
 };
 
 const pkgNameMap = {
   core: 'core',
+  devtools: 'devtools',
 };
 
 const formatExt: Partial<Record<ModuleFormat, string>> = {
@@ -62,20 +64,20 @@ async function createConfig(pkg: keyof typeof pkgNameMap, format: ModuleFormat) 
 
   const { version } = info;
 
-  const isEsm = testEsm(format);
-
   const config = {
     bundleName: `${pkgNameMap[pkg]}.${formatExt[format] ?? 'js'}`,
     input: {
       input: slashes(path.resolve(__dirname, `../packages/${pkg}/src/index.ts`)),
       external: [
         'vue',
-        isEsm ? '@vue/devtools-api' : undefined,
-        isEsm ? '@vue/devtools-kit' : undefined,
         'klona',
-        '@standard-schema/utils',
-        '@standard-schema/spec',
-        '@internationalized/date',
+        'type-fest',
+        pkg === 'core' ? '@formwerk/devtools' : undefined,
+        pkg === 'core' ? '@standard-schema/utils' : undefined,
+        pkg === 'core' ? '@standard-schema/spec' : undefined,
+        pkg === 'core' ? '@internationalized/date' : undefined,
+        pkg === 'devtools' ? '@vue/devtools-api' : undefined,
+        pkg === 'devtools' ? '@vue/devtools-kit' : undefined,
       ].filter(Boolean) as string[],
       plugins: createPlugins({ version, pkg, format }),
     },

@@ -1,0 +1,43 @@
+{
+  "name": "@formwerk/devtools",
+  "version": "0.8.1",
+  "description": "Formwerk's Vue devtools plugin",
+  "author": "Abdelrahman Awad <logaretm1@gmail.com>",
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/logaretm",
+  "module": "dist/devtools.mjs",
+  "unpkg": "dist/devtools.iife.js",
+  "jsdelivr": "dist/devtools.iife.js",
+  "main": "dist/index.mjs",
+  "types": "dist/devtools.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/devtools.mjs",
+      "require": "./dist/devtools.cjs",
+      "types": "./dist/devtools.d.ts"
+    },
+    "./dist/index.d.ts": "./dist/devtools.d.ts"
+  },
+  "sideEffects": false,
+  "keywords": [
+    "VueJS",
+    "Vue",
+    "validation",
+    "validator",
+    "inputs",
+    "form"
+  ],
+  "files": [
+    "dist/*.js",
+    "dist/*.mjs",
+    "dist/*.cjs",
+    "dist/*.d.ts"
+  ],
+  "dependencies": {
+    "klona": "^2.0.6",
+    "type-fest": "^4.34.1",
+    "@vue/devtools-api": "^7.7.2",
+    "@vue/devtools-kit": "^7.7.2"
+  }
+}

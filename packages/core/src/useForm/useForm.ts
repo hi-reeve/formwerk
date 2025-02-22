@@ -1,5 +1,6 @@
 import { InjectionKey, MaybeRefOrGetter, onMounted, provide, reactive, readonly, Ref, ref } from 'vue';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
+import { registerForm } from '@formwerk/devtools';
 import { cloneDeep, useUniqId } from '../utils/common';
 import {
   FormObject,
@@ -284,8 +285,21 @@ export function useForm<
     formProps,
   };
 
-  return {
+  const form = {
     ...baseReturns,
     ...actions,
-  } as typeof baseReturns & FormActions<TInput, TOutput>;
+  };
+
+  if (__DEV__) {
+    // using any until we can figure out how to type this properly
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    registerForm(form as any);
+  }
+
+  return form as typeof baseReturns & FormActions<TInput, TOutput>;
 }
+
+/**
+ * Just a utility type helper to get the return type of the useForm composable.
+ */
+export type FormReturns = ReturnType<typeof useForm>;

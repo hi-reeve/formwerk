@@ -1,4 +1,5 @@
 import { Ref, computed, shallowRef, toValue } from 'vue';
+import { registerField } from '@formwerk/devtools';
 import { createDescribedByProps, normalizeProps, propsToValues, useUniqId, withRefCapture } from '../utils/common';
 import {
   AriaDescribableProps,
@@ -176,6 +177,10 @@ export function useTextField(
       elementRef,
     );
   });
+
+  if (__DEV__) {
+    registerField(field, 'Text');
+  }
 
   return exposeField(
     {
