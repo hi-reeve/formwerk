@@ -121,6 +121,7 @@ export function useComboBox<TOption, TValue = TOption>(
   const { labelProps, labelledByProps } = useLabel({
     label: props.label,
     for: inputId,
+    targetRef: inputEl,
   });
 
   const { validityDetails } = useInputValidity({ field, inputEl, disableHtmlValidation: props.disableHtmlValidation });

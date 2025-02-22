@@ -8,13 +8,21 @@ describe('label element', () => {
     const labelFor = 'input';
 
     await render({
-      setup: () =>
-        useLabel({
-          for: labelFor,
-          label: label,
-        }),
+      setup: () => {
+        const inputRef = ref<HTMLElement>();
+
+        return {
+          inputRef,
+          ...useLabel({
+            for: labelFor,
+            label: label,
+            targetRef: inputRef,
+          }),
+        };
+      },
       template: `
       <label data-testid="label" v-bind="labelProps">Label</label>
+      <input data-testid="input" ref="inputRef" />
     `,
     });
 
