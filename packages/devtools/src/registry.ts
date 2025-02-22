@@ -110,6 +110,7 @@ export function registerForm(form: FormReturns, vm: Maybe<ComponentInternalInsta
     isValid: form.isValid(),
     isDirty: form.isDirty(),
     touched: form.isTouched(),
+    issues: form.getIssues(),
     values: form.values,
   });
 }

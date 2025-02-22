@@ -271,6 +271,12 @@ export function useForm<
      * Gets all the errors for the form.
      */
     getErrors: ctx.getErrors,
+
+    /**
+     * Gets all the issues for the form. Issues are more detailed than errors, they contain the path and all the messages for a path.
+     */
+    getIssues: ctx.getIssues,
+
     /**
      * Gets the submit errors for a field.
      */

@@ -9,6 +9,7 @@ import {
   decodeNode,
   mapFieldForDevtoolsInspector,
   mapFormForDevtoolsInspector,
+  brandMessage,
 } from './helpers';
 import { getInspectorId } from './constants';
 import {
@@ -19,7 +20,6 @@ import {
   getForm,
   getField,
 } from './registry';
-import { brandMessage } from './utils';
 
 let SELECTED_NODE:
   | { type: 'form'; form: FormReturns }

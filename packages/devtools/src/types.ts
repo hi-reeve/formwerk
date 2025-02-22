@@ -1,4 +1,4 @@
-import type { FormField, FormReturns } from '@core/index';
+import type { FormField, FormReturns, IssueCollection } from '@core/index';
 import { ComponentInternalInstance } from 'vue';
 
 interface BaseState<TValue = unknown> {
@@ -21,6 +21,7 @@ export interface FormState extends BaseState {
   id: string;
   isSubmitting: boolean;
   submitCount: number;
+  issues: IssueCollection[];
   type: 'form';
 }
 
@@ -68,6 +69,7 @@ export function formToState(form: FormReturns): FormState {
     valid: form.isValid(),
     value: form.values,
     errors: form.getErrors(),
+    issues: form.getIssues(),
     type: 'form',
   };
 }

@@ -46,6 +46,7 @@ export interface BaseFormContext<TForm extends FormObject = FormObject> {
   setInitialTouched: (newTouched: Partial<TouchedSchema<TForm>>, opts?: SetValueOptions) => void;
   setFieldDisabled<TPath extends Path<TForm>>(path: TPath, value: boolean): void;
   getErrors<TPath extends Path<TForm>>(path?: TPath): string[];
+  getIssues<TPath extends Path<TForm>>(path?: TPath): IssueCollection[];
   getFieldSubmitErrors<TPath extends Path<TForm>>(path: TPath): string[];
   setErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>): void;
   setFieldSubmitErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>): void;
@@ -250,22 +251,9 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
   }
 
   function getErrors<TPath extends Path<TForm>>(path?: TPath) {
-    const allErrors = Object.entries(errors.value)
-      .map<IssueCollection>(([key, value]) => ({ path: key, messages: value as string[] }))
-      .filter(e => e.messages.length > 0);
-
-    if (!path) {
-      return allErrors.map(e => e.messages).flat();
-    }
-
-    // // Check if there are any errors in the path prefix
-    const pathPrefixErrors = allErrors.filter(e => e.path.startsWith(path));
-
-    if (pathPrefixErrors.length > 0) {
-      return pathPrefixErrors.map(e => e.messages).flat();
-    }
-
-    return [];
+    return getIssues(path)
+      .map(e => e.messages)
+      .flat();
   }
 
   function getFieldSubmitErrors<TPath extends Path<TForm>>(path: TPath) {
@@ -352,6 +340,25 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     return schema ? 'schema' : 'aggregate';
   }
 
+  function getIssues<TPath extends Path<TForm>>(path?: TPath): IssueCollection[] {
+    const allErrors = Object.entries(errors.value)
+      .map<IssueCollection>(([key, value]) => ({ path: key, messages: value as string[] }))
+      .filter(e => e.messages.length > 0);
+
+    if (!path) {
+      return allErrors;
+    }
+
+    // // Check if there are any errors in the path prefix
+    const pathPrefixErrors = allErrors.filter(e => e.path.startsWith(path));
+
+    if (pathPrefixErrors.length > 0) {
+      return pathPrefixErrors;
+    }
+
+    return [];
+  }
+
   return {
     id,
     getValues: () => cloneDeep(values),
@@ -383,5 +390,6 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     clearSubmitErrors,
     getValidationMode,
     isPathDisabled,
+    getIssues,
   };
 }

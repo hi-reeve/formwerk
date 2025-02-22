@@ -11,6 +11,7 @@ import RadioItem from '@/components/RadioItem.vue';
 import Switch from '@/components/Switch.vue';
 import InputTextArea from '@/components/InputTextArea.vue';
 import { useForm } from '@formwerk/core';
+import { z } from 'zod';
 
 const min = new Date(2025, 0, 4, 0, 0, 0, 0);
 const value = new Date('2025-01-15');
@@ -22,7 +23,18 @@ const options = [
   { label: 'Option 3', value: '3' },
 ];
 
-const { handleSubmit } = useForm();
+const schema = z.object({
+  username: z.object({
+    name: z.string(),
+  }),
+  age: z.number().min(0).max(120),
+  hobbies: z.array(z.string()),
+  gender: z.enum(['male', 'female', 'other']),
+  notifications: z.boolean(),
+  calendar: z.date(),
+});
+
+const { handleSubmit } = useForm({ schema });
 
 const onSubmit = handleSubmit(payload => {
   console.log(payload);
