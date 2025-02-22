@@ -17,7 +17,7 @@ export function useLabel(props: LabelProps) {
     return {
       ref: refCapture,
       id: `${toValue(props.for)}-l`,
-      for: isLabelElement(labelRef.value) ? toValue(props.for) : undefined,
+      for: isLabelElement(labelRef.value) && isInputElement(toValue(props.targetRef)) ? toValue(props.for) : undefined,
       onClick: props.handleClick || undefined,
     } as AriaLabelProps;
   });
