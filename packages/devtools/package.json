@@ -5,6 +5,12 @@
   "author": "Abdelrahman Awad <logaretm1@gmail.com>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/logaretm",
+  "homepage": "https://formwerk.dev/",
+  "repository": {
+    "url": "https://github.com/formwerkjs/formwerk.git",
+    "type": "git",
+    "directory": "packages/devtools"
+  },
   "module": "dist/devtools.mjs",
   "unpkg": "dist/devtools.iife.js",
   "jsdelivr": "dist/devtools.iife.js",
