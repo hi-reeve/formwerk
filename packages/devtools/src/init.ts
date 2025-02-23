@@ -1,4 +1,4 @@
-import { App, getCurrentInstance, nextTick, onMounted, onUnmounted, watch } from 'vue';
+import { App, type ComponentInternalInstance, getCurrentInstance, nextTick, onMounted, onUnmounted, watch } from 'vue';
 import { throttle } from 'packages/shared/src';
 import { FormField, FormReturns } from '@core/index';
 import { isSSR } from '@core/utils/common';
@@ -52,6 +52,17 @@ async function installDevtoolsPlugin(app: App) {
         },
         api => {
           API = api;
+
+          async function highlight(vm: ComponentInternalInstance | null | undefined) {
+            if (!vm) {
+              return;
+            }
+
+            await api.highlightElement(vm);
+            setTimeout(() => {
+              api.unhighlightElement();
+            }, 1250);
+          }
 
           api.addInspector({
             id: INSPECTOR_ID,
@@ -138,7 +149,7 @@ async function installDevtoolsPlugin(app: App) {
 
               if (form && '_vm' in form) {
                 SELECTED_NODE = { type: 'form', form };
-                api.highlightElement(form._vm);
+                highlight(form._vm);
               }
 
               return;
@@ -150,7 +161,7 @@ async function installDevtoolsPlugin(app: App) {
 
               if (field) {
                 SELECTED_NODE = { type: 'field', field };
-                api.highlightElement(field._vm);
+                highlight(field._vm);
               }
 
               return;
