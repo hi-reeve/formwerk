@@ -1,5 +1,17 @@
 # @formwerk/core
 
+## 0.8.2
+
+### Patch Changes
+
+- 04fb9d7: fix: combobox label for attribute binding
+- b2b5297: fix: label "for" attribute should be only for form elements
+- 07357e9: fix: change time placeholders to dashes since it is more common
+- d34984c: feat: initial devtools support
+- 80634bb: feat: expose "getIssues" on useForm
+- Updated dependencies [d34984c]
+  - @formwerk/devtools@0.8.2
+
 ## 0.8.1
 
 ### Patch Changes
