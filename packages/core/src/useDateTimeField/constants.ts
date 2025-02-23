@@ -31,9 +31,9 @@ export function getSegmentTypePlaceholder(type: DateTimeSegmentType) {
     year: 'YYYY',
     month: 'MM',
     day: 'DD',
-    hour: 'HH',
-    minute: 'mm',
-    second: 'ss',
+    hour: '--',
+    minute: '--',
+    second: '--',
     dayPeriod: 'AM',
     weekday: 'ddd',
   };
