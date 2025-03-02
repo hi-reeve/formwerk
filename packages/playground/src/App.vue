@@ -27,6 +27,8 @@ const isNotificationsEnabled = ref(false);
 
 <template>
   <div class="">
+    <DateField name="birthdate" label="Birth Date" :value="value" :min="min" :max="max" />
+
     <!-- <h2 class="text-2xl font-bold mb-6">Fields Outside Form</h2>
     <InputText name="username" label="Username" placeholder="Enter username" />
     <InputNumber name="age" label="Age" :min="0" :max="120" />
@@ -55,6 +57,6 @@ const isNotificationsEnabled = ref(false);
       placeholder="Enter notification name"
     /> -->
 
-    <AllForm />
+    <!-- <AllForm /> -->
   </div>
 </template>
