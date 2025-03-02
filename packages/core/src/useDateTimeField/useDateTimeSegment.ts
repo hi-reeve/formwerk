@@ -113,7 +113,6 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
 
       const { min, max, maxLength } = getMetadata();
       const nextValue = currentInput + evt.data;
-      currentInput = nextValue;
 
       const parsed = parser.parse(nextValue);
       if (isNullOrUndefined(min) || isNullOrUndefined(max) || isNullOrUndefined(maxLength)) {
@@ -124,6 +123,7 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
         return;
       }
 
+      currentInput = nextValue;
       if (segmentEl.value) {
         segmentEl.value.textContent = currentInput;
       }
