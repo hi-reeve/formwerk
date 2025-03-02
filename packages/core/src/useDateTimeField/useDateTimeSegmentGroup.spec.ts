@@ -757,6 +757,7 @@ describe('useDateTimeSegmentGroup', () => {
       expect(isTemporalPartial(lastCall)).toBe(true);
       expect(lastCall['~fw_temporal_partial']).toEqual({
         day: true,
+        month: true,
       });
     });
   });
