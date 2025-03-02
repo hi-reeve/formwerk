@@ -1,4 +1,4 @@
-import { computed, CSSProperties, defineComponent, h, inject, shallowRef, toValue } from 'vue';
+import { computed, CSSProperties, defineComponent, h, inject, nextTick, shallowRef, toValue } from 'vue';
 import { Reactivify } from '../types';
 import { hasKeyCode, isNullOrUndefined, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
 import { DateTimeSegmentGroupKey } from './useDateTimeSegmentGroup';
@@ -75,6 +75,7 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
     focusNext,
     isNumeric,
     isLockedByRange,
+    dispatchEvent,
   } = segmentGroup.useDateSegmentRegistration({
     id,
     getElem: () => segmentEl.value,
@@ -135,6 +136,9 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
     },
     onBlur() {
       onTouched();
+      nextTick(() => {
+        dispatchEvent('blur');
+      });
       const { min, max } = getMetadata();
       if (isNullOrUndefined(min) || isNullOrUndefined(max)) {
         return;
