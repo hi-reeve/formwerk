@@ -1,7 +1,7 @@
-import { InjectionKey, MaybeRefOrGetter, onMounted, provide, reactive, readonly, Ref, ref } from 'vue';
+import { inject, InjectionKey, MaybeRefOrGetter, onMounted, provide, reactive, readonly, Ref, ref } from 'vue';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import { registerForm } from '@formwerk/devtools';
-import { cloneDeep, useUniqId } from '../utils/common';
+import { cloneDeep, useUniqId, warn } from '../utils/common';
 import {
   FormObject,
   MaybeAsync,
@@ -90,6 +90,8 @@ export interface FormDomProps {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const FormKey: InjectionKey<FormContext<any>> = Symbol('Formwerk FormKey');
+
+export const FormContextKey: InjectionKey<FormReturns & FormActions<any, any>> = Symbol('Formwerk FormContextKey');
 
 export function useForm<
   TSchema extends GenericFormSchema,
@@ -302,6 +304,8 @@ export function useForm<
     registerForm(form as any);
   }
 
+  provide(FormContextKey, form as any);
+
   return form as typeof baseReturns & FormActions<TInput, TOutput>;
 }
 
@@ -309,3 +313,15 @@ export function useForm<
  * Just a utility type helper to get the return type of the useForm composable.
  */
 export type FormReturns = ReturnType<typeof useForm>;
+
+export function useFormContext<TInput extends FormObject = FormObject, TOutput extends FormObject = TInput>() {
+  const ctx = inject(FormContextKey, null);
+
+  if (__DEV__) {
+    if (!ctx) {
+      warn('useFormContext must be used within a Formwerk form or one of its descendants.');
+    }
+  }
+
+  return ctx as FormReturns & FormActions<TInput, TOutput>;
+}
