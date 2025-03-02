@@ -111,11 +111,11 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
         return;
       }
 
+      const { min, max, maxLength } = getMetadata();
       const nextValue = currentInput + evt.data;
       currentInput = nextValue;
 
       const parsed = parser.parse(nextValue);
-      const { min, max, maxLength } = getMetadata();
       if (isNullOrUndefined(min) || isNullOrUndefined(max) || isNullOrUndefined(maxLength)) {
         return;
       }
@@ -131,6 +131,13 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
       // If the current input length is greater than or equal to the max length, or the parsed value is greater than the max value,
       // then we should signal the segment group that this segment is done and it can move to the next segment
       if (currentInput.length >= maxLength || parsed * 10 > max) {
+        // When done, if the parsed value is less than the min value, we should set the value to the min value
+        if (parsed < min) {
+          if (segmentEl.value) {
+            segmentEl.value.textContent = min.toString();
+          }
+        }
+
         onDone();
       }
     },

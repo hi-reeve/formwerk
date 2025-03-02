@@ -7,5 +7,5 @@ const max = new Date('2025-01-20');
 </script>
 
 <template>
-  <DateField name="birthdate" label="Birth Date" :value="value" :min="min" :max="max" />
+  <DateField name="birthdate" label="Birth Date" />
 </template>
