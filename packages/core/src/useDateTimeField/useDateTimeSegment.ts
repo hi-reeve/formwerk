@@ -7,6 +7,7 @@ import { blockEvent } from '../utils/events';
 import { DateTimeSegmentType } from './types';
 import { isEditableSegmentType } from './constants';
 import { createDisabledContext } from '../helpers/createDisabledContext';
+import { isFirefox } from '../utils/platform';
 
 export interface DateTimeSegmentProps {
   /**
@@ -178,10 +179,12 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
   };
 
   const segmentProps = computed(() => {
+    const ceValue = isFirefox() ? 'true' : 'plaintext-only';
+
     const domProps: DateTimeSegmentDomProps = {
       id,
       tabindex: isNonEditable() ? -1 : 0,
-      contenteditable: isNonEditable() ? undefined : 'plaintext-only',
+      contenteditable: isNonEditable() ? undefined : ceValue,
       'aria-disabled': isDisabled.value,
       'data-segment-type': toValue(props.type),
       'aria-label': isNonEditable() ? undefined : toValue(props.type),

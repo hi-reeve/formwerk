@@ -13,3 +13,7 @@ export function isMac() {
 
   return macRE.test(platform);
 }
+
+export function isFirefox() {
+  return /Firefox/i.test(navigator.userAgent);
+}
