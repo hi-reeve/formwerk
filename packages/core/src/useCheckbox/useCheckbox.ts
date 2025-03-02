@@ -15,7 +15,7 @@ import { useFormField, exposeField, FormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
 import { useInputValidity } from '../validation';
 
-export interface CheckboxProps<TValue = string> {
+export interface CheckboxProps<TValue = boolean> {
   /**
    * The name/path of the checkbox field.
    */

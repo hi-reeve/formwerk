@@ -24,7 +24,7 @@ const CustomBase: string = `
   </div>
 `;
 
-const createCheckbox = (props: CheckboxProps, template = InputBase): Component => {
+function createCheckbox<TValue = boolean>(props: CheckboxProps<TValue>, template = InputBase): Component {
   return defineComponent({
     template,
     inheritAttrs: false,
@@ -37,7 +37,7 @@ const createCheckbox = (props: CheckboxProps, template = InputBase): Component =
       };
     },
   });
-};
+}
 
 describe('has no a11y violations', () => {
   test('with input as base element', async () => {
