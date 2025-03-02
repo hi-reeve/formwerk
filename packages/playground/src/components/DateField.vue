@@ -62,7 +62,7 @@ const { pickerProps, pickerTriggerProps } = usePicker({
   }
 
   .segment {
-    @apply p-0.5 rounded focus:outline-none focus:bg-blue-600 caret-transparent;
+    @apply p-0.5 rounded focus:outline-none focus:bg-blue-600 caret-transparent aria-disabled:text-zinc-500;
   }
 
   .error-message {
