@@ -266,6 +266,68 @@ describe('form reset', () => {
     expect(values).toEqual({ foo: 'baz' });
     expect(isTouched('foo')).toBe(true);
   });
+
+  test('handleReset creates a handler that resets the form and calls afterReset', async () => {
+    const afterResetMock = vi.fn();
+    const { values, handleReset, setValue } = await renderSetup(() => {
+      return useForm({ initialValues: { foo: 'bar' } });
+    });
+
+    setValue('foo', 'changed');
+    expect(values).toEqual({ foo: 'changed' });
+
+    const resetEvent = new Event('reset');
+    const preventDefaultSpy = vi.spyOn(resetEvent, 'preventDefault');
+
+    const resetHandler = handleReset(afterResetMock);
+    await resetHandler(resetEvent);
+
+    expect(preventDefaultSpy).toHaveBeenCalledOnce();
+    expect(values).toEqual({ foo: 'bar' });
+    expect(afterResetMock).toHaveBeenCalledOnce();
+  });
+
+  test('handleReset works without afterReset callback and without event', async () => {
+    const { values, handleReset, setValue } = await renderSetup(() => {
+      return useForm({ initialValues: { foo: 'bar' } });
+    });
+
+    setValue('foo', 'changed');
+    expect(values).toEqual({ foo: 'changed' });
+
+    const resetHandler = handleReset();
+    await resetHandler();
+
+    expect(values).toEqual({ foo: 'bar' });
+  });
+
+  test('handleReset can be used with a form element reset event', async () => {
+    const afterResetMock = vi.fn();
+
+    await render({
+      template: `
+        <form v-bind="formProps" data-testid="form">
+          <button type="reset">Reset</button>
+        </form>
+      `,
+      setup() {
+        const form = useForm({ initialValues: { foo: 'bar' } });
+        const formProps = {
+          ...form.formProps,
+          onReset: form.handleReset(afterResetMock),
+        };
+
+        form.setValue('foo', 'changed');
+
+        return { formProps };
+      },
+    });
+
+    await fireEvent.click(screen.getByText('Reset'));
+    await flush();
+
+    expect(afterResetMock).toHaveBeenCalledOnce();
+  });
 });
 
 describe('form submit', () => {

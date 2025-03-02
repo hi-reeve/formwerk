@@ -53,6 +53,16 @@ export interface FormActions<TForm extends FormObject, TOutput extends FormObjec
   handleSubmit: (
     onSuccess: (payload: ConsumableData<TOutput>, ctx: SubmitContext) => MaybeAsync<void>,
   ) => (e?: Event) => Promise<void>;
+
+  /**
+   * Creates a reset handler for the form.
+   * @example
+   * ```ts
+   * const onReset = handleReset();
+   * ```
+   */
+  handleReset: (afterReset?: () => MaybeAsync<void>) => (e?: Event) => Promise<void>;
+
   /**
    * Resets the form to its initial state.
    */
@@ -120,6 +130,14 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     };
   }
 
+  function handleReset(afterReset?: () => MaybeAsync<void>) {
+    return async function resetHandler(e?: Event) {
+      e?.preventDefault();
+      await reset();
+      await afterReset?.();
+    };
+  }
+
   function updateSubmitValidationStateFromResult(errors: IssueCollection[]) {
     form.clearSubmitErrors();
     applySubmitErrors(errors);
@@ -182,6 +200,7 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
 
   const actions: FormActions<TForm, TOutput> = {
     handleSubmit,
+    handleReset,
     reset,
     validate,
   };
