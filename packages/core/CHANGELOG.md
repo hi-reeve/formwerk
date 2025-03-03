@@ -1,5 +1,21 @@
 # @formwerk/core
 
+## 0.8.3
+
+### Patch Changes
+
+- df355c5: fix: handle enter key on android firefox
+- c3f2be2: fix: negative signs affecting number parsing with date segments
+- ce583ea: feat: implement HTML constraint validator
+- 8a27ecc: fix: prevent date segments from having invalid min value
+- e969bb7: fix: use true as contenteditable value on firefox
+- 38a039d: feat: added useFormContext to inject parent forms
+- accc2e8: feat: added handleReset fn
+- a764650: fix: initialize known date segments and disable locked ones
+- bb01448: fix(types): default checkbox value prop type to boolean
+- Updated dependencies [c6e1853]
+  - @formwerk/devtools@0.8.3
+
 ## 0.8.2
 
 ### Patch Changes
