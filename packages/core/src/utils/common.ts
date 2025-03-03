@@ -365,7 +365,7 @@ export function tryOnScopeDispose(fn: () => void) {
 }
 
 export function hasKeyCode(e: Event, code: string) {
-  return (e as KeyboardEvent).code === code;
+  return (e as KeyboardEvent).code === code || (e as KeyboardEvent).key === code;
 }
 
 /**
