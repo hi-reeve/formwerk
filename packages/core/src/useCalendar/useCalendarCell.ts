@@ -54,7 +54,10 @@ export function useCalendarCell(_props: Reactivify<CalendarCellProps>) {
   };
 }
 
-export const CalendarCell = defineComponent({
+/**
+ * A helper component that renders a calendar cell. You can build your own with `useCalendarCell`.
+ */
+export const CalendarCell = /*#__PURE__*/ defineComponent({
   name: 'CalendarCell',
   inheritAttrs: true,
   props: ['value', 'selected', 'disabled', 'focused', 'label', 'type', 'monthOfYear', 'year'],

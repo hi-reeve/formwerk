@@ -239,7 +239,10 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
   };
 }
 
-export const DateTimeSegment = defineComponent<DateTimeSegmentProps>({
+/**
+ * A helper component that renders a datetime segment. You can build your own with `useDateTimeSegment`.
+ */
+export const DateTimeSegment = /*#__PURE__*/ defineComponent<DateTimeSegmentProps>({
   name: 'DateTimeSegment',
   props: ['type', 'value', 'disabled', 'readonly'],
   setup(props) {
