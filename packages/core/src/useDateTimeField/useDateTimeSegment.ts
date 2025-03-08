@@ -235,6 +235,7 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
   });
 
   return {
+    key: computed(() => `${id}-${toValue(props.type)}`),
     segmentProps,
   };
 }
@@ -246,8 +247,16 @@ export const DateTimeSegment = /*#__PURE__*/ defineComponent<DateTimeSegmentProp
   name: 'DateTimeSegment',
   props: ['type', 'value', 'disabled', 'readonly'],
   setup(props) {
-    const { segmentProps } = useDateTimeSegment(props);
+    const { segmentProps, key } = useDateTimeSegment(props);
 
-    return () => h('span', segmentProps.value, props.value);
+    return () =>
+      h(
+        'span',
+        {
+          ...segmentProps.value,
+          key: key.value,
+        },
+        props.value,
+      );
   },
 });

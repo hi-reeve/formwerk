@@ -35,7 +35,6 @@ export function useCalendarCell(_props: Reactivify<CalendarCellProps>) {
 
     return withRefCapture(
       {
-        key: toValue(props.value).toString(),
         onClick: handleClick,
         onPointerdown: handlePointerDown,
         'aria-selected': toValue(props.selected),
@@ -51,6 +50,7 @@ export function useCalendarCell(_props: Reactivify<CalendarCellProps>) {
   return {
     cellProps,
     label,
+    key: computed(() => `${toValue(props.type)}-${toValue(props.value).toString()}`),
   };
 }
 
@@ -62,8 +62,16 @@ export const CalendarCell = /*#__PURE__*/ defineComponent({
   inheritAttrs: true,
   props: ['value', 'selected', 'disabled', 'focused', 'label', 'type', 'monthOfYear', 'year'],
   setup(props) {
-    const { cellProps, label } = useCalendarCell(props);
+    const { cellProps, label, key } = useCalendarCell(props);
 
-    return () => h('span', cellProps.value, label.value);
+    return () =>
+      h(
+        'span',
+        {
+          ...cellProps.value,
+          key: key.value,
+        },
+        label.value,
+      );
   },
 });
