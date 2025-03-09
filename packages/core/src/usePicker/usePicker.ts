@@ -74,5 +74,10 @@ export function usePicker(_props: Reactivify<PickerProps>) {
      * The props for the picker trigger element.
      */
     pickerTriggerProps,
+
+    /**
+     * The ref for the picker element.
+     */
+    pickerEl,
   };
 }
