@@ -1,5 +1,14 @@
 # @formwerk/core
 
+## 0.8.4
+
+### Patch Changes
+
+- 43b4a7c: feat: expose the picker el in usePicker
+- 6ed644c: feat(bundle): added PURE annotations for exported helper components
+- 080eff3: fix: apply keys externally on calendar and segment components
+  - @formwerk/devtools@0.8.4
+
 ## 0.8.3
 
 ### Patch Changes
