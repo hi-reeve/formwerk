@@ -1,5 +1,15 @@
 # @formwerk/core
 
+## 0.9.0
+
+### Minor Changes
+
+- 873bbae: feat: add OTP Field
+
+### Patch Changes
+
+- @formwerk/devtools@0.9.0
+
 ## 0.8.4
 
 ### Patch Changes
