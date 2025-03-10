@@ -3,7 +3,7 @@
     <div class="label" v-bind="labelProps">{{ label }}</div>
 
     <div class="control" v-bind="controlProps">
-      <OtpSlot v-for="slot in fieldSlots" v-bind="slot" />
+      <OtpSlot v-for="slot in fieldSlots" as="input" v-bind="slot" />
     </div>
 
     <span v-bind="errorMessageProps" class="w-full truncate error-message">
@@ -13,9 +13,9 @@
 </template>
 
 <script setup lang="ts">
-import { useOtpField, OTPFieldProps, OtpSlot } from '@formwerk/core';
+import { useOtpField, OtpFieldProps, OtpSlot } from '@formwerk/core';
 
-const props = defineProps<OTPFieldProps>();
+const props = defineProps<OtpFieldProps>();
 
 const { controlProps, labelProps, errorMessage, errorMessageProps, fieldSlots } = useOtpField(props);
 </script>

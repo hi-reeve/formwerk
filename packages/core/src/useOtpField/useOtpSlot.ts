@@ -183,6 +183,6 @@ export const OtpSlot = /*#__PURE__*/ defineComponent<OtpSlotProps & { as?: strin
   setup(props) {
     const { slotProps, value, key } = useOtpSlot(props);
 
-    return () => h(props.as || 'span', { ...slotProps.value, key }, value.value);
+    return () => h(props.as || 'input', { ...slotProps.value, key }, value.value);
   },
 });
