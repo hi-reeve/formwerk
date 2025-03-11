@@ -585,9 +585,11 @@ describe('useOtpField', () => {
 
       // Test numeric input (should be accepted)
       await fireEvent(slots[0], new InputEvent('beforeinput', { data: '1', cancelable: true }));
+      await flush();
 
       // Test non-numeric input (should be rejected)
       await fireEvent(slots[1], new InputEvent('beforeinput', { data: 'a', cancelable: true }));
+      await flush();
 
       // Check the field value - should only contain the numeric input
       expect(screen.getByTestId('value').textContent).toBe('1');

@@ -108,14 +108,17 @@ export function useOtpSlot(_props: Reactivify<OtpSlotProps>) {
       }
 
       blockEvent(e);
-      const text = e.data[0].trim();
+      const text = e.data.trim();
       if (toValue(props.readonly) || isDisabled.value || !text) {
         return;
       }
 
       if (isValueAccepted(text, toValue(props.accept) || 'alphanumeric')) {
-        setElementValue(text);
-        registration?.setValue(text, e);
+        // Chrome on Android bug #151
+        setTimeout(() => {
+          setElementValue(text);
+          registration?.setValue(text, e);
+        }, 0);
       }
     },
     onChange(e: Event) {

@@ -312,8 +312,8 @@ export function useOtpField(_props: Reactivify<OtpFieldProps, 'schema' | 'onComp
       }
     }
 
-    // Focuses the next slot
     focusIndex(Math.min(currentIndex + textToFill.length, getRequiredLength() - 1));
+    // Focuses the next slot
     updateFieldValue();
   }
 
