@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.9.1
+
+### Patch Changes
+
+- bb84a08: fix: correctly detect nested paths for error reporting closes #150
+  - @formwerk/devtools@0.9.1
+
 ## 0.9.0
 
 ### Minor Changes
