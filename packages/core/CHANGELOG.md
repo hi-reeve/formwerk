@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.9.2
+
+### Patch Changes
+
+- c7b99a3: fix: wait for next tick before setting otp slot value closes #151
+  - @formwerk/devtools@0.9.2
+
 ## 0.9.1
 
 ### Patch Changes
