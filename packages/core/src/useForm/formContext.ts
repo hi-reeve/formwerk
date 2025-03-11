@@ -305,7 +305,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     }
 
     Object.keys(errors.value).forEach(key => {
-      if (key === path || key.startsWith(path)) {
+      if (key === path || key.startsWith(path + '.')) {
         delete errors.value[key as Path<TForm>];
       }
     });
@@ -318,7 +318,7 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     }
 
     Object.keys(submitErrors.value).forEach(key => {
-      if (key === path || key.startsWith(path)) {
+      if (key === path || key.startsWith(path + '.')) {
         delete submitErrors.value[key as Path<TForm>];
       }
     });
@@ -349,8 +349,17 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
       return allErrors;
     }
 
-    // // Check if there are any errors in the path prefix
-    const pathPrefixErrors = allErrors.filter(e => e.path.startsWith(path));
+    // Check if there are any errors in the path or its nested properties
+    const pathPrefixErrors = allErrors.filter(e => {
+      // Exact match
+      if (e.path === path) {
+        return true;
+      }
+
+      // Check for nested paths with dot notation (e.g., path.value)
+      // This ensures we only match paths that are actually nested, not just string prefixes
+      return e.path.startsWith(path + '.');
+    });
 
     if (pathPrefixErrors.length > 0) {
       return pathPrefixErrors;
