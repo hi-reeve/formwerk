@@ -20,8 +20,8 @@ export type DisabledSchema<TForm extends FormObject> = Partial<Record<Path<TForm
 
 export type ErrorsSchema<TForm extends FormObject> = Partial<Record<Path<TForm>, string[]>>;
 
-export type IssueCollection = {
-  path: string;
+export type IssueCollection<TPath = string> = {
+  path: TPath;
   messages: string[];
 };
 

@@ -1415,4 +1415,18 @@ describe('form validation', () => {
     expect(allErrors).toHaveLength(3);
     expect(addressErrors).toHaveLength(2);
   });
+
+  test('setErrors accepts an array of IssueCollection', async () => {
+    const { setErrors, getError } = await renderSetup(() => {
+      return useForm();
+    });
+
+    setErrors([
+      { path: 'test', messages: ['error1', 'error2'] },
+      { path: 'test2', messages: ['error3'] },
+    ]);
+
+    expect(getError('test')).toBe('error1');
+    expect(getError('test2')).toBe('error3');
+  });
 });

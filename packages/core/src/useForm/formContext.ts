@@ -49,6 +49,7 @@ export interface BaseFormContext<TForm extends FormObject = FormObject> {
   getIssues<TPath extends Path<TForm>>(path?: TPath): IssueCollection[];
   getFieldSubmitErrors<TPath extends Path<TForm>>(path: TPath): string[];
   setErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>): void;
+  setErrors<TPath extends Path<TForm>>(issues: IssueCollection<TPath>[]): void;
   setFieldSubmitErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>): void;
   getValidationMode(): FormValidationMode;
   getSubmitErrors: () => IssueCollection[];
@@ -260,8 +261,21 @@ export function createFormContext<TForm extends FormObject = FormObject, TOutput
     return [...(getFromPath<string[]>(submitErrors.value, escapePath(path), []) || [])];
   }
 
-  function setErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>) {
-    setInPath(errors.value, escapePath(path), message ? normalizeArrayable(message) : []);
+  function setErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>): void;
+  function setErrors<TPath extends Path<TForm>>(issues: IssueCollection<TPath>[]): void;
+  function setErrors<TPath extends Path<TForm>>(
+    pathOrIssues: TPath | IssueCollection<TPath>[],
+    messageOrUndefined?: Arrayable<string>,
+  ) {
+    if (Array.isArray(pathOrIssues)) {
+      pathOrIssues.forEach(issue => {
+        setInPath(errors.value, issue.path, issue.messages);
+      });
+
+      return;
+    }
+
+    setInPath(errors.value, escapePath(pathOrIssues), messageOrUndefined ? normalizeArrayable(messageOrUndefined) : []);
   }
 
   function setFieldSubmitErrors<TPath extends Path<TForm>>(path: TPath, message: Arrayable<string>) {
