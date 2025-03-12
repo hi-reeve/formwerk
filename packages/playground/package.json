@@ -10,18 +10,18 @@
   "dependencies": {
     "@formwerk/core": "workspace:*",
     "@internationalized/date": "^3.7.0",
-    "@tailwindcss/postcss": "^4.0.9",
+    "@tailwindcss/postcss": "^4.0.13",
     "fuse.js": "^7.1.0",
-    "tailwindcss": "^4.0.9",
+    "tailwindcss": "^4.0.13",
     "vue": "^3.5.13",
-    "vue-i18n": "^11.1.1",
+    "vue-i18n": "^11.1.2",
     "yup": "^1.6.1",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.0",
     "typescript": "^5.8.2",
-    "vite": "^6.2.0",
-    "vue-tsc": "^2.2.6"
+    "vite": "^6.2.1",
+    "vue-tsc": "^2.2.8"
   }
 }
