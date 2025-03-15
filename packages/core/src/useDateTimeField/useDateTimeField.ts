@@ -10,7 +10,6 @@ import { useErrorMessage, useLabel } from '../a11y';
 import { fromDateToCalendarZonedDateTime, useTemporalStore } from './useTemporalStore';
 import { ZonedDateTime, Calendar } from '@internationalized/date';
 import { useInputValidity } from '../validation';
-import { createDisabledContext } from '../helpers/createDisabledContext';
 import { registerField } from '@formwerk/devtools';
 import { useConstraintsValidator } from '../validation/useConstraintsValidator';
 
@@ -104,7 +103,6 @@ export function useDateTimeField(_props: Reactivify<DateTimeFieldProps, 'schema'
     timeZone: () => toValue(props.timeZone),
   });
 
-  const isDisabled = createDisabledContext(props.disabled);
   const formatter = useDateFormatter(locale, props.formatOptions);
   const controlId = useUniqId(FieldTypePrefixes.DateTimeField);
 
@@ -198,7 +196,7 @@ export function useDateTimeField(_props: Reactivify<DateTimeFieldProps, 'schema'
         ...labelledByProps.value,
         ...describedByProps.value,
         ...accessibleErrorProps.value,
-        'aria-disabled': isDisabled.value || undefined,
+        'aria-disabled': field.isDisabled.value || undefined,
       },
       controlEl,
     );
