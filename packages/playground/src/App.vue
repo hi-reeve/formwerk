@@ -1,13 +1,23 @@
 <script setup lang="ts">
-import { useForm } from '@formwerk/core';
-import TimeField from '@/components/TimeField.vue';
+import { FileUploadContext, useForm } from '@formwerk/core';
+import FileInput from './components/FileInput.vue';
+import Dropzone from './components/Dropzone.vue';
+
 const form = useForm();
 
-function onCompleted(value: string) {
-  alert(`onCompleted: ${value}`);
+function handleUpload({ file, signal }: FileUploadContext) {
+  return new Promise<string>(resolve => {
+    setTimeout(() => {
+      resolve('https://example.com/file.png');
+    }, 1000);
+  });
 }
 </script>
 
 <template>
-  <TimeField name="time" label="Appointment time" min="09:00" max="17:00" required />
+  <div class="w-full">
+    <FileInput label="Upload a file" name="file1" />
+
+    <Dropzone label="Drop file" name="file2" required multiple class="mt-8" />
+  </div>
 </template>
