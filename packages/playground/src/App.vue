@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FileUploadContext, useForm } from '@formwerk/core';
-import FileInput from './components/FileInput.vue';
+import TimeInput from './components/TimeField.vue';
 import Dropzone from './components/Dropzone.vue';
 
 const form = useForm();
@@ -15,9 +15,7 @@ function handleUpload({ file, signal }: FileUploadContext) {
 </script>
 
 <template>
-  <div class="w-full">
-    <FileInput label="Upload a file" name="file1" />
-
-    <Dropzone label="Drop file" name="file2" required multiple class="mt-8" />
+  <div class="w-full h-full flex flex-col items-center justify-center`">
+    <TimeInput label="Time" name="time" />
   </div>
 </template>

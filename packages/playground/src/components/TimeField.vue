@@ -11,8 +11,6 @@ const { controlProps, isTouched, labelProps, errorMessageProps, errorMessage, se
   <div class="InputDate" :class="{ touched: isTouched }" :dir="direction">
     <span class="label" v-bind="labelProps">{{ label }}</span>
 
-    {{ fieldValue }}
-
     <div class="flex items-center gap-1 control">
       <div v-bind="controlProps">
         <DateTimeSegment v-for="segment in segments" v-bind="segment" class="segment" />
@@ -30,7 +28,7 @@ const { controlProps, isTouched, labelProps, errorMessageProps, errorMessage, se
 
 .InputDate {
   font-family: 'Monaspace Neon Var';
-  @apply relative w-full;
+  @apply relative w-max;
   margin-bottom: calc(1em * 1.5);
 
   .label {
