@@ -29,6 +29,11 @@ export interface DateTimeSegmentProps {
    * Whether the segment is readonly.
    */
   readonly?: boolean;
+
+  /**
+   * Forces the segment to behave strictly as a spin button, preventing any other interactions like input events. Useful for time fields and specific UX needs.
+   */
+  spinOnly?: boolean;
 }
 
 interface DateTimeSegmentDomProps {
@@ -39,7 +44,7 @@ interface DateTimeSegmentDomProps {
   'aria-disabled': boolean | undefined;
   'aria-readonly': boolean | undefined;
   'data-segment-type': DateTimeSegmentType;
-  style: CSSProperties;
+  style?: CSSProperties;
   'aria-label'?: string;
   spellcheck?: boolean;
   inputmode?: string;
@@ -85,10 +90,14 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
 
   let currentInput = '';
 
-  function isNonEditable() {
+  function isNonMutable() {
     return (
       !isEditableSegmentType(toValue(props.type)) || isDisabled.value || toValue(props.readonly) || isLockedByRange()
     );
+  }
+
+  function isSpinOnly() {
+    return !!toValue(props.spinOnly);
   }
 
   const handlers = {
@@ -97,7 +106,7 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
       currentInput = '';
     },
     onBeforeinput(evt: InputEvent) {
-      if (isNonEditable()) {
+      if (isNonMutable() || isSpinOnly()) {
         blockEvent(evt);
         return;
       }
@@ -147,6 +156,12 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
       nextTick(() => {
         dispatchEvent('blur');
       });
+
+      if (isSpinOnly()) {
+        currentInput = '';
+        return;
+      }
+
       const { min, max } = getMetadata();
       if (isNullOrUndefined(min) || isNullOrUndefined(max)) {
         return;
@@ -161,7 +176,7 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
       currentInput = '';
     },
     onKeydown(evt: KeyboardEvent) {
-      if (isNonEditable()) {
+      if (isNonMutable()) {
         return;
       }
 
@@ -173,7 +188,7 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
 
       if (hasKeyCode(evt, 'ArrowUp')) {
         blockEvent(evt);
-        if (!isNonEditable()) {
+        if (!isNonMutable()) {
           increment();
         }
         return;
@@ -181,7 +196,7 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
 
       if (hasKeyCode(evt, 'ArrowDown')) {
         blockEvent(evt);
-        if (!isNonEditable()) {
+        if (!isNonMutable()) {
           decrement();
         }
         return;
@@ -189,7 +204,7 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
 
       if (hasKeyCode(evt, 'Backspace') || hasKeyCode(evt, 'Delete')) {
         blockEvent(evt);
-        if (!isNonEditable()) {
+        if (!isNonMutable()) {
           clear();
         }
       }
@@ -201,35 +216,37 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
 
     const domProps: DateTimeSegmentDomProps = {
       id,
-      tabindex: isNonEditable() ? -1 : 0,
-      contenteditable: isNonEditable() ? undefined : ceValue,
-      'aria-disabled': isNonEditable(),
+      tabindex: isNonMutable() ? -1 : 0,
+      contenteditable: isNonMutable() || isSpinOnly() ? undefined : ceValue,
+      'aria-disabled': isNonMutable(),
       'data-segment-type': toValue(props.type),
-      'aria-label': isNonEditable() ? undefined : toValue(props.type),
+      'aria-label': isNonMutable() ? undefined : toValue(props.type),
       'aria-readonly': toValue(props.readonly) ? true : undefined,
-      autocorrect: isNonEditable() ? undefined : 'off',
-      autocomplete: isNonEditable() ? undefined : 'off',
-      spellcheck: isNonEditable() ? undefined : false,
-      enterkeyhint: isNonEditable() ? undefined : isLast() ? 'done' : 'next',
-      inputmode: 'none',
-      ...handlers,
-      style: {
-        caretColor: 'transparent',
-      },
+      autocorrect: isNonMutable() || isSpinOnly() ? undefined : 'off',
+      autocomplete: isNonMutable() || isSpinOnly() ? undefined : 'off',
+      spellcheck: isNonMutable() || isSpinOnly() ? undefined : false,
+      enterkeyhint: isNonMutable() || isSpinOnly() ? undefined : isLast() ? 'done' : 'next',
+      inputmode: isSpinOnly() ? undefined : 'none',
+      style: isSpinOnly()
+        ? undefined
+        : {
+            caretColor: 'transparent',
+          },
+      ...(isSpinOnly() ? { onKeydown: handlers.onKeydown, onBlur: handlers.onBlur } : handlers),
     };
 
     if (isNumeric()) {
       const { min, max } = getMetadata();
       const value = parser.parse(toValue(props.value));
       domProps.role = 'spinbutton';
-      domProps.inputmode = 'numeric';
+      domProps.inputmode = isSpinOnly() ? undefined : 'numeric';
       domProps['aria-valuemin'] = min ?? undefined;
       domProps['aria-valuemax'] = max ?? undefined;
       domProps['aria-valuenow'] = Number.isNaN(value) ? undefined : value;
       domProps['aria-valuetext'] = Number.isNaN(value) ? 'Empty' : value.toString();
     }
 
-    if (isNonEditable()) {
+    if (isNonMutable() && domProps.style) {
       domProps.style.pointerEvents = 'none';
     }
 
@@ -247,7 +264,7 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
  */
 export const DateTimeSegment = /*#__PURE__*/ defineComponent<DateTimeSegmentProps>({
   name: 'DateTimeSegment',
-  props: ['type', 'value', 'disabled', 'readonly'],
+  props: ['type', 'value', 'disabled', 'readonly', 'spinOnly'],
   setup(props) {
     const { segmentProps, key } = useDateTimeSegment(props);
 

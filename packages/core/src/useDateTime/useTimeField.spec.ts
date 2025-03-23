@@ -839,4 +839,73 @@ describe('useTimeField', () => {
       expect(inputElement).toBeValid();
     });
   });
+
+  describe('spinOnly behavior', () => {
+    test('segments with spinOnly only respond to arrow key events and not text input', async () => {
+      await render({
+        components: { DateTimeSegment },
+        setup() {
+          const { segments, controlProps, labelProps } = useTimeField({
+            label: 'Time',
+            name: 'time',
+            value: '14:30',
+          });
+
+          return {
+            segments,
+            controlProps,
+            labelProps,
+          };
+        },
+        template: `
+          <div>
+            <label v-bind="labelProps">Time</label>
+            <div v-bind="controlProps">
+              <DateTimeSegment
+                v-for="segment in segments"
+                :key="segment.type"
+                v-bind="segment"
+                :spin-only="true"
+                data-testid="segment"
+              />
+            </div>
+          </div>
+        `,
+      });
+
+      await flush();
+
+      const segments = screen.getAllByTestId('segment');
+      const hourSegment = segments.find(el => el.dataset.segmentType === 'hour')!;
+      const minuteSegment = segments.find(el => el.dataset.segmentType === 'minute')!;
+
+      // Focus the hour segment
+      await fireEvent.focus(hourSegment);
+
+      // Attempt to input text via beforeinput event
+      await fireEvent(hourSegment, new InputEvent('beforeinput', { data: '9', cancelable: true }));
+
+      // The value should remain unchanged
+      expect(hourSegment.textContent).toBe('14');
+
+      // Test arrow up key on hour segment
+      await fireEvent.keyDown(hourSegment, { key: 'ArrowUp', code: 'ArrowUp' });
+
+      // The value should be incremented
+      expect(hourSegment.textContent).toBe('15');
+
+      // Test arrow down key on minute segment
+      await fireEvent.focus(minuteSegment);
+      await fireEvent.keyDown(minuteSegment, { key: 'ArrowDown', code: 'ArrowDown' });
+
+      // The value should be decremented
+      expect(minuteSegment.textContent).toBe('29');
+
+      // Ensure input mode is set to 'none' for spinOnly segments
+      ['inputmode', 'contenteditable', 'spellcheck', 'autocomplete', 'autocorrect'].forEach(attr => {
+        expect(hourSegment).not.toHaveAttribute(attr);
+        expect(minuteSegment).not.toHaveAttribute(attr);
+      });
+    });
+  });
 });
