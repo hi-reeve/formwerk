@@ -12,10 +12,10 @@ import {
 } from './types';
 import { toValue } from 'vue';
 import { getPluginColors } from './constants';
-import { setInPath } from '@core/utils/path';
+import { setInPath } from '../../../packages/core/src/utils/path';
 import { getField, getForm } from './registry';
 import type { FormReturns } from '@core/index';
-import { isObject } from 'packages/shared/src/utils';
+import { isObject } from '../../../packages/shared/src/utils';
 
 export function buildFieldState(state: FieldState | PathState): CustomInspectorState {
   return {

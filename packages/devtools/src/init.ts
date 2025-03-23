@@ -1,8 +1,8 @@
 import { App, type ComponentInternalInstance, getCurrentInstance, nextTick, onMounted, onUnmounted, watch } from 'vue';
-import { throttle } from 'packages/shared/src';
-import { FormField, FormReturns } from '@core/index';
-import { isSSR } from '@core/utils/common';
-import { PathState } from './types';
+import { throttle } from '../../../packages/shared/src';
+import { isSSR } from '../../../packages/core/src/utils/common';
+import type { FormField, FormReturns } from '@core/index';
+import { DevtoolsForm, PathState } from './types';
 import {
   buildFieldState,
   buildFormState,
@@ -106,7 +106,19 @@ async function installDevtoolsPlugin(app: App) {
                     return;
                   }
 
-                  console.warn(brandMessage('Resetting a non-field or form path is not yet implemented'));
+                  if (SELECTED_NODE.type === 'field') {
+                    const form = getForm(SELECTED_NODE.field.form?.id) as DevtoolsForm | undefined;
+                    form?.reset(SELECTED_NODE.field.getPath() as any);
+                    return;
+                  }
+
+                  if (SELECTED_NODE.type === 'path') {
+                    const form = getForm(SELECTED_NODE.state.formId) as DevtoolsForm | undefined;
+                    form?.reset(SELECTED_NODE.state.path as any);
+                    return;
+                  }
+
+                  console.warn(brandMessage('You can only reset controlled fields and paths'));
                 },
               },
             ],
