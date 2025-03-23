@@ -1,5 +1,15 @@
 # @formwerk/core
 
+## 0.10.1
+
+### Patch Changes
+
+- 942b7ff: feat: added spinOnly prop for DateTimeSegments
+- 98055e9: feat: expose `validate` function on all fields #157
+- bfd2219: fix(types): should be able to infer form values from initial values
+- 6fc35fd: Expand the form reset function
+  - @formwerk/devtools@0.10.1
+
 ## 0.10.0
 
 ### Minor Changes
