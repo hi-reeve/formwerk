@@ -8,6 +8,7 @@ import {
   IssueCollection,
   StandardSchema,
   TouchedSchema,
+  PathValue,
 } from '../types';
 import { createEventDispatcher } from '../utils/events';
 import { BaseFormContext, SetValueOptions } from './formContext';
@@ -17,9 +18,9 @@ import { appendToFormData } from '../utils/formData';
 import type { Jsonify } from 'type-fest';
 import { FormIdAttr } from '../constants';
 
-export interface ResetState<TForm extends FormObject> {
-  values: Partial<TForm>;
-  touched: Partial<TouchedSchema<TForm>>;
+export interface ResetState<TValues> {
+  value: Partial<TValues>;
+  touched: TValues extends FormObject ? Partial<TouchedSchema<TValues>> : Partial<Record<string, boolean>>;
   revalidate?: boolean;
 }
 
@@ -66,7 +67,27 @@ export interface FormActions<TForm extends FormObject, TOutput extends FormObjec
   /**
    * Resets the form to its initial state.
    */
-  reset: (state?: Partial<ResetState<TForm>>, opts?: SetValueOptions) => Promise<void>;
+  reset(): Promise<void>;
+
+  /**
+   *  Resets the form to a specific state.
+   */
+  reset(state: Partial<ResetState<TForm>>, opts?: SetValueOptions): Promise<void>;
+
+  /**
+   * Resets a specific part of the form.
+   */
+  reset<TPath extends Path<TForm>>(path: TPath): Promise<void>;
+
+  /**
+   * Resets a specific part of the form to a specific state.
+   */
+  reset<TPath extends Path<TForm>>(
+    path: TPath,
+    state: Partial<ResetState<PathValue<TForm, TPath>>>,
+    opts?: SetValueOptions,
+  ): Promise<void>;
+
   /**
    * Validates the form.
    */
@@ -170,32 +191,128 @@ export function useFormActions<TForm extends FormObject = FormObject, TOutput ex
     }
   }
 
-  async function reset(state?: Partial<ResetState<TForm>>, opts?: SetValueOptions) {
-    if (state?.values) {
-      form.setInitialValues(state.values, opts);
-    }
+  async function reset(): Promise<void>;
+  async function reset(state: Partial<ResetState<TForm>>, opts?: SetValueOptions): Promise<void>;
+  async function reset<TPath extends Path<TForm>>(path: TPath): Promise<void>;
+  async function reset<TPath extends Path<TForm>>(
+    path: TPath,
+    state: Partial<ResetState<PathValue<TForm, TPath>>>,
+    opts?: SetValueOptions,
+  ): Promise<void>;
 
-    if (state?.touched) {
-      form.setInitialTouched(state.touched, opts);
-    }
+  // Implementation signature
+  async function reset<TPath extends Path<TForm>>(
+    pathOrStateOrUndefined?: TPath | Partial<ResetState<TForm>>,
+    stateOrOptsOrUndefined?: Partial<ResetState<PathValue<TForm, TPath>>> | SetValueOptions,
+    optsOrUndefined?: SetValueOptions,
+  ): Promise<void> {
+    /**
+     * CASE 1: reset()
+     * Reset the form to its initial state.
+     */
+    if (pathOrStateOrUndefined === undefined) {
+      wasSubmitted.value = false;
 
-    wasSubmitted.value = false;
+      form.revertValues();
+      form.revertTouched();
+      form.revertDirty();
+      submitAttemptsCount.value = 0;
+      isSubmitAttempted.value = false;
 
-    form.revertValues();
-    form.revertTouched();
-    form.revertDirty();
-    submitAttemptsCount.value = 0;
-    isSubmitAttempted.value = false;
+      form.clearErrors();
+      form.clearSubmitErrors();
 
-    if (state?.revalidate ?? true) {
       await validate();
-      return;
+
+      return Promise.resolve();
     }
 
-    form.clearErrors();
-    form.clearSubmitErrors();
+    /**
+     * CASE 2: reset(state, opts?)
+     * Reset the form to a specific state.
+     */
+    if (typeof pathOrStateOrUndefined !== 'string') {
+      const state = pathOrStateOrUndefined;
+      const opts = stateOrOptsOrUndefined as SetValueOptions;
 
-    return Promise.resolve();
+      if (state.value) {
+        form.setInitialValues(state.value);
+      }
+
+      if (state.touched) {
+        // Add type assertion here to help TypeScript understand the structure
+        form.setInitialTouched(state.touched as Partial<TouchedSchema<TForm>>, opts);
+      }
+
+      wasSubmitted.value = false;
+      submitAttemptsCount.value = 0;
+      isSubmitAttempted.value = false;
+
+      form.revertValues();
+      form.revertTouched();
+      form.revertDirty();
+
+      if (state.revalidate ?? true) {
+        await validate();
+        return;
+      }
+
+      form.clearErrors();
+      form.clearSubmitErrors();
+
+      return Promise.resolve();
+    }
+
+    /**
+     * Case 3 and 4.
+     *
+     * Extract the path from the first argument.
+     */
+    const path = pathOrStateOrUndefined;
+
+    /**
+     * CASE 3: reset(path)
+     * Reset a specific part of the form.
+     */
+    if (stateOrOptsOrUndefined === undefined) {
+      form.revertValues(path);
+      form.revertTouched(path);
+      form.revertDirty(path);
+      form.clearErrors(path);
+
+      return Promise.resolve();
+    }
+
+    /**
+     * CASE 4: reset(path, state, opts?)
+     * Reset a specific part of the form to a specific state.
+     */
+    if (typeof stateOrOptsOrUndefined === 'object') {
+      const state = stateOrOptsOrUndefined as Partial<ResetState<PathValue<TForm, TPath>>>;
+      const opts = optsOrUndefined;
+
+      if (state.value) {
+        form.setInitialValuesPath(path, state.value, opts);
+      }
+
+      if (state.touched) {
+        form.setInitialTouchedPath(path, state.touched as any, opts);
+      }
+
+      form.revertValues(path);
+      form.revertTouched(path);
+      form.revertDirty(path);
+      form.clearErrors(path);
+
+      if (state.revalidate ?? true) {
+        await validate();
+        return;
+      }
+
+      form.clearErrors(path);
+
+      return Promise.resolve();
+    }
   }
 
   const actions: FormActions<TForm, TOutput> = {

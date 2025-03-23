@@ -257,7 +257,7 @@ describe('form reset', () => {
       return useForm({ initialValues: { foo: 'bar' } });
     });
 
-    reset({ values: { foo: 'baz' }, touched: { foo: true } });
+    reset({ value: { foo: 'baz' }, touched: { foo: true } });
     expect(values).toEqual({ foo: 'baz' });
     expect(isTouched('foo')).toBe(true);
     setTouched('foo', false);
@@ -265,6 +265,49 @@ describe('form reset', () => {
     reset();
     expect(values).toEqual({ foo: 'baz' });
     expect(isTouched('foo')).toBe(true);
+  });
+
+  test('can reset form path values and touched to their original state', async () => {
+    const { values, reset, setValue, isTouched, setTouched } = await renderSetup(() => {
+      return useForm({
+        initialValues: { company: { employee: { name: 'John' } } },
+        initialTouched: { company: { employee: { name: true } } },
+      });
+    });
+
+    setValue('company.employee.name', 'Alice');
+    setTouched('company.employee.name', false);
+
+    expect(values).toEqual({ company: { employee: { name: 'Alice' } } });
+    expect(isTouched('company.employee.name')).toBe(false);
+    reset('company.employee.name');
+
+    expect(values).toEqual({ company: { employee: { name: 'John' } } });
+    expect(isTouched('company.employee.name')).toBe(true);
+  });
+
+  test('can reset from path values and touched to a new state', async () => {
+    const { values, reset, setValue, isTouched, setTouched } = await renderSetup(() => {
+      return useForm({
+        initialValues: { company: { employee: { name: 'John' } } },
+      });
+    });
+
+    reset('company.employee.name', {
+      value: 'Alice',
+      touched: true,
+    });
+
+    expect(values).toEqual({ company: { employee: { name: 'Alice' } } });
+    expect(isTouched('company.employee.name')).toBe(true);
+
+    setTouched('company.employee.name', false);
+    setValue('company.employee.name', 'Bob');
+
+    reset('company.employee.name');
+
+    expect(values).toEqual({ company: { employee: { name: 'Alice' } } });
+    expect(isTouched('company.employee.name')).toBe(true);
   });
 
   test('handleReset creates a handler that resets the form and calls afterReset', async () => {
