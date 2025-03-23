@@ -36,6 +36,7 @@ const formats: ModuleFormat[] = ['es', 'iife', 'cjs'];
     packages.flat().map(({ pkg, config }) => {
       return {
         input: config.input.input,
+        define: config.input.define,
         plugins: config.input.plugins,
         output: {
           ...config.output,
