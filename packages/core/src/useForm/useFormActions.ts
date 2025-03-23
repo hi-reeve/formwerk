@@ -20,7 +20,7 @@ import { FormIdAttr } from '../constants';
 
 export interface ResetState<TValues> {
   value: Partial<TValues>;
-  touched: TValues extends FormObject ? Partial<TouchedSchema<TValues>> : Partial<Record<string, boolean>>;
+  touched: boolean | (TValues extends FormObject ? Partial<TouchedSchema<TValues>> : Partial<Record<string, boolean>>);
   revalidate?: boolean;
 }
 
