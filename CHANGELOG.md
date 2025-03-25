@@ -1,5 +1,13 @@
 # @formwerk/core
 
+## 0.10.2
+
+### Patch Changes
+
+- 25f64a4: fix: invalid dates errors with seconds and HTML validation in time fields
+- Updated dependencies [66ce83b]
+  - @formwerk/devtools@0.10.2
+
 ## 0.10.1
 
 ### Patch Changes

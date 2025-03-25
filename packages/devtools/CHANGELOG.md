@@ -1,5 +1,11 @@
 # @formwerk/devtools
 
+## 0.10.2
+
+### Patch Changes
+
+- 66ce83b: feat(devtools): reset field and path states in devtools
+
 ## 0.10.1
 
 ## 0.10.0
