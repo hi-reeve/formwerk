@@ -12,10 +12,16 @@ function handleUpload({ file, signal }: FileUploadContext) {
     }, 1000);
   });
 }
+
+const formatOptions = {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+};
 </script>
 
 <template>
   <div class="w-full h-full flex flex-col items-center justify-center`">
-    <TimeInput label="Time" name="time" />
+    <TimeInput label="Time" name="time" :format-options="formatOptions" />
   </div>
 </template>

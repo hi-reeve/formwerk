@@ -89,6 +89,7 @@ export function useConstraintsValidator(constraints: Constraints) {
       const max = toValue(constraints.max);
       element.value.setAttribute('min', min || '');
       element.value.setAttribute('max', max || '');
+      element.value.setAttribute('step', '1');
 
       return;
     }
