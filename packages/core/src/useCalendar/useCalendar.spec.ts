@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/vue';
 import { axe } from 'vitest-axe';
 import { useCalendar, CalendarCell } from './index';
 import { flush } from '@test-utils/flush';
-import { createCalendar, now } from '@internationalized/date';
+import { createCalendar, fromDate } from '@internationalized/date';
 
 describe('useCalendar', () => {
   describe('a11y', () => {
@@ -44,7 +44,7 @@ describe('useCalendar', () => {
 
   describe('date selection', () => {
     test('calls onUpdateModelValue when a date is selected', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
 
       const vm = await render({
         components: {
@@ -103,7 +103,7 @@ describe('useCalendar', () => {
     });
 
     test('handles Enter key on calendar cell', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
 
       const vm = await render({
         components: {
@@ -146,7 +146,7 @@ describe('useCalendar', () => {
     });
 
     test('handles Enter key in different panels', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
 
       const vm = await render({
         setup() {
@@ -255,7 +255,7 @@ describe('useCalendar', () => {
     });
 
     test('navigates months using next/previous buttons in month panel', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
 
       await render({
         setup() {
@@ -309,7 +309,7 @@ describe('useCalendar', () => {
     });
 
     test('navigates years using next/previous buttons in year panel', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
 
       await render({
         setup() {
@@ -394,7 +394,7 @@ describe('useCalendar', () => {
 
   describe('keyboard navigation', () => {
     test('handles arrow key navigation in day panel', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
 
       await render({
         setup() {
@@ -458,7 +458,7 @@ describe('useCalendar', () => {
     });
 
     test('handles arrow key navigation in month panel', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
 
       await render({
         setup() {
@@ -528,7 +528,7 @@ describe('useCalendar', () => {
     });
 
     test('handles arrow key navigation in year panel', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
 
       await render({
         setup() {
@@ -597,7 +597,7 @@ describe('useCalendar', () => {
     });
 
     test('respects min and max date boundaries', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
       const minDate = currentDate.subtract({ days: 1 });
       const maxDate = currentDate.add({ days: 1 });
 
@@ -642,7 +642,7 @@ describe('useCalendar', () => {
 
   describe('disabled state', () => {
     test('prevents all interactions when disabled', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
 
       await render({
         components: {
@@ -722,7 +722,7 @@ describe('useCalendar', () => {
 
   describe('readonly state', () => {
     test('prevents all interactions when readonly', async () => {
-      const currentDate = now('UTC');
+      const currentDate = fromDate(new Date(2025, 2, 11), 'UTC');
 
       await render({
         components: {
