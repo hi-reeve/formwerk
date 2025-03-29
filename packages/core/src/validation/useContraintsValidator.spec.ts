@@ -1,5 +1,5 @@
 import { nextTick, onMounted, ref } from 'vue';
-import { useConstraintsValidator } from './useConstraintsValidator';
+import { dateToString, useConstraintsValidator } from './useConstraintsValidator';
 import { fireEvent, render, screen } from '@testing-library/vue';
 import { renderSetup } from '@test-utils/index';
 
@@ -167,7 +167,7 @@ describe('useConstraintsValidator', () => {
       });
 
       expect(element.value?.type).toBe('date');
-      expect(element.value?.value).toBe('2023-01-01');
+      expect(element.value?.value).toBe(dateToString(value.value));
     });
 
     test('sets min and max date attributes', async () => {
@@ -186,15 +186,15 @@ describe('useConstraintsValidator', () => {
         });
       });
 
-      expect(element.value?.getAttribute('min')).toBe('2023-01-01');
-      expect(element.value?.getAttribute('max')).toBe('2023-01-31');
+      expect(element.value?.getAttribute('min')).toBe(dateToString(min.value));
+      expect(element.value?.getAttribute('max')).toBe(dateToString(max.value));
 
       // Change min/max values
       min.value = new Date('2023-02-01');
       max.value = new Date('2023-02-28');
       await nextTick();
-      expect(element.value?.getAttribute('min')).toBe('2023-02-01');
-      expect(element.value?.getAttribute('max')).toBe('2023-02-28');
+      expect(element.value?.getAttribute('min')).toBe(dateToString(min.value));
+      expect(element.value?.getAttribute('max')).toBe(dateToString(max.value));
     });
 
     test('handles null date values', async () => {
@@ -213,7 +213,7 @@ describe('useConstraintsValidator', () => {
 
       value.value = new Date('2023-03-15');
       await nextTick();
-      expect(element.value?.value).toBe('2023-03-15');
+      expect(element.value?.value).toBe(dateToString(value.value));
     });
   });
 
