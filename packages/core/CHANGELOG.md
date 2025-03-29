@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.10.3
+
+### Patch Changes
+
+- 575ecfe: fix: set touched for otp fields #162
+  - @formwerk/devtools@0.10.3
+
 ## 0.10.2
 
 ### Patch Changes
