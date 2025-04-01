@@ -1,5 +1,13 @@
 # @formwerk/core
 
+## 0.10.4
+
+### Patch Changes
+
+- 15b54e9: fix(validation): properly combine validation sources from fields, forms, groups
+- 016a8a3: fix: prefer overrwrites when mass setting values closes #164
+  - @formwerk/devtools@0.10.4
+
 ## 0.10.3
 
 ### Patch Changes
