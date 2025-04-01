@@ -1,10 +1,11 @@
-import { DateFormatter, now } from '@internationalized/date';
+import { DateFormatter, fromDate } from '@internationalized/date';
 import { useDateTimeSegmentGroup } from './useDateTimeSegmentGroup';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { fireEvent, render, screen } from '@testing-library/vue';
 import { flush } from '@test-utils/flush';
 import { DateTimeSegment } from './useDateTimeSegment';
 import { createTemporalPartial, isTemporalPartial } from './temporalPartial';
+import { TemporalPartial } from './types';
 
 function dispatchEvent() {
   // NOOP
@@ -13,7 +14,7 @@ function dispatchEvent() {
 describe('useDateTimeSegmentGroup', () => {
   const timeZone = 'UTC';
   const locale = 'en-US';
-  const currentDate = now(timeZone);
+  const currentDate = fromDate(new Date('2025-02-11'), timeZone);
 
   function createFormatter() {
     return new DateFormatter(locale, {
@@ -715,8 +716,13 @@ describe('useDateTimeSegmentGroup', () => {
     test('preserves partial state when not all segments are filled', async () => {
       const formatter = ref(createFormatter());
       const controlEl = ref<HTMLElement>();
-      const onValueChange = vi.fn();
       const initialDate = currentDate.set({ year: 2024, month: 1, day: 1 });
+      const temporalValue = ref(
+        createTemporalPartial(initialDate.calendar, initialDate.timeZone),
+      ) as Ref<TemporalPartial>;
+      const onValueChange = vi.fn(v => {
+        temporalValue.value = v;
+      });
 
       await render({
         components: {
@@ -725,7 +731,7 @@ describe('useDateTimeSegmentGroup', () => {
         setup() {
           const { segments } = useDateTimeSegmentGroup({
             formatter,
-            temporalValue: createTemporalPartial(initialDate.calendar, initialDate.timeZone),
+            temporalValue,
             formatOptions: {
               day: 'numeric',
               month: 'numeric',
