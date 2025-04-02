@@ -13,6 +13,7 @@
     "@tailwindcss/postcss": "^4.0.13",
     "fuse.js": "^7.1.0",
     "tailwindcss": "^4.0.13",
+    "valibot": "1.0.0-rc.4",
     "vue": "^3.5.13",
     "vue-i18n": "^11.1.2",
     "yup": "^1.6.1",

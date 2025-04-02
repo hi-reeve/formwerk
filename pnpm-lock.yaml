@@ -203,6 +203,9 @@ importers:
       tailwindcss:
         specifier: ^4.0.13
         version: 4.0.13
+      valibot:
+        specifier: 1.0.0-rc.4
+        version: 1.0.0-rc.4(typescript@5.8.2)
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.2)
