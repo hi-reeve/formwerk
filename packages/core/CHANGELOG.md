@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.10.5
+
+### Patch Changes
+
+- 8ce63d2: fix: prefer current value over form initial value when init field #169
+  - @formwerk/devtools@0.10.5
+
 ## 0.10.4
 
 ### Patch Changes
