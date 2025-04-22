@@ -180,6 +180,7 @@ export function useDateField(_props: Reactivify<DateFieldProps, 'schema'>) {
       locale: locale.value,
       name: undefined,
       calendar: calendar.value,
+      timeZone: timeZone.value,
       min: toValue(props.min),
       max: toValue(props.max),
       field,
