@@ -41,9 +41,9 @@
     "dist/*.d.ts"
   ],
   "dependencies": {
-    "@vue/devtools-api": "^7.7.2",
-    "@vue/devtools-kit": "^7.7.2",
+    "@vue/devtools-api": "^7.7.5",
+    "@vue/devtools-kit": "^7.7.5",
     "klona": "^2.0.6",
-    "type-fest": "^4.37.0"
+    "type-fest": "^4.40.0"
   }
 }
