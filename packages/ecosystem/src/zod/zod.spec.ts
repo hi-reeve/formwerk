@@ -41,7 +41,7 @@ test('zod schemas are supported', async () => {
   await fireEvent.click(screen.getByText('Submit'));
   await flush();
   expect(screen.getByTestId('form-err-1').textContent).toBe('');
-  expect(screen.getByTestId('form-err-2').textContent).toBe('Required');
+  expect(screen.getByTestId('form-err-2').textContent).toBe('Invalid input: expected string, received undefined');
   expect(handler).not.toHaveBeenCalled();
 });
 
@@ -77,5 +77,5 @@ test('collects multiple errors per field', async () => {
 
   await fireEvent.click(screen.getByText('Submit'));
   await flush();
-  expect(handler).toHaveBeenCalledWith(['Invalid email', 'String must contain at least 8 character(s)']);
+  expect(handler).toHaveBeenCalledWith(['Invalid email address', 'Too small: expected string to have >8 characters']);
 });
