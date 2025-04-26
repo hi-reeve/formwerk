@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.10.6
+
+### Patch Changes
+
+- 9544540: fix: pass timezone value to date field calendar props
+  - @formwerk/devtools@0.10.6
+
 ## 0.10.5
 
 ### Patch Changes
