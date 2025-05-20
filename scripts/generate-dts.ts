@@ -3,10 +3,10 @@ import { consola } from 'consola';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
-import { rollup, type RollupOptions, type OutputOptions } from 'rollup';
-import dts from 'rollup-plugin-dts';
+import { rolldown, type RolldownOptions, type OutputOptions } from 'rolldown';
 import tsconfig from '../tsconfig.json' assert { type: 'json' };
 import { pkgNameMap } from './config';
+import { dts } from 'rolldown-plugin-dts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -51,14 +51,13 @@ async function bundleDts(declarationDir, pkg) {
     throw new Error('Cannot find index.d.ts at ' + entry);
   }
 
-  // Generate .d.ts rollup
   const config = {
     input: entry,
     output: { file: `packages/${pkg}/dist/${pkgNameMap[pkg]}.d.ts`, format: 'es' },
     plugins: [dts()],
   };
 
-  const bundle = await rollup(config as RollupOptions);
+  const bundle = await rolldown(config as RolldownOptions);
   await bundle.write(config.output as OutputOptions);
   await fs.remove(`packages/${pkg}/dist/types`);
   consola.success(`👕 Bundled ${pkg} Declaration Files`);
