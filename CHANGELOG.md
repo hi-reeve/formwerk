@@ -1,5 +1,14 @@
 # @formwerk/core
 
+## 0.10.7
+
+### Patch Changes
+
+- 3fc878d: revert - fix(types): should be able to infer values from initial values
+- 844f315: fix: ensure correct container type is set in path utility
+- 3fc878d: fix(types): infer values from initial values and schema
+  - @formwerk/devtools@0.10.7
+
 ## 0.10.6
 
 ### Patch Changes
