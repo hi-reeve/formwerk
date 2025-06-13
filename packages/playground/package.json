@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@formwerk/core": "workspace:*",
-    "@internationalized/date": "^3.8.0",
+    "@internationalized/date": "^3.8.2",
     "@tailwindcss/postcss": "^4.1.5",
     "fuse.js": "^7.1.0",
     "tailwindcss": "^4.1.5",
@@ -20,7 +20,7 @@
     "zod": "4.0.0-beta.20250420T053007"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.3",
+    "@vitejs/plugin-vue": "^5.2.4",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vue-tsc": "^2.2.10"
