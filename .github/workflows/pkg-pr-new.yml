@@ -1,4 +1,4 @@
-name: On-Demand Releases
+name: Release Test
 on:
   pull_request_review:
     types: [submitted]
