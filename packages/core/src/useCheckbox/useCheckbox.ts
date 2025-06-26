@@ -1,4 +1,4 @@
-import { computed, inject, nextTick, Ref, ref, toValue } from 'vue';
+import { computed, inject, nextTick, ref, toValue } from 'vue';
 import { registerField } from '@formwerk/devtools';
 import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
 import {
@@ -97,16 +97,13 @@ export interface CheckboxDomProps extends AriaLabelableProps {
   'aria-required'?: boolean;
 }
 
-export function useCheckbox<TValue = string>(
-  _props: Reactivify<CheckboxProps<TValue>, 'schema'>,
-  elementRef?: Ref<HTMLElement | undefined>,
-) {
+export function useCheckbox<TValue = string>(_props: Reactivify<CheckboxProps<TValue>, 'schema'>) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.Checkbox);
   const getTrueValue = createTrueValueGetter(props);
   const getFalseValue = () => (toValue(props.falseValue) as TValue) ?? (false as TValue);
   const group: CheckboxGroupContext<TValue> | null = toValue(props.standalone) ? null : inject(CheckboxGroupKey, null);
-  const inputEl = elementRef || ref<HTMLElement>();
+  const inputEl = ref<HTMLElement>();
   const field = useCheckboxField(props);
   if (!group) {
     useInputValidity({
@@ -246,7 +243,7 @@ export function useCheckbox<TValue = string>(
     },
   });
 
-  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl, elementRef));
+  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl));
 
   function setChecked(force?: boolean) {
     // Unless this is set to false, you cannot change the value of the checkbox

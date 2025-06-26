@@ -118,12 +118,8 @@ export function getNextCycleArrIdx(idx: number, arr: unknown[]): number {
 /**
  * Injects a ref capture to the props object
  */
-export function withRefCapture<TProps>(
-  props: TProps,
-  inputEl: Ref<Maybe<HTMLElement>>,
-  elementRef?: Ref<Maybe<HTMLElement>>,
-): TProps {
-  if (!elementRef) {
+export function withRefCapture<TProps>(props: TProps, inputEl: Ref<Maybe<HTMLElement>>): TProps {
+  if (!toValue(inputEl)) {
     (props as typeof props & { ref: (el: HTMLElement) => void }).ref = createRefCapture(inputEl);
   }
 

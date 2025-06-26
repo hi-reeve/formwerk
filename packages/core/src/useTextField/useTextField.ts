@@ -1,4 +1,4 @@
-import { Ref, computed, shallowRef, toValue } from 'vue';
+import { computed, shallowRef, toValue } from 'vue';
 import { registerField } from '@formwerk/devtools';
 import { createDescribedByProps, normalizeProps, propsToValues, useUniqId, withRefCapture } from '../utils/common';
 import {
@@ -113,13 +113,10 @@ export interface TextFieldProps {
   disableHtmlValidation?: boolean;
 }
 
-export function useTextField(
-  _props: Reactivify<TextFieldProps, 'schema'>,
-  elementRef?: Ref<HTMLInputElement | HTMLTextAreaElement>,
-) {
+export function useTextField(_props: Reactivify<TextFieldProps, 'schema'>) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.TextField);
-  const inputEl = elementRef || shallowRef<HTMLInputElement>();
+  const inputEl = shallowRef<HTMLInputElement>();
   const field = useFormField<string | undefined>({
     path: props.name,
     initialValue: toValue(props.modelValue) ?? toValue(props.value),
@@ -174,7 +171,6 @@ export function useTextField(
         pattern: inputEl.value?.tagName === 'TEXTAREA' ? undefined : toValue(props.pattern)?.toString(),
       },
       inputEl,
-      elementRef,
     );
   });
 

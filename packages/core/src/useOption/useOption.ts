@@ -1,5 +1,5 @@
-import { Maybe, Reactivify, RovingTabIndex } from '../types';
-import { computed, CSSProperties, inject, nextTick, ref, Ref, shallowRef, toValue, watch } from 'vue';
+import { Reactivify, RovingTabIndex } from '../types';
+import { computed, CSSProperties, inject, nextTick, ref, shallowRef, toValue, watch } from 'vue';
 import { hasKeyCode, normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
 import { ListManagerKey, OptionElement } from '../useListBox';
 import { FieldTypePrefixes } from '../constants';
@@ -36,9 +36,9 @@ export interface OptionProps<TValue> {
   disabled?: boolean;
 }
 
-export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>, elementRef?: Ref<Maybe<OptionElement>>) {
+export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>) {
   const props = normalizeProps(_props);
-  const optionEl = elementRef || ref<OptionElement>();
+  const optionEl = ref<OptionElement>();
   const isFocused = shallowRef(false);
   const isDisabled = createDisabledContext(props.disabled);
   // Used to hide the option when a filter is applied and doesn't match the item.
@@ -151,7 +151,7 @@ export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>, ele
 
     domProps[selectedAttr] = isSelected.value;
 
-    return withRefCapture(domProps, optionEl, elementRef);
+    return withRefCapture(domProps, optionEl);
   });
 
   watch(optionEl, () => {

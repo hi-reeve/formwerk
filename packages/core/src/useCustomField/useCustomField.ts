@@ -1,4 +1,4 @@
-import { computed, Ref, shallowRef, toValue } from 'vue';
+import { computed, shallowRef, toValue } from 'vue';
 import { FieldTypePrefixes } from '../constants';
 import { Reactivify, StandardSchema } from '../types';
 import { exposeField, useFormField } from '../useFormField';
@@ -49,13 +49,10 @@ export interface CustomFieldProps<TValue = unknown> {
   schema?: StandardSchema<TValue>;
 }
 
-export function useCustomField<TValue = unknown>(
-  _props: Reactivify<CustomFieldProps<TValue>, 'schema'>,
-  elementRef?: Ref<HTMLInputElement>,
-) {
+export function useCustomField<TValue = unknown>(_props: Reactivify<CustomFieldProps<TValue>, 'schema'>) {
   const props = normalizeProps(_props, ['schema']);
   const controlId = useUniqId(FieldTypePrefixes.CustomField);
-  const controlEl = elementRef || shallowRef<HTMLInputElement>();
+  const controlEl = shallowRef<HTMLInputElement>();
   const field = useFormField<TValue | undefined>({
     path: props.name,
     initialValue: (toValue(props.modelValue) ?? toValue(props.value)) as TValue | undefined,
@@ -94,7 +91,6 @@ export function useCustomField<TValue = unknown>(
         id: controlId,
       },
       controlEl,
-      elementRef,
     ),
   );
 

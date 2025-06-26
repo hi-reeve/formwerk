@@ -1,5 +1,5 @@
-import { computed, ref, Ref } from 'vue';
-import { Maybe, Reactivify } from '../types';
+import { computed, ref } from 'vue';
+import { Reactivify } from '../types';
 import { useLabel } from '../a11y/useLabel';
 import { normalizeProps, useUniqId, withRefCapture } from '../utils/common';
 import { FieldTypePrefixes } from '../constants';
@@ -17,8 +17,8 @@ export interface OptionGroupProps {
   disabled?: boolean;
 }
 
-export function useOptionGroup(_props: Reactivify<OptionGroupProps>, elementRef?: Ref<Maybe<HTMLElement>>) {
-  const groupEl = elementRef || ref<HTMLElement>();
+export function useOptionGroup(_props: Reactivify<OptionGroupProps>) {
+  const groupEl = ref<HTMLElement>();
   const props = normalizeProps(_props);
   const groupId = useUniqId(FieldTypePrefixes.OptionGroup);
   const isDisabled = createDisabledContext(props.disabled);
@@ -37,7 +37,6 @@ export function useOptionGroup(_props: Reactivify<OptionGroupProps>, elementRef?
         ...labelledByProps.value,
       },
       groupEl,
-      elementRef,
     );
   });
 

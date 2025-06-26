@@ -1,4 +1,4 @@
-import { Ref, computed, ref, toValue } from 'vue';
+import { computed, ref, toValue } from 'vue';
 import {
   AriaDescribableProps,
   AriaLabelableProps,
@@ -118,13 +118,10 @@ export interface SearchFieldProps {
   disableHtmlValidation?: boolean;
 }
 
-export function useSearchField(
-  _props: Reactivify<SearchFieldProps, 'onSubmit' | 'schema'>,
-  elementRef?: Ref<HTMLInputElement>,
-) {
+export function useSearchField(_props: Reactivify<SearchFieldProps, 'onSubmit' | 'schema'>) {
   const props = normalizeProps(_props, ['onSubmit', 'schema']);
   const inputId = useUniqId(FieldTypePrefixes.SearchField);
-  const inputEl = elementRef || ref<HTMLInputElement>();
+  const inputEl = ref<HTMLInputElement>();
   const field = useFormField<string | undefined>({
     path: props.name,
     initialValue: toValue(props.modelValue) ?? toValue(props.value),
@@ -222,7 +219,6 @@ export function useSearchField(
         ...handlers,
       },
       inputEl,
-      elementRef,
     ),
   );
 

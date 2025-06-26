@@ -1,4 +1,4 @@
-import { computed, InjectionKey, nextTick, onBeforeUnmount, provide, ref, Ref, toValue, watch } from 'vue';
+import { computed, InjectionKey, nextTick, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
 import { AriaLabelableProps, Maybe, Orientation, Reactivify } from '../types';
 import { hasKeyCode, isInViewport, normalizeProps, removeFirst, useUniqId, withRefCapture } from '../utils/common';
 import { useKeyPressed } from '../helpers/useKeyPressed';
@@ -68,11 +68,10 @@ export const ListManagerKey: InjectionKey<ListManagerCtx<any>> = Symbol('ListMan
 
 export function useListBox<TOption, TValue = TOption>(
   _props: Reactivify<ListBoxProps<TOption, TValue>, 'isValueSelected' | 'handleToggleValue'>,
-  elementRef?: Ref<Maybe<HTMLElement>>,
 ) {
   const props = normalizeProps(_props, ['isValueSelected', 'handleToggleValue']);
   const listBoxId = useUniqId(FieldTypePrefixes.ListBox);
-  const listBoxEl = elementRef || ref<HTMLElement>();
+  const listBoxEl = ref<HTMLElement>();
   const renderedOptions = ref<OptionRegistrationWithId<TValue>[]>([]);
   const finder = useBasicOptionFinder(renderedOptions);
 
@@ -262,7 +261,6 @@ export function useListBox<TOption, TValue = TOption>(
         ...handlers,
       },
       listBoxEl,
-      elementRef,
     );
   });
 

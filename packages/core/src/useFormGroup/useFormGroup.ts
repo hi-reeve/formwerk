@@ -1,4 +1,4 @@
-import { computed, inject, InjectionKey, provide, Ref, shallowRef, toValue } from 'vue';
+import { computed, inject, InjectionKey, provide, shallowRef, toValue } from 'vue';
 import { useLabel } from '../a11y/useLabel';
 import { FieldTypePrefixes } from '../constants';
 import {
@@ -62,7 +62,6 @@ export const FormGroupKey: InjectionKey<FormGroupContext> = Symbol('FormGroup');
 
 export function useFormGroup<TInput extends FormObject = FormObject, TOutput extends FormObject = TInput>(
   _props: Reactivify<FormGroupProps<TInput, TOutput>, 'schema'>,
-  elementRef?: Ref<HTMLElement>,
 ) {
   const id = useUniqId(FieldTypePrefixes.FormGroup);
   const props = normalizeProps(_props, ['schema']);
@@ -79,7 +78,7 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
 
     return prefixPath;
   };
-  const groupEl = elementRef || shallowRef<HTMLInputElement>();
+  const groupEl = shallowRef<HTMLInputElement>();
   const form = inject(FormKey, null);
   const parentGroup = inject(FormGroupKey, null);
   const isDisabled = createDisabledContext(props.disabled);
@@ -128,7 +127,6 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
         role: isFieldSet ? undefined : 'group',
       },
       groupEl,
-      elementRef,
     );
   });
 

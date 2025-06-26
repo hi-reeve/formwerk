@@ -1,4 +1,4 @@
-import { Ref, computed, inject, ref, toValue } from 'vue';
+import { computed, inject, ref, toValue } from 'vue';
 import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
 import { AriaInputProps, AriaLabelableProps, InputBaseAttributes, Reactivify, RovingTabIndex } from '../types';
 import { useLabel } from '../a11y/useLabel';
@@ -33,14 +33,11 @@ export interface RadioDomProps extends AriaInputProps, AriaLabelableProps {
   'aria-checked'?: boolean;
 }
 
-export function useRadio<TValue = string>(
-  _props: Reactivify<RadioProps<TValue>>,
-  elementRef?: Ref<HTMLInputElement | undefined>,
-) {
+export function useRadio<TValue = string>(_props: Reactivify<RadioProps<TValue>>) {
   const props = normalizeProps(_props);
   const inputId = useUniqId(FieldTypePrefixes.RadioButton);
   const group: RadioGroupContext<TValue> | null = inject(RadioGroupKey, null);
-  const inputEl = elementRef || ref<HTMLInputElement>();
+  const inputEl = ref<HTMLInputElement>();
   const checked = computed(() => isEqual(group?.modelValue, toValue(props.value)));
   const isDisabled = createDisabledContext(props.disabled);
   const { labelProps, labelledByProps } = useLabel({
@@ -128,7 +125,7 @@ export function useRadio<TValue = string>(
     };
   }
 
-  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl, elementRef));
+  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl));
 
   return {
     /**

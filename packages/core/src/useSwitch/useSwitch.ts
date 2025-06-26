@@ -1,4 +1,4 @@
-import { Ref, computed, shallowRef, toValue } from 'vue';
+import { computed, shallowRef, toValue } from 'vue';
 import {
   AriaDescribableProps,
   AriaInputProps,
@@ -87,13 +87,10 @@ export type SwitchProps<TValue = boolean> = {
   disableHtmlValidation?: boolean;
 };
 
-export function useSwitch<TValue = boolean>(
-  _props: Reactivify<SwitchProps<TValue>, 'schema'>,
-  elementRef?: Ref<HTMLInputElement>,
-) {
+export function useSwitch<TValue = boolean>(_props: Reactivify<SwitchProps<TValue>, 'schema'>) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.Switch);
-  const inputEl = elementRef || shallowRef<HTMLInputElement>();
+  const inputEl = shallowRef<HTMLInputElement>();
   const { labelProps, labelledByProps } = useLabel({
     for: inputId,
     label: props.label,
@@ -230,7 +227,7 @@ export function useSwitch<TValue = boolean>(
   /**
    * Use this if you are using a native input[type=checkbox] element.
    */
-  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl, elementRef));
+  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl));
 
   function togglePressed(force?: boolean) {
     isPressed.value = force ?? !isPressed.value;

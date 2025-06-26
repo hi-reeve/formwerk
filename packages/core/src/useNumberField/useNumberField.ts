@@ -1,4 +1,4 @@
-import { Ref, computed, nextTick, shallowRef, toValue, watch } from 'vue';
+import { computed, nextTick, shallowRef, toValue, watch } from 'vue';
 import {
   createDescribedByProps,
   fromNumberish,
@@ -138,13 +138,10 @@ export interface NumberFieldProps {
   disableHtmlValidation?: boolean;
 }
 
-export function useNumberField(
-  _props: Reactivify<NumberFieldProps, 'schema'>,
-  elementRef?: Ref<HTMLInputElement | HTMLTextAreaElement>,
-) {
+export function useNumberField(_props: Reactivify<NumberFieldProps, 'schema'>) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.NumberField);
-  const inputEl = elementRef || shallowRef<HTMLInputElement>();
+  const inputEl = shallowRef<HTMLInputElement>();
   const { locale } = useLocale(props.locale);
   const parser = useNumberParser(locale, props.formatOptions);
 
@@ -281,7 +278,6 @@ export function useNumberField(
         spellcheck: false,
       },
       inputEl,
-      elementRef,
     );
   });
 
