@@ -42,12 +42,18 @@ export interface SegmentMetadata {
   /**
    * Get the values of the step.
    */
-  getValues: () => Record<string, unknown> | undefined;
+  getValue: () => Record<string, unknown> | undefined;
+}
+
+export interface ResolvedSegmentMetadata extends Omit<SegmentMetadata, 'name'> {
+  name: string;
 }
 
 export interface FormFlowContext {
   isSegmentActive: (segmentId: string) => boolean;
   registerSegment: (metadata: SegmentRegistrationMetadata) => void;
 }
+
+export type StepIdentifier = string | number | symbol | SegmentMetadata | ResolvedSegmentMetadata;
 
 export const FormFlowContextKey: InjectionKey<FormFlowContext> = Symbol('FormFlowContext');
