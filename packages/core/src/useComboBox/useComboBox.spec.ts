@@ -37,6 +37,7 @@ function createComboBox(fixedProps: Partial<ComboBoxProps<any, any>> = {}) {
         descriptionProps,
         buttonProps,
         inputValue,
+        errorMessage,
         selectedOption,
       } = useComboBox(all, {
         filter: useDefaultFilter({ caseSensitive: false }).contains,
@@ -57,6 +58,7 @@ function createComboBox(fixedProps: Partial<ComboBoxProps<any, any>> = {}) {
         descriptionProps,
         inputValue,
         getValue,
+        errorMessage,
         options,
         selectedOption,
       };

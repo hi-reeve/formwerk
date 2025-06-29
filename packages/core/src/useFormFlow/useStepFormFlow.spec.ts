@@ -633,7 +633,6 @@ describe('navigation', () => {
                 name="address"
               />
             </FormFlowSegment>
-            </FormFlowSegment>
           </SteppedFormFlow>
         `,
     });
@@ -943,21 +942,21 @@ describe('navigation', () => {
       },
       template: `
       <SteppedFormFlow :resolver="resolver" @done="onDone">
-        <FormFlowSegment name="step1" :schema="step1">
+        <FormFlowSegment name="step1">
           <span>Step 1</span>
           <TextField
             label="Name"
             name="name"
           />
         </FormFlowSegment>
-        <FormFlowSegment name="step2" :schema="step2">
+        <FormFlowSegment name="step2">
           <span>Step 2</span>
           <TextField
             label="Address"
             name="address"
           />
         </FormFlowSegment>
-        <FormFlowSegment name="step3" :schema="step3">
+        <FormFlowSegment name="step3">
           <span>Step 3</span>
           <TextField
             label="Phone"
