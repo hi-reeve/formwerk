@@ -1,6 +1,6 @@
 import { computed, defineComponent, h, inject, provide, ref } from 'vue';
 import { FormFlowContextKey, FlowSegmentProps } from './types';
-import { useUniqId, withRefCapture } from '../utils/common';
+import { useUniqId, useCaptureProps } from '../utils/common';
 import { FieldTypePrefixes } from '../constants';
 import { useValidationProvider } from '../validation/useValidationProvider';
 import { FormKey } from '../useForm';
@@ -45,15 +45,12 @@ export function useFlowSegment<TSchema extends GenericFormSchema>(props: FlowSeg
 
   const isActive = computed(() => formFlow.isSegmentActive(id));
 
-  const segmentProps = computed(() => {
-    return withRefCapture(
-      {
-        'data-form-segment-id': id,
-        'data-active': isActive.value ? 'true' : undefined,
-      },
-      element,
-    );
-  });
+  const segmentProps = useCaptureProps(() => {
+    return {
+      'data-form-segment-id': id,
+      'data-active': isActive.value ? 'true' : undefined,
+    };
+  }, element);
 
   // Whenever the form is validated, only validate if the step is active.
   form?.onValidationDispatch(enqueue => {

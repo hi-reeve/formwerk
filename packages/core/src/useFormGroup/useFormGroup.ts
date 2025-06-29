@@ -9,7 +9,7 @@ import {
   StandardSchema,
   ValidationResult,
 } from '../types';
-import { normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
+import { normalizeProps, useUniqId, warn, useCaptureProps } from '../utils/common';
 import { FormKey } from '../useForm';
 import { useValidationProvider } from '../validation/useValidationProvider';
 import { FormValidationMode } from '../useForm/formContext';
@@ -117,18 +117,15 @@ export function useFormGroup<TInput extends FormObject = FormObject, TOutput ext
     targetRef: groupEl,
   });
 
-  const groupProps = computed<GroupProps>(() => {
+  const groupProps = useCaptureProps<GroupProps>(() => {
     const isFieldSet = groupEl.value?.tagName === 'FIELDSET';
 
-    return withRefCapture(
-      {
-        id,
-        ...(isFieldSet ? {} : labelledByProps.value),
-        role: isFieldSet ? undefined : 'group',
-      },
-      groupEl,
-    );
-  });
+    return {
+      id,
+      ...(isFieldSet ? {} : labelledByProps.value),
+      role: isFieldSet ? undefined : 'group',
+    };
+  }, groupEl);
 
   function getErrors() {
     return form?.getErrors(getPath()) ?? [];

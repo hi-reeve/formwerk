@@ -9,7 +9,7 @@ import {
   Reactivify,
   StandardSchema,
 } from '../types';
-import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
+import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
 import { useLabel, useErrorMessage } from '../a11y';
 import { useFormField, exposeField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
@@ -227,7 +227,7 @@ export function useSwitch<TValue = boolean>(_props: Reactivify<SwitchProps<TValu
   /**
    * Use this if you are using a native input[type=checkbox] element.
    */
-  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl));
+  const inputProps = useCaptureProps(() => createBindings(isInputElement(inputEl.value)), inputEl);
 
   function togglePressed(force?: boolean) {
     isPressed.value = force ?? !isPressed.value;

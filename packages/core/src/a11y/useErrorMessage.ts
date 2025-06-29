@@ -1,16 +1,16 @@
 import { Simplify } from 'type-fest';
-import { MaybeRefOrGetter, Ref, computed, toValue, inject, shallowRef } from 'vue';
+import { MaybeRefOrGetter, computed, toValue, inject, shallowRef } from 'vue';
 import { WithId, AriaErrorMessageProps } from '../types';
 import { FormKey } from '../useForm';
-import { withRefCapture } from '../utils/common';
+import { useCaptureProps } from '../utils/common';
 import { FormIdAttr } from '../constants';
 
-export function createErrorProps(inputId: MaybeRefOrGetter<string>): Ref<Simplify<WithId<AriaErrorMessageProps>>> {
-  return computed(() => ({
+export function createErrorProps(inputId: MaybeRefOrGetter<string>): Simplify<WithId<AriaErrorMessageProps>> {
+  return {
     id: `${toValue(inputId)}-r`,
     'aria-live': 'polite',
     'aria-atomic': true,
-  }));
+  };
 }
 
 interface CreateAccessibleErrorMessageInit {
@@ -27,7 +27,7 @@ export function useErrorMessage({ inputId, errorMessage }: CreateAccessibleError
   const form = inject(FormKey, null);
   const errorMessageRef = shallowRef<HTMLElement>();
   // This props are meant to be bound to the error message element.
-  const errorMessageProps = withRefCapture(createErrorProps(inputId), errorMessageRef);
+  const errorMessageProps = useCaptureProps(() => createErrorProps(inputId), errorMessageRef);
 
   // These props are meant to be bound to the input element.
   const accessibleErrorProps = computed<ErrorableAttributes>(() => {

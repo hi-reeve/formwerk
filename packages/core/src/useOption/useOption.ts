@@ -1,6 +1,6 @@
 import { Reactivify, RovingTabIndex } from '../types';
 import { computed, CSSProperties, inject, nextTick, ref, shallowRef, toValue, watch } from 'vue';
-import { hasKeyCode, normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
+import { hasKeyCode, normalizeProps, useUniqId, warn, useCaptureProps } from '../utils/common';
 import { ListManagerKey, OptionElement } from '../useListBox';
 import { FieldTypePrefixes } from '../constants';
 import { createDisabledContext } from '../helpers/createDisabledContext';
@@ -121,7 +121,7 @@ export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>) {
     },
   };
 
-  const optionProps = computed<OptionDomProps>(() => {
+  const optionProps = useCaptureProps<OptionDomProps>(() => {
     const isMultiple = listManager?.isMultiple() ?? false;
     const focusStrategy = listManager?.getFocusStrategy();
     const isVirtuallyFocused = focusStrategy === 'FOCUS_ATTR_SELECTED' && isFocused.value && listManager?.isPopupOpen();
@@ -151,8 +151,8 @@ export function useOption<TOption>(_props: Reactivify<OptionProps<TOption>>) {
 
     domProps[selectedAttr] = isSelected.value;
 
-    return withRefCapture(domProps, optionEl);
-  });
+    return domProps;
+  }, optionEl);
 
   watch(optionEl, () => {
     if (optionEl.value) {

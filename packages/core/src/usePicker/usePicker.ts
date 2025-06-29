@@ -1,7 +1,7 @@
-import { computed, InjectionKey, provide, ref, toValue } from 'vue';
+import { InjectionKey, provide, ref, toValue } from 'vue';
 import { usePopoverController } from '../helpers/usePopoverController';
 import { createDisabledContext } from '../helpers/createDisabledContext';
-import { normalizeProps, withRefCapture } from '../utils/common';
+import { normalizeProps, useCaptureProps } from '../utils/common';
 import { Reactivify } from '../types';
 import { useControlButtonProps } from '../helpers/useControlButtonProps';
 
@@ -31,16 +31,13 @@ export function usePicker(_props: Reactivify<PickerProps>) {
 
   const { isOpen } = usePopoverController(pickerEl, { disabled });
 
-  const pickerProps = computed(() => {
-    return withRefCapture(
-      {
-        role: 'dialog',
-        'aria-modal': 'true' as const,
-        'aria-label': toValue(props.label),
-      },
-      pickerEl,
-    );
-  });
+  const pickerProps = useCaptureProps(() => {
+    return {
+      role: 'dialog',
+      'aria-modal': 'true' as const,
+      'aria-label': toValue(props.label),
+    };
+  }, pickerEl);
 
   function onOpen() {
     isOpen.value = true;

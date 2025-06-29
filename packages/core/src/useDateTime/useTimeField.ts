@@ -1,5 +1,5 @@
 import { Maybe, Reactivify, StandardSchema } from '../types';
-import { createDescribedByProps, isNullOrUndefined, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
+import { createDescribedByProps, isNullOrUndefined, normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
 import { computed, shallowRef, toValue } from 'vue';
 import { exposeField, useFormField } from '../useFormField';
 import { useDateTimeSegmentGroup } from './useDateTimeSegmentGroup';
@@ -173,19 +173,16 @@ export function useTimeField(_props: Reactivify<TimeFieldProps, 'schema'>) {
     errorMessage: field.errorMessage,
   });
 
-  const controlProps = computed(() => {
-    return withRefCapture(
-      {
-        id: controlId,
-        role: 'group',
-        ...labelledByProps.value,
-        ...describedByProps.value,
-        ...accessibleErrorProps.value,
-        'aria-disabled': isDisabled.value || undefined,
-      },
-      controlEl,
-    );
-  });
+  const controlProps = useCaptureProps(() => {
+    return {
+      id: controlId,
+      role: 'group',
+      ...labelledByProps.value,
+      ...describedByProps.value,
+      ...accessibleErrorProps.value,
+      'aria-disabled': isDisabled.value || undefined,
+    };
+  }, controlEl);
 
   if (__DEV__) {
     registerField(field, 'Time');

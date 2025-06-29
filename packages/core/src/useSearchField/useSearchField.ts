@@ -15,7 +15,7 @@ import {
   normalizeProps,
   propsToValues,
   useUniqId,
-  withRefCapture,
+  useCaptureProps,
 } from '../utils/common';
 import { useInputValidity } from '../validation/useInputValidity';
 import { useLabel, useErrorMessage } from '../a11y';
@@ -203,24 +203,21 @@ export function useSearchField(_props: Reactivify<SearchFieldProps, 'onSubmit' |
     },
   };
 
-  const inputProps = computed<SearchInputDOMProps>(() =>
-    withRefCapture(
-      {
-        ...propsToValues(props, ['name', 'pattern', 'placeholder', 'required', 'readonly']),
-        ...labelledByProps.value,
-        ...describedByProps.value,
-        ...accessibleErrorProps.value,
-        id: inputId,
-        value: fieldValue.value,
-        disabled: field.isDisabled.value ? true : undefined,
-        type: 'search',
-        maxlength: toValue(props.maxLength),
-        minlength: toValue(props.minLength),
-        ...handlers,
-      },
-      inputEl,
-    ),
-  );
+  const inputProps = useCaptureProps<SearchInputDOMProps>(() => {
+    return {
+      ...propsToValues(props, ['name', 'pattern', 'placeholder', 'required', 'readonly']),
+      ...labelledByProps.value,
+      ...describedByProps.value,
+      ...accessibleErrorProps.value,
+      id: inputId,
+      value: fieldValue.value,
+      disabled: field.isDisabled.value ? true : undefined,
+      type: 'search',
+      maxlength: toValue(props.maxLength),
+      minlength: toValue(props.minLength),
+      ...handlers,
+    };
+  }, inputEl);
 
   if (__DEV__) {
     registerField(field, 'Search');

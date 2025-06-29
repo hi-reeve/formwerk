@@ -1,4 +1,4 @@
-import { computed, ref, toValue, watch } from 'vue';
+import { ref, toValue, watch } from 'vue';
 import { InputEvents, Maybe, Reactivify, StandardSchema } from '../types';
 import { Orientation } from '../types';
 import {
@@ -9,7 +9,7 @@ import {
   normalizeProps,
   propsToValues,
   useUniqId,
-  withRefCapture,
+  useCaptureProps,
 } from '../utils/common';
 import { exposeField, useFormField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
@@ -330,26 +330,23 @@ export function useComboBox<TOption, TValue = TOption>(
   }));
 
   // https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/#rps_label_textbox
-  const inputProps = computed(() => {
-    return withRefCapture(
-      {
-        id: inputId,
-        type: 'text' as const,
-        role: 'combobox' as const,
-        'aria-haspopup': 'listbox' as const,
-        'aria-controls': listBoxId,
-        'aria-expanded': isPopupOpen.value ? ('true' as const) : ('false' as const),
-        'aria-activedescendant': findFocusedOption()?.id ?? undefined,
-        disabled: isDisabled.value ? true : undefined,
-        value: inputValue.value,
-        ...propsToValues(props, ['name', 'placeholder', 'required', 'readonly']),
-        ...accessibleErrorProps.value,
-        ...describedByProps.value,
-        ...handlers,
-      },
-      inputEl,
-    );
-  });
+  const inputProps = useCaptureProps(() => {
+    return {
+      id: inputId,
+      type: 'text' as const,
+      role: 'combobox' as const,
+      'aria-haspopup': 'listbox' as const,
+      'aria-controls': listBoxId,
+      'aria-expanded': isPopupOpen.value ? ('true' as const) : ('false' as const),
+      'aria-activedescendant': findFocusedOption()?.id ?? undefined,
+      disabled: isDisabled.value ? true : undefined,
+      value: inputValue.value,
+      ...propsToValues(props, ['name', 'placeholder', 'required', 'readonly']),
+      ...accessibleErrorProps.value,
+      ...describedByProps.value,
+      ...handlers,
+    };
+  }, inputEl);
 
   const filter = collectionOptions?.filter;
   if (filter) {

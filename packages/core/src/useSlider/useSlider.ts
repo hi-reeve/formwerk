@@ -19,7 +19,7 @@ import {
   removeFirst,
   useUniqId,
   warn,
-  withRefCapture,
+  useCaptureProps,
 } from '../utils/common';
 import { toNearestMultipleOf } from '../utils/math';
 import { useLocale } from '../i18n';
@@ -308,44 +308,41 @@ export function useSlider<TValue>(_props: Reactivify<SliderProps<TValue>, 'schem
     updateValidity();
   }
 
-  const trackProps = computed(() => {
+  const trackProps = useCaptureProps(() => {
     const isVertical = toValue(props.orientation) === 'vertical';
 
-    return withRefCapture(
-      {
-        style: { 'container-type': isVertical ? 'size' : 'inline-size', position: 'relative' } as CSSProperties,
-        onMousedown(e: MouseEvent) {
-          if (!trackEl.value || !isMutable()) {
-            return;
-          }
+    return {
+      style: { 'container-type': isVertical ? 'size' : 'inline-size', position: 'relative' } as CSSProperties,
+      onMousedown(e: MouseEvent) {
+        if (!trackEl.value || !isMutable()) {
+          return;
+        }
 
-          const targetValue = getValueForPagePosition({ x: e.clientX, y: e.clientY });
-          const closest = thumbs.value.reduce(
-            (candidate, curr, idx) => {
-              const { min, max } = getThumbRange(curr);
-              if (targetValue < min || targetValue > max) {
-                return candidate;
-              }
+        const targetValue = getValueForPagePosition({ x: e.clientX, y: e.clientY });
+        const closest = thumbs.value.reduce(
+          (candidate, curr, idx) => {
+            const { min, max } = getThumbRange(curr);
+            if (targetValue < min || targetValue > max) {
+              return candidate;
+            }
 
-              const currentThumbValue = getThumbValue(idx);
-              if (isNullOrUndefined(currentThumbValue)) {
-                return candidate;
-              }
+            const currentThumbValue = getThumbValue(idx);
+            if (isNullOrUndefined(currentThumbValue)) {
+              return candidate;
+            }
 
-              const diff = Math.abs(currentThumbValue - targetValue);
+            const diff = Math.abs(currentThumbValue - targetValue);
 
-              return diff < candidate.diff ? { thumb: curr, diff, idx } : candidate;
-            },
-            { thumb: thumbs.value[0], idx: 0, diff: Infinity },
-          );
+            return diff < candidate.diff ? { thumb: curr, diff, idx } : candidate;
+          },
+          { thumb: thumbs.value[0], idx: 0, diff: Infinity },
+        );
 
-          setThumbValue(closest.idx, targetValue);
-          setTouched(true);
-        },
+        setThumbValue(closest.idx, targetValue);
+        setTouched(true);
       },
-      trackEl,
-    );
-  });
+    };
+  }, trackEl);
 
   function getValueForPagePosition({ x, y }: Coordinate) {
     if (!trackEl.value) {

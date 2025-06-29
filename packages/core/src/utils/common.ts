@@ -32,11 +32,11 @@ interface CreateDescribedByInit {
 
 export function createDescribedByProps({ inputId, description }: CreateDescribedByInit) {
   const descriptionRef = shallowRef<HTMLElement>();
-  const descriptionProps = withRefCapture(createDescriptionProps(inputId), descriptionRef);
+  const descriptionProps = useCaptureProps(() => createDescriptionProps(inputId), descriptionRef);
 
   const describedByProps = computed(() => {
     return {
-      'aria-describedby': descriptionRef.value && toValue(description) ? descriptionProps.id : undefined,
+      'aria-describedby': descriptionRef.value && toValue(description) ? descriptionProps.value.id : undefined,
     };
   });
 
@@ -47,7 +47,7 @@ export function createDescribedByProps({ inputId, description }: CreateDescribed
 }
 
 export function createRefCapture<TEl extends HTMLElement>(elRef: Ref<Maybe<TEl>>) {
-  return function captureRef(el: HTMLElement) {
+  return (el: HTMLElement) => {
     elRef.value = el as TEl;
   };
 }
@@ -115,15 +115,23 @@ export function getNextCycleArrIdx(idx: number, arr: unknown[]): number {
   return r < 0 ? r + arr.length : r;
 }
 
-/**
- * Injects a ref capture to the props object
- */
-export function withRefCapture<TProps>(props: TProps, inputEl: Ref<Maybe<HTMLElement>>): TProps {
-  if (!toValue(inputEl)) {
-    (props as typeof props & { ref: (el: HTMLElement) => void }).ref = createRefCapture(inputEl);
+export function useCaptureProps<TProps>(props: () => TProps, inputEl: Ref<Maybe<HTMLElement>>) {
+  function captureFn(el: HTMLElement) {
+    if (el) {
+      inputEl.value = el;
+    }
   }
 
-  return props;
+  return computed(() => {
+    if (inputEl.value) {
+      return props();
+    }
+
+    const ps = props() as Record<string, unknown>;
+    ps.ref = captureFn;
+
+    return ps as TProps;
+  });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

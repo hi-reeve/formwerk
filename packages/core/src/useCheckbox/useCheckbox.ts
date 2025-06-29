@@ -1,6 +1,6 @@
 import { computed, inject, nextTick, ref, toValue } from 'vue';
 import { registerField } from '@formwerk/devtools';
-import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
+import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
 import {
   AriaLabelableProps,
   InputBaseAttributes,
@@ -243,7 +243,7 @@ export function useCheckbox<TValue = string>(_props: Reactivify<CheckboxProps<TV
     },
   });
 
-  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl));
+  const inputProps = useCaptureProps(() => createBindings(isInputElement(inputEl.value)), inputEl);
 
   function setChecked(force?: boolean) {
     // Unless this is set to false, you cannot change the value of the checkbox

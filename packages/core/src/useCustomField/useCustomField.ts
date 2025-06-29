@@ -1,8 +1,8 @@
-import { computed, shallowRef, toValue } from 'vue';
+import { shallowRef, toValue } from 'vue';
 import { FieldTypePrefixes } from '../constants';
 import { Reactivify, StandardSchema } from '../types';
 import { exposeField, useFormField } from '../useFormField';
-import { createDescribedByProps, normalizeProps, propsToValues, useUniqId, withRefCapture } from '../utils/common';
+import { createDescribedByProps, normalizeProps, propsToValues, useUniqId, useCaptureProps } from '../utils/common';
 import { useLabel, useErrorMessage } from '../a11y';
 import { useInputValidity } from '../validation';
 import { registerField } from '@formwerk/devtools';
@@ -79,20 +79,17 @@ export function useCustomField<TValue = unknown>(_props: Reactivify<CustomFieldP
     errorMessage,
   });
 
-  const controlProps = computed(() =>
-    withRefCapture(
-      {
-        ...propsToValues(props, ['name', 'readonly']),
-        ...labelledByProps.value,
-        ...describedByProps.value,
-        ...accessibleErrorProps.value,
-        'aria-readonly': toValue(props.readonly) ? ('true' as const) : undefined,
-        'aria-disabled': isDisabled.value ? ('true' as const) : undefined,
-        id: controlId,
-      },
-      controlEl,
-    ),
-  );
+  const controlProps = useCaptureProps(() => {
+    return {
+      ...propsToValues(props, ['name', 'readonly']),
+      ...labelledByProps.value,
+      ...describedByProps.value,
+      ...accessibleErrorProps.value,
+      'aria-readonly': toValue(props.readonly) ? ('true' as const) : undefined,
+      'aria-disabled': isDisabled.value ? ('true' as const) : undefined,
+      id: controlId,
+    };
+  }, controlEl);
 
   if (__DEV__) {
     registerField(field, 'Custom');

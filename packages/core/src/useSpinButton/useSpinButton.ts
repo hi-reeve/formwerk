@@ -8,7 +8,7 @@ import {
   isButtonElement,
   isNullOrUndefined,
   normalizeProps,
-  withRefCapture,
+  useCaptureProps,
 } from '../utils/common';
 import { useLocale } from '../i18n';
 import { onlyMainMouseButton } from '../utils/events';
@@ -228,29 +228,23 @@ export function useSpinButton(_props: Reactivify<SpinButtonProps, 'onChange'>) {
     };
   }
 
-  const incrementButtonProps = computed(() => {
-    return withRefCapture(
-      {
-        ...incrementHoldProps,
-        ...getButtonProps(incrBtnEl.value, { disabled: toValue(props.disabled) || isIncrementDisabled.value }),
-        'aria-label': toValue(props.incrementLabel) || 'Increment',
-        tabindex: toValue(props.preventTabIndex) ? '-1' : undefined,
-      },
-      incrBtnEl,
-    );
-  });
+  const incrementButtonProps = useCaptureProps(() => {
+    return {
+      ...incrementHoldProps,
+      ...getButtonProps(incrBtnEl.value, { disabled: toValue(props.disabled) || isIncrementDisabled.value }),
+      'aria-label': toValue(props.incrementLabel) || 'Increment',
+      tabindex: toValue(props.preventTabIndex) ? '-1' : undefined,
+    };
+  }, incrBtnEl);
 
-  const decrementButtonProps = computed(() => {
-    return withRefCapture(
-      {
-        ...decrementHoldProps,
-        ...getButtonProps(decrBtnEl.value, { disabled: toValue(props.disabled) || isDecrementDisabled.value }),
-        'aria-label': toValue(props.decrementLabel) || 'Decrement',
-        tabindex: toValue(props.preventTabIndex) ? '-1' : undefined,
-      },
-      decrBtnEl,
-    );
-  });
+  const decrementButtonProps = useCaptureProps(() => {
+    return {
+      ...decrementHoldProps,
+      ...getButtonProps(decrBtnEl.value, { disabled: toValue(props.disabled) || isDecrementDisabled.value }),
+      'aria-label': toValue(props.decrementLabel) || 'Decrement',
+      tabindex: toValue(props.preventTabIndex) ? '-1' : undefined,
+    };
+  }, decrBtnEl);
 
   const spinButtonProps = computed(() => {
     return {

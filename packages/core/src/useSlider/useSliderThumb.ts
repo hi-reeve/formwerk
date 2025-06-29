@@ -1,6 +1,6 @@
 import { type CSSProperties, type Ref, computed, inject, ref, toValue } from 'vue';
 import { SliderContext, SliderInjectionKey, ThumbRegistration } from './useSlider';
-import { normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
+import { normalizeProps, useUniqId, warn, useCaptureProps } from '../utils/common';
 import { Reactivify } from '../types';
 import { useSpinButton } from '../useSpinButton';
 import { useLocale } from '../i18n';
@@ -105,25 +105,22 @@ export function useSliderThumb<TValue = number>(
     slider.setThumbValue(applyClamp(value));
   }
 
-  const thumbProps = computed(() => {
+  const thumbProps = useCaptureProps(() => {
     const ownLabel = toValue(props.label);
 
-    return withRefCapture(
-      {
-        tabindex: isDisabled.value ? '-1' : '0',
-        role: 'slider',
-        ...slider.getAccessibleErrorProps(),
-        'aria-orientation': slider.getOrientation(),
-        'aria-label': ownLabel ?? undefined,
-        ...(ownLabel ? {} : slider.getSliderLabelProps()),
-        ...spinButtonProps.value,
-        onMousedown: onPointerdown,
-        onTouchstart: onPointerdown,
-        style: getPositionStyle(),
-      },
-      thumbEl,
-    );
-  });
+    return {
+      tabindex: isDisabled.value ? '-1' : '0',
+      role: 'slider',
+      ...slider.getAccessibleErrorProps(),
+      'aria-orientation': slider.getOrientation(),
+      'aria-label': ownLabel ?? undefined,
+      ...(ownLabel ? {} : slider.getSliderLabelProps()),
+      ...spinButtonProps.value,
+      onMousedown: onPointerdown,
+      onTouchstart: onPointerdown,
+      style: getPositionStyle(),
+    };
+  }, thumbEl);
 
   function getPositionStyle(): CSSProperties {
     const value = slider.getThumbValue();

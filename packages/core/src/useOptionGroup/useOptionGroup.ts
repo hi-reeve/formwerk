@@ -1,7 +1,7 @@
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { Reactivify } from '../types';
 import { useLabel } from '../a11y/useLabel';
-import { normalizeProps, useUniqId, withRefCapture } from '../utils/common';
+import { normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
 import { FieldTypePrefixes } from '../constants';
 import { createDisabledContext } from '../helpers/createDisabledContext';
 
@@ -29,16 +29,13 @@ export function useOptionGroup(_props: Reactivify<OptionGroupProps>) {
     targetRef: groupEl,
   });
 
-  const groupProps = computed(() => {
-    return withRefCapture(
-      {
-        id: groupId,
-        role: 'group',
-        ...labelledByProps.value,
-      },
-      groupEl,
-    );
-  });
+  const groupProps = useCaptureProps(() => {
+    return {
+      id: groupId,
+      role: 'group',
+      ...labelledByProps.value,
+    };
+  }, groupEl);
 
   return {
     /**

@@ -1,4 +1,4 @@
-import { computed, ref, toValue } from 'vue';
+import { ref, toValue } from 'vue';
 import { useFormField, exposeField } from '../useFormField';
 import { AriaLabelableProps, Arrayable, Orientation, Reactivify, StandardSchema } from '../types';
 import {
@@ -8,7 +8,7 @@ import {
   normalizeProps,
   toggleValueSelection,
   useUniqId,
-  withRefCapture,
+  useCaptureProps,
 } from '../utils/common';
 import { useInputValidity } from '../validation';
 import { useListBox } from '../useListBox';
@@ -264,26 +264,23 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
     },
   };
 
-  const triggerProps = computed<SelectTriggerDomProps>(() => {
-    return withRefCapture(
-      {
-        ...labelledByProps.value,
-        ...describedByProps.value,
-        ...accessibleErrorProps.value,
-        id: inputId,
-        tabindex: isDisabled.value ? '-1' : '0',
-        type: triggerEl.value?.tagName === 'BUTTON' ? 'button' : undefined,
-        role: 'combobox' as const,
-        'aria-haspopup': 'listbox',
-        'aria-expanded': isPopupOpen.value,
-        'aria-disabled': isDisabled.value || undefined,
-        'aria-activedescendant': findFocusedOption()?.id ?? undefined,
-        'aria-controls': listBoxId,
-        ...handlers,
-      },
-      triggerEl,
-    );
-  });
+  const triggerProps = useCaptureProps<SelectTriggerDomProps>(() => {
+    return {
+      ...labelledByProps.value,
+      ...describedByProps.value,
+      ...accessibleErrorProps.value,
+      id: inputId,
+      tabindex: isDisabled.value ? '-1' : '0',
+      type: triggerEl.value?.tagName === 'BUTTON' ? 'button' : undefined,
+      role: 'combobox' as const,
+      'aria-haspopup': 'listbox',
+      'aria-expanded': isPopupOpen.value,
+      'aria-disabled': isDisabled.value || undefined,
+      'aria-activedescendant': findFocusedOption()?.id ?? undefined,
+      'aria-controls': listBoxId,
+      ...handlers,
+    };
+  }, triggerEl);
 
   if (__DEV__) {
     registerField(field, 'Select');

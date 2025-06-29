@@ -7,7 +7,7 @@ import {
   propsToValues,
   removeFirst,
   useUniqId,
-  withRefCapture,
+  useCaptureProps,
 } from '../utils/common';
 import { FieldTypePrefixes } from '../constants';
 import { useErrorMessage } from '../a11y';
@@ -246,25 +246,22 @@ export function useFileField(_props: Reactivify<FileFieldProps, 'schema' | 'onUp
     overridePickOptions.value = undefined;
   }
 
-  const inputProps = computed(() => {
-    return withRefCapture(
-      {
-        id: inputId,
-        type: 'file',
-        tabindex: -1,
-        ...propsToValues(props, ['name', 'accept', 'multiple', 'required', 'disabled']),
-        ...overridePickOptions.value,
-        onBlur,
-        onChange,
-        onCancel,
-        webkitdirectory: isMultiple() ? toValue(props.allowDirectory) : undefined,
-        style: {
-          display: 'none',
-        },
+  const inputProps = useCaptureProps(() => {
+    return {
+      id: inputId,
+      type: 'file',
+      tabindex: -1,
+      ...propsToValues(props, ['name', 'accept', 'multiple', 'required', 'disabled']),
+      ...overridePickOptions.value,
+      onBlur,
+      onChange,
+      onCancel,
+      webkitdirectory: isMultiple() ? toValue(props.allowDirectory) : undefined,
+      style: {
+        display: 'none',
       },
-      inputEl,
-    );
-  });
+    };
+  }, inputEl);
 
   const triggerProps = useControlButtonProps(() => ({
     id: `${inputId}-trigger`,
@@ -315,17 +312,14 @@ export function useFileField(_props: Reactivify<FileFieldProps, 'schema' | 'onUp
     },
   };
 
-  const dropzoneProps = computed(() => {
-    return withRefCapture(
-      {
-        role: 'group',
-        'data-dragover': isDragging.value,
-        'aria-label': toValue(props.label),
-        ...dropzoneHandlers,
-      },
-      dropzoneEl,
-    );
-  });
+  const dropzoneProps = useCaptureProps(() => {
+    return {
+      role: 'group',
+      'data-dragover': isDragging.value,
+      'aria-label': toValue(props.label),
+      ...dropzoneHandlers,
+    };
+  }, dropzoneEl);
 
   function clear() {
     entries.value = [];

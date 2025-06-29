@@ -1,5 +1,5 @@
 import { computed, inject, ref, toValue } from 'vue';
-import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, warn, withRefCapture } from '../utils/common';
+import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, warn, useCaptureProps } from '../utils/common';
 import { AriaInputProps, AriaLabelableProps, InputBaseAttributes, Reactivify, RovingTabIndex } from '../types';
 import { useLabel } from '../a11y/useLabel';
 import { RadioGroupContext, RadioGroupKey } from './useRadioGroup';
@@ -125,7 +125,7 @@ export function useRadio<TValue = string>(_props: Reactivify<RadioProps<TValue>>
     };
   }
 
-  const inputProps = computed(() => withRefCapture(createBindings(isInputElement(inputEl.value)), inputEl));
+  const inputProps = useCaptureProps(() => createBindings(isInputElement(inputEl.value)), inputEl);
 
   return {
     /**

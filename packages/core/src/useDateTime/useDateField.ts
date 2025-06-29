@@ -1,6 +1,6 @@
 import { Maybe, Reactivify, StandardSchema } from '../types';
 import type { CalendarProps } from '../useCalendar';
-import { createDescribedByProps, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
+import { createDescribedByProps, normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
 import { computed, shallowRef, toValue } from 'vue';
 import { exposeField, useFormField } from '../useFormField';
 import { useDateTimeSegmentGroup } from './useDateTimeSegmentGroup';
@@ -189,19 +189,16 @@ export function useDateField(_props: Reactivify<DateFieldProps, 'schema'>) {
     return propsObj;
   });
 
-  const controlProps = computed(() => {
-    return withRefCapture(
-      {
-        id: controlId,
-        role: 'group',
-        ...labelledByProps.value,
-        ...describedByProps.value,
-        ...accessibleErrorProps.value,
-        'aria-disabled': field.isDisabled.value || undefined,
-      },
-      controlEl,
-    );
-  });
+  const controlProps = useCaptureProps(() => {
+    return {
+      id: controlId,
+      role: 'group',
+      ...labelledByProps.value,
+      ...describedByProps.value,
+      ...accessibleErrorProps.value,
+      'aria-disabled': field.isDisabled.value || undefined,
+    };
+  }, controlEl);
 
   if (__DEV__) {
     registerField(field, 'Date');

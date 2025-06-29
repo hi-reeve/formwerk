@@ -1,6 +1,6 @@
-import { computed, shallowRef, toValue } from 'vue';
+import { shallowRef, toValue } from 'vue';
 import { registerField } from '@formwerk/devtools';
-import { createDescribedByProps, normalizeProps, propsToValues, useUniqId, withRefCapture } from '../utils/common';
+import { createDescribedByProps, normalizeProps, propsToValues, useUniqId, useCaptureProps } from '../utils/common';
 import {
   AriaDescribableProps,
   AriaLabelableProps,
@@ -154,25 +154,22 @@ export function useTextField(_props: Reactivify<TextFieldProps, 'schema'>) {
     },
   };
 
-  const inputProps = computed<TextInputDOMProps>(() => {
-    return withRefCapture(
-      {
-        ...propsToValues(props, ['name', 'type', 'placeholder', 'autocomplete', 'required', 'readonly']),
-        ...labelledByProps.value,
-        ...describedByProps.value,
-        ...accessibleErrorProps.value,
-        ...handlers,
-        id: inputId,
-        value: fieldValue.value,
-        maxlength: toValue(props.maxLength),
-        minlength: toValue(props.minLength),
-        disabled: isDisabled.value ? true : undefined,
-        // Maybe we need to find a better way to serialize RegExp to a pattern string
-        pattern: inputEl.value?.tagName === 'TEXTAREA' ? undefined : toValue(props.pattern)?.toString(),
-      },
-      inputEl,
-    );
-  });
+  const inputProps = useCaptureProps(() => {
+    return {
+      ...propsToValues(props, ['name', 'type', 'placeholder', 'autocomplete', 'required', 'readonly']),
+      ...labelledByProps.value,
+      ...describedByProps.value,
+      ...accessibleErrorProps.value,
+      ...handlers,
+      id: inputId,
+      value: fieldValue.value,
+      maxlength: toValue(props.maxLength),
+      minlength: toValue(props.minLength),
+      disabled: isDisabled.value ? true : undefined,
+      // Maybe we need to find a better way to serialize RegExp to a pattern string
+      pattern: inputEl.value?.tagName === 'TEXTAREA' ? undefined : toValue(props.pattern)?.toString(),
+    };
+  }, inputEl);
 
   if (__DEV__) {
     registerField(field, 'Text');

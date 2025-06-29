@@ -12,7 +12,7 @@ import {
   watch,
 } from 'vue';
 import { Reactivify } from '../types';
-import { normalizeProps, warn, withRefCapture } from '../utils/common';
+import { normalizeProps, warn, useCaptureProps } from '../utils/common';
 import { FileEntryCollectionKey } from './types';
 import { Simplify } from 'type-fest';
 import { useControlButtonProps } from '../helpers/useControlButtonProps';
@@ -109,9 +109,7 @@ export function useFileEntry(_props: Reactivify<FileEntryProps>) {
     currentObjectURL.value = undefined;
   });
 
-  const previewProps = computed(() => {
-    return withRefCapture(createPreviewProps(), previewEl);
-  });
+  const previewProps = useCaptureProps(() => createPreviewProps(), previewEl);
 
   return {
     name: computed(() => toValue(props.file).name),

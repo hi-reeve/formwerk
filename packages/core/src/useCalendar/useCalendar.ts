@@ -1,6 +1,6 @@
 import { computed, inject, nextTick, provide, Ref, ref, shallowRef, toValue, watch } from 'vue';
 import { CalendarContext, CalendarViewType } from './types';
-import { hasKeyCode, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
+import { hasKeyCode, normalizeProps, useCaptureProps, useUniqId } from '../utils/common';
 import { Maybe, Reactivify, StandardSchema } from '../types';
 import { useLocale } from '../i18n';
 import { FieldTypePrefixes } from '../constants';
@@ -277,17 +277,14 @@ export function useCalendar(_props: Reactivify<CalendarProps, 'field' | 'schema'
     { immediate: true },
   );
 
-  const calendarProps = computed(() => {
-    return withRefCapture(
-      {
-        id: calendarId,
-        ...pickerHandlers,
-        role: 'application',
-        dir: direction.value,
-      },
-      calendarEl,
-    );
-  });
+  const calendarProps = useCaptureProps(() => {
+    return {
+      id: calendarId,
+      ...pickerHandlers,
+      role: 'application',
+      dir: direction.value,
+    };
+  }, calendarEl);
 
   const nextButtonProps = useControlButtonProps(() => ({
     id: `${calendarId}-next`,
@@ -337,48 +334,42 @@ export function useCalendar(_props: Reactivify<CalendarProps, 'field' | 'schema'
     return toValue(props.allowedViews)?.includes(view) ?? true;
   }
 
-  const gridLabelProps = computed(() => {
-    return withRefCapture(
-      {
-        ...monthYearLabelBaseProps.value,
-        'aria-live': 'polite' as const,
-        tabindex: '-1',
-        onClick: () => {
-          if (isDisabled.value || toValue(props.readonly)) {
-            return;
+  const gridLabelProps = useCaptureProps(() => {
+    return {
+      ...monthYearLabelBaseProps.value,
+      'aria-live': 'polite' as const,
+      tabindex: '-1',
+      onClick: () => {
+        if (isDisabled.value || toValue(props.readonly)) {
+          return;
+        }
+
+        if (currentView.value.type === 'weeks') {
+          if (isAllowedView('months')) {
+            setView('months');
           }
 
-          if (currentView.value.type === 'weeks') {
-            if (isAllowedView('months')) {
-              setView('months');
-            }
+          return;
+        }
 
-            return;
+        if (currentView.value.type === 'months') {
+          if (isAllowedView('years')) {
+            setView('years');
           }
 
-          if (currentView.value.type === 'months') {
-            if (isAllowedView('years')) {
-              setView('years');
-            }
-
-            return;
-          }
-        },
+          return;
+        }
       },
-      calendarLabelEl,
-    );
-  });
+    };
+  }, calendarLabelEl);
 
-  const gridProps = computed(() => {
-    return withRefCapture(
-      {
-        id: gridId,
-        role: 'grid',
-        ...labelledByProps.value,
-      },
-      gridEl,
-    );
-  });
+  const gridProps = useCaptureProps(() => {
+    return {
+      id: gridId,
+      role: 'grid',
+      ...labelledByProps.value,
+    };
+  }, gridEl);
 
   if (__DEV__) {
     // If it is its own field, we should register it with devtools.

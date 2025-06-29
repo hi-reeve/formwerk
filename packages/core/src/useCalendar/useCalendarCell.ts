@@ -1,5 +1,5 @@
 import { Reactivify } from '../types';
-import { normalizeProps, withRefCapture } from '../utils/common';
+import { normalizeProps, useCaptureProps } from '../utils/common';
 import { computed, defineComponent, h, inject, shallowRef, toValue } from 'vue';
 import { CalendarCellProps, CalendarViewType } from './types';
 import { CalendarContextKey } from './constants';
@@ -30,20 +30,17 @@ export function useCalendarCell(_props: Reactivify<CalendarCellProps>) {
     calendarCtx?.setDate(toValue(props.value), nextPanel);
   }
 
-  const cellProps = computed(() => {
+  const cellProps = useCaptureProps(() => {
     const isFocused = toValue(props.focused);
 
-    return withRefCapture(
-      {
-        onClick: handleClick,
-        onPointerdown: handlePointerDown,
-        'aria-selected': toValue(props.selected),
-        'aria-disabled': isDisabled.value,
-        tabindex: isDisabled.value || !isFocused ? '-1' : '0',
-      },
-      cellEl,
-    );
-  });
+    return {
+      onClick: handleClick,
+      onPointerdown: handlePointerDown,
+      'aria-selected': toValue(props.selected),
+      'aria-disabled': isDisabled.value,
+      tabindex: isDisabled.value || !isFocused ? '-1' : '0',
+    };
+  }, cellEl);
 
   const label = computed(() => toValue(props.label));
 

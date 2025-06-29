@@ -1,6 +1,6 @@
 import { computed, CSSProperties, defineComponent, h, inject, nextTick, shallowRef, toValue } from 'vue';
 import { Reactivify } from '../types';
-import { hasKeyCode, isNullOrUndefined, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
+import { hasKeyCode, isNullOrUndefined, normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
 import { DateTimeSegmentGroupKey } from './useDateTimeSegmentGroup';
 import { FieldTypePrefixes } from '../constants';
 import { blockEvent } from '../utils/events';
@@ -211,7 +211,7 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
     },
   };
 
-  const segmentProps = computed(() => {
+  const segmentProps = useCaptureProps(() => {
     const ceValue = isFirefox() ? 'true' : 'plaintext-only';
 
     const domProps: DateTimeSegmentDomProps = {
@@ -250,8 +250,8 @@ export function useDateTimeSegment(_props: Reactivify<DateTimeSegmentProps>) {
       domProps.style.pointerEvents = 'none';
     }
 
-    return withRefCapture(domProps, segmentEl);
-  });
+    return domProps;
+  }, segmentEl);
 
   return {
     key: computed(() => `${id}-${toValue(props.type)}`),

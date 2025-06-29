@@ -1,6 +1,6 @@
 import { computed, toValue } from 'vue';
 import { useControlButtonProps } from '../helpers/useControlButtonProps';
-import { cloneDeep, isFormElement, isNullOrUndefined, warn, withRefCapture } from '../utils/common';
+import { cloneDeep, isFormElement, isNullOrUndefined, warn, useCaptureProps } from '../utils/common';
 import { asConsumableData, ConsumableData } from '../useForm/useFormActions';
 import { createEventDispatcher } from '../utils/events';
 import { FormObject, MaybeAsync } from '../types';
@@ -89,17 +89,14 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
     next();
   }
 
-  const formProps = computed(() => {
+  const formProps = useCaptureProps(() => {
     const isForm = isFormElement(flow.formElement.value);
 
-    return withRefCapture(
-      {
-        novalidate: isForm ? true : undefined,
-        onSubmit: isForm ? onSubmit : undefined,
-      },
-      flow.formElement,
-    );
-  });
+    return {
+      novalidate: isForm ? true : undefined,
+      onSubmit: isForm ? onSubmit : undefined,
+    };
+  }, flow.formElement);
 
   function createStepResolverContext(direction: 'next' | 'previous'): StepResolveContext<TInput> {
     const current = flow.currentSegment.value;

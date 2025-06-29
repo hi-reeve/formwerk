@@ -1,6 +1,6 @@
 import { computed, InjectionKey, nextTick, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
 import { AriaLabelableProps, Maybe, Orientation, Reactivify } from '../types';
-import { hasKeyCode, isInViewport, normalizeProps, removeFirst, useUniqId, withRefCapture } from '../utils/common';
+import { hasKeyCode, isInViewport, normalizeProps, removeFirst, useUniqId, useCaptureProps } from '../utils/common';
 import { useKeyPressed } from '../helpers/useKeyPressed';
 import { isMac } from '../utils/platform';
 import { usePopoverController } from '../helpers/usePopoverController';
@@ -247,22 +247,19 @@ export function useListBox<TOption, TValue = TOption>(
     }
   }
 
-  const listBoxProps = computed<ListBoxDomProps>(() => {
+  const listBoxProps = useCaptureProps<ListBoxDomProps>(() => {
     const isMultiple = toValue(props.multiple);
     const labeledBy = toValue(props.labeledBy);
 
-    return withRefCapture(
-      {
-        id: listBoxId,
-        role: 'listbox',
-        'aria-label': labeledBy ? undefined : toValue(props.label),
-        'aria-labelledby': labeledBy ?? undefined,
-        'aria-multiselectable': isMultiple ?? undefined,
-        ...handlers,
-      },
-      listBoxEl,
-    );
-  });
+    return {
+      id: listBoxId,
+      role: 'listbox',
+      'aria-label': labeledBy ? undefined : toValue(props.label),
+      'aria-labelledby': labeledBy ?? undefined,
+      'aria-multiselectable': isMultiple ?? undefined,
+      ...handlers,
+    };
+  }, listBoxEl);
 
   watch(isOpen, async value => {
     if (!value || toValue(props.disabled) || !toValue(props.autofocusOnOpen)) {

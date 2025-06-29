@@ -7,7 +7,7 @@ import {
   normalizeProps,
   propsToValues,
   useUniqId,
-  withRefCapture,
+  useCaptureProps,
 } from '../utils/common';
 import {
   AriaDescribableProps,
@@ -259,27 +259,24 @@ export function useNumberField(_props: Reactivify<NumberFieldProps, 'schema'>) {
     return 'numeric';
   });
 
-  const inputProps = computed<NumberInputDOMProps>(() => {
-    return withRefCapture(
-      {
-        ...propsToValues(props, ['name', 'placeholder', 'required', 'readonly']),
-        ...labelledByProps.value,
-        ...describedByProps.value,
-        ...accessibleErrorProps.value,
-        ...handlers,
-        onKeydown: spinButtonProps.value.onKeydown,
-        id: inputId,
-        inputmode: inputMode.value,
-        value: formattedText.value,
-        disabled: isDisabled.value ? true : undefined,
-        max: toValue(props.max),
-        min: toValue(props.min),
-        type: 'text',
-        spellcheck: false,
-      },
-      inputEl,
-    );
-  });
+  const inputProps = useCaptureProps<NumberInputDOMProps>(() => {
+    return {
+      ...propsToValues(props, ['name', 'placeholder', 'required', 'readonly']),
+      ...labelledByProps.value,
+      ...describedByProps.value,
+      ...accessibleErrorProps.value,
+      ...handlers,
+      onKeydown: spinButtonProps.value.onKeydown,
+      id: inputId,
+      inputmode: inputMode.value,
+      value: formattedText.value,
+      disabled: isDisabled.value ? true : undefined,
+      max: toValue(props.max),
+      min: toValue(props.min),
+      type: 'text',
+      spellcheck: false,
+    };
+  }, inputEl);
 
   useEventListener(
     inputEl,

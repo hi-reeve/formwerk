@@ -1,5 +1,4 @@
 import {
-  computed,
   type DefineComponent,
   defineComponent,
   h,
@@ -23,7 +22,7 @@ import {
   normalizeProps,
   useUniqId,
   warn,
-  withRefCapture,
+  useCaptureProps,
 } from '../utils/common';
 import { FieldTypePrefixes } from '../constants';
 import { createPathPrefixer } from '../helpers/usePathPrefixer';
@@ -389,21 +388,18 @@ function createBtnProps(_props: Reactivify<FormRepeaterButtonProps, 'onClick'>) 
   const props = normalizeProps(_props, ['onClick']);
   const buttonEl = ref<HTMLElement>();
 
-  const buttonProps = computed<FormRepeaterButtonDomProps>(() => {
+  const buttonProps = useCaptureProps<FormRepeaterButtonDomProps>(() => {
     const isBtnTag = buttonEl.value?.tagName === 'BUTTON';
 
-    return withRefCapture(
-      {
-        'aria-label': toValue(props.label),
-        type: isBtnTag ? 'button' : undefined,
-        role: isBtnTag ? undefined : 'button',
-        onClick: props.onClick,
-        disabled: isBtnTag ? (toValue(props.disabled) ?? undefined) : undefined,
-        'aria-disabled': isBtnTag ? undefined : (toValue(props.disabled) ?? undefined),
-      },
-      buttonEl,
-    );
-  });
+    return {
+      'aria-label': toValue(props.label),
+      type: isBtnTag ? 'button' : undefined,
+      role: isBtnTag ? undefined : 'button',
+      onClick: props.onClick,
+      disabled: isBtnTag ? (toValue(props.disabled) ?? undefined) : undefined,
+      'aria-disabled': isBtnTag ? undefined : (toValue(props.disabled) ?? undefined),
+    };
+  }, buttonEl);
 
   return buttonProps;
 }

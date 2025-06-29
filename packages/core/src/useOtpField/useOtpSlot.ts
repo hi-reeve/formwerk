@@ -1,6 +1,6 @@
 import { computed, defineComponent, h, inject, ref, toValue, useId } from 'vue';
 import { Reactivify } from '../types';
-import { hasKeyCode, isInputElement, normalizeProps, warn, withRefCapture } from '../utils/common';
+import { hasKeyCode, isInputElement, normalizeProps, warn, useCaptureProps } from '../utils/common';
 import { isFirefox } from '../utils/platform';
 import { blockEvent } from '../utils/events';
 import { OtpContextKey, OtpSlotAcceptType } from './types';
@@ -140,7 +140,7 @@ export function useOtpSlot(_props: Reactivify<OtpSlotProps>) {
     },
   };
 
-  const slotProps = computed(() => {
+  const slotProps = useCaptureProps(() => {
     const isInput = isInputElement(slotEl.value);
 
     const baseProps: Record<string, unknown> = {
@@ -170,8 +170,8 @@ export function useOtpSlot(_props: Reactivify<OtpSlotProps>) {
       baseProps.type = toValue(props.masked) ? 'password' : 'text';
     }
 
-    return withRefCapture(baseProps, slotEl);
-  });
+    return baseProps;
+  }, slotEl);
 
   return {
     slotProps,

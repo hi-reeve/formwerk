@@ -1,7 +1,7 @@
 import { computed, nextTick, provide, ref, toValue, watch } from 'vue';
 import { MaybeAsync, Reactivify, StandardSchema } from '../types';
 import { OtpContextKey, OtpSlotAcceptType } from './types';
-import { createDescribedByProps, normalizeProps, useUniqId, withRefCapture } from '../utils/common';
+import { createDescribedByProps, normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
 import { FieldTypePrefixes } from '../constants';
 import { useErrorMessage, useLabel } from '../a11y';
 import { exposeField, useFormField } from '../useFormField';
@@ -165,18 +165,15 @@ export function useOtpField(_props: Reactivify<OtpFieldProps, 'schema' | 'onComp
     errorMessage: field.errorMessage,
   });
 
-  const controlProps = computed(() => {
-    return withRefCapture(
-      {
-        id,
-        role: 'group',
-        ...labelledByProps.value,
-        ...describedByProps.value,
-        ...accessibleErrorProps.value,
-      },
-      controlEl,
-    );
-  });
+  const controlProps = useCaptureProps(() => {
+    return {
+      id,
+      role: 'group',
+      ...labelledByProps.value,
+      ...describedByProps.value,
+      ...accessibleErrorProps.value,
+    };
+  }, controlEl);
 
   function createFocusHandler(direction: 'next' | 'previous') {
     return () => {
