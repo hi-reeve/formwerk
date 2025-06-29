@@ -1,4 +1,4 @@
-import { computed, inject, nextTick, provide, Ref, ref, shallowRef, toValue, watch } from 'vue';
+import { computed, inject, nextTick, provide, Ref, shallowRef, toValue, watch } from 'vue';
 import { CalendarContext, CalendarViewType } from './types';
 import { hasKeyCode, normalizeProps, useCaptureProps, useUniqId } from '../utils/common';
 import { Maybe, Reactivify, StandardSchema } from '../types';
@@ -130,9 +130,9 @@ export function useCalendar(_props: Reactivify<CalendarProps, 'field' | 'schema'
   const pickerContext = inject(PickerContextKey, null);
   const calendarId = useUniqId(FieldTypePrefixes.Calendar);
   const gridId = `${calendarId}-g`;
-  const calendarEl = ref<HTMLElement>();
-  const gridEl = ref<HTMLElement>();
-  const calendarLabelEl = ref<HTMLElement>();
+  const calendarEl = shallowRef<HTMLElement>();
+  const gridEl = shallowRef<HTMLElement>();
+  const calendarLabelEl = shallowRef<HTMLElement>();
   const field =
     props.field ??
     useFormField<Maybe<Date>>({

@@ -7,6 +7,7 @@ import {
   provide,
   ref,
   toValue,
+  shallowRef,
 } from 'vue';
 import { useLabel, useErrorMessage, type ErrorableAttributes } from '../a11y';
 import { AriaLabelableProps, Arrayable, Direction, Numberish, Orientation, Reactivify, StandardSchema } from '../types';
@@ -205,7 +206,7 @@ export const SliderInjectionKey: InjectionKey<SliderContext> = Symbol('Slider');
 export function useSlider<TValue>(_props: Reactivify<SliderProps<TValue>, 'schema'>) {
   const props = normalizeProps(_props, ['schema']);
   const inputId = useUniqId(FieldTypePrefixes.Slider);
-  const trackEl = ref<HTMLElement>();
+  const trackEl = shallowRef<HTMLElement>();
   const thumbs = ref<ThumbRegistration[]>([]);
   const { direction } = useLocale();
   const field = useFormField<Arrayable<TValue | undefined>>({

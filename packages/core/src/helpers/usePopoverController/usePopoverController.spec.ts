@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/vue';
 import { usePopoverController } from './usePopoverController';
-import { nextTick, ref } from 'vue';
+import { nextTick, shallowRef } from 'vue';
 
 // The matches query doesn't seem to be supported
 test.skip('opens/closes the popover when `isOpen` changes', async () => {
   await render({
     setup() {
-      const popoverRef = ref<HTMLElement>();
+      const popoverRef = shallowRef<HTMLElement>();
       const { isOpen } = usePopoverController(popoverRef);
 
       return {
@@ -34,7 +34,7 @@ const createEvent = (state: boolean) => {
 test('Syncs isOpen when the toggle event is fired', async () => {
   await render({
     setup() {
-      const popoverRef = ref<HTMLElement>();
+      const popoverRef = shallowRef<HTMLElement>();
       const { isOpen } = usePopoverController(popoverRef);
 
       return {
@@ -60,7 +60,7 @@ test('Syncs isOpen when the toggle event is fired', async () => {
 test('No ops if state match', async () => {
   await render({
     setup() {
-      const popoverRef = ref<HTMLElement>();
+      const popoverRef = shallowRef<HTMLElement>();
       const { isOpen } = usePopoverController(popoverRef);
 
       return {

@@ -1,4 +1,4 @@
-import { type CSSProperties, type Ref, computed, inject, ref, toValue } from 'vue';
+import { type CSSProperties, type Ref, computed, inject, ref, toValue, shallowRef } from 'vue';
 import { SliderContext, SliderInjectionKey, ThumbRegistration } from './useSlider';
 import { normalizeProps, useUniqId, warn, useCaptureProps } from '../utils/common';
 import { Reactivify } from '../types';
@@ -34,7 +34,7 @@ export function useSliderThumb<TValue = number>(
   elementRef?: Ref<HTMLElement>,
 ) {
   const props = normalizeProps(_props, ['formatValue']);
-  const thumbEl = elementRef || ref<HTMLElement>();
+  const thumbEl = elementRef || shallowRef<HTMLElement>();
   const isDisabled = createDisabledContext(props.disabled);
   const isDragging = ref(false);
   const { direction } = useLocale();

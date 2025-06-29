@@ -1,4 +1,4 @@
-import { ref, toValue, watch } from 'vue';
+import { ref, toValue, watch, shallowRef } from 'vue';
 import { InputEvents, Maybe, Reactivify, StandardSchema } from '../types';
 import { Orientation } from '../types';
 import {
@@ -105,8 +105,8 @@ export function useComboBox<TOption, TValue = TOption>(
   collectionOptions?: Partial<ComboBoxCollectionOptions>,
 ) {
   const props = normalizeProps(_props, ['schema', 'onNewValue']);
-  const inputEl = ref<HTMLElement>();
-  const buttonEl = ref<HTMLElement>();
+  const inputEl = shallowRef<HTMLElement>();
+  const buttonEl = shallowRef<HTMLElement>();
   const inputValue = ref('');
   const inputId = useUniqId(FieldTypePrefixes.ComboBox);
   const isReadOnly = () => toValue(props.readonly);

@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, inject, ref, toValue, useId } from 'vue';
+import { computed, defineComponent, h, inject, toValue, useId, shallowRef } from 'vue';
 import { Reactivify } from '../types';
 import { hasKeyCode, isInputElement, normalizeProps, warn, useCaptureProps } from '../utils/common';
 import { isFirefox } from '../utils/platform';
@@ -36,7 +36,7 @@ export interface OtpSlotProps {
 
 export function useOtpSlot(_props: Reactivify<OtpSlotProps>) {
   const props = normalizeProps(_props);
-  const slotEl = ref<HTMLElement>();
+  const slotEl = shallowRef<HTMLElement>();
   const isDisabled = createDisabledContext(props.disabled);
 
   const context = inject(OtpContextKey, null);

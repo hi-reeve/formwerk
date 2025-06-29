@@ -1,4 +1,4 @@
-import { computed, markRaw, nextTick, provide, readonly, ref, toValue } from 'vue';
+import { computed, markRaw, nextTick, provide, readonly, ref, toValue, shallowRef } from 'vue';
 import { Arrayable, Reactivify, StandardSchema } from '../types';
 import {
   isNullOrUndefined,
@@ -104,7 +104,7 @@ export function useFileField(_props: Reactivify<FileFieldProps, 'schema' | 'onUp
   const inputEl = ref<HTMLInputElement>();
   const entries = ref<FileEntryProps[]>([]);
   const inputId = useUniqId(FieldTypePrefixes.FileField);
-  const dropzoneEl = ref<HTMLElement>();
+  const dropzoneEl = shallowRef<HTMLElement>();
   const abortControllers = new Map<string, AbortController>();
   const overridePickOptions = ref<FilePickerOptions>();
 

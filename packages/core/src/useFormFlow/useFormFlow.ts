@@ -1,4 +1,4 @@
-import { computed, nextTick, onMounted, provide, reactive, Ref, ref, toValue } from 'vue';
+import { computed, nextTick, onMounted, provide, reactive, Ref, ref, toValue, shallowRef } from 'vue';
 import { NoSchemaFormProps, useForm } from '../useForm';
 import { FormObject, IssueCollection, Path } from '../types';
 import { isObject, merge } from '../../../shared/src';
@@ -27,7 +27,7 @@ export interface GoToPredicateContext {
 
 export function useFormFlow<TInput extends FormObject = FormObject>(_props?: FormFlowProps<TInput>) {
   const currentSegmentId = ref<string>();
-  const formElement = ref<HTMLElement>();
+  const formElement = shallowRef<HTMLElement>();
   const values = reactive<PartialDeep<TInput>>({} as PartialDeep<TInput>);
   const segmentValuesMap = ref(new Map<string, StepState<TInput>>()) as Ref<Map<string, StepState<TInput>>>;
   const form = useForm(_props);

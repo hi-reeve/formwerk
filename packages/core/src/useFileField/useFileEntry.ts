@@ -5,7 +5,6 @@ import {
   h,
   inject,
   onUnmounted,
-  ref,
   shallowRef,
   toValue,
   type VNode,
@@ -42,7 +41,7 @@ export interface FileEntryProps {
 export function useFileEntry(_props: Reactivify<FileEntryProps>) {
   const props = normalizeProps(_props);
   const collection = inject(FileEntryCollectionKey);
-  const previewEl = ref<HTMLElement>();
+  const previewEl = shallowRef<HTMLElement>();
   const currentObjectURL = shallowRef<string>();
 
   if (__DEV__) {

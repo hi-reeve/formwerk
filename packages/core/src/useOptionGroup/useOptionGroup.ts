@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 import { Reactivify } from '../types';
 import { useLabel } from '../a11y/useLabel';
 import { normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
@@ -18,7 +18,7 @@ export interface OptionGroupProps {
 }
 
 export function useOptionGroup(_props: Reactivify<OptionGroupProps>) {
-  const groupEl = ref<HTMLElement>();
+  const groupEl = shallowRef<HTMLElement>();
   const props = normalizeProps(_props);
   const groupId = useUniqId(FieldTypePrefixes.OptionGroup);
   const isDisabled = createDisabledContext(props.disabled);

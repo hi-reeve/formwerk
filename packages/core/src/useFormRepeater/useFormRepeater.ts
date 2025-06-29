@@ -11,6 +11,7 @@ import {
   toValue,
   VNode,
   watch,
+  shallowRef,
 } from 'vue';
 import { Numberish, Reactivify } from '../types';
 import { FormKey } from '../useForm';
@@ -386,7 +387,7 @@ export function useFormRepeater<TItem = unknown>(_props: Reactivify<FormRepeater
 
 function createBtnProps(_props: Reactivify<FormRepeaterButtonProps, 'onClick'>) {
   const props = normalizeProps(_props, ['onClick']);
-  const buttonEl = ref<HTMLElement>();
+  const buttonEl = shallowRef<HTMLElement>();
 
   const buttonProps = useCaptureProps<FormRepeaterButtonDomProps>(() => {
     const isBtnTag = buttonEl.value?.tagName === 'BUTTON';

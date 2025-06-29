@@ -1,4 +1,4 @@
-import { nextTick, onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref, shallowRef } from 'vue';
 import { dateToString, useConstraintsValidator } from './useConstraintsValidator';
 import { fireEvent, render, screen } from '@testing-library/vue';
 import { renderSetup } from '@test-utils/index';
@@ -6,7 +6,7 @@ import { renderSetup } from '@test-utils/index';
 describe('useConstraintsValidator', () => {
   describe('text constraints', () => {
     test('creates an input element with text type', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref('test');
 
       const { element } = await renderSetup(() => {
@@ -22,7 +22,7 @@ describe('useConstraintsValidator', () => {
     });
 
     test('sets required attribute', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref('test');
       const required = ref(true);
 
@@ -44,7 +44,7 @@ describe('useConstraintsValidator', () => {
     });
 
     test('sets minLength and maxLength attributes', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref('test');
       const minLength = ref(2);
       const maxLength = ref(10);
@@ -71,7 +71,7 @@ describe('useConstraintsValidator', () => {
     });
 
     test('updates value when source value changes', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref('test');
 
       const { element } = await renderSetup(() => {
@@ -92,7 +92,7 @@ describe('useConstraintsValidator', () => {
 
   describe('select constraints', () => {
     test('creates an input element with text type for select', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref('option1');
 
       const { element } = await renderSetup(() => {
@@ -110,7 +110,7 @@ describe('useConstraintsValidator', () => {
 
   describe('number constraints', () => {
     test('creates an input element with number type', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref(42);
 
       const { element } = await renderSetup(() => {
@@ -126,7 +126,7 @@ describe('useConstraintsValidator', () => {
     });
 
     test('sets min and max attributes', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref(42);
       const min = ref(0);
       const max = ref(100);
@@ -155,7 +155,7 @@ describe('useConstraintsValidator', () => {
 
   describe('date constraints', () => {
     test('creates an input element with date type', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref(new Date('2023-01-01'));
 
       const { element } = await renderSetup(() => {
@@ -171,7 +171,7 @@ describe('useConstraintsValidator', () => {
     });
 
     test('sets min and max date attributes', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref(new Date('2023-01-15'));
       const min = ref(new Date('2023-01-01'));
       const max = ref(new Date('2023-01-31'));
@@ -198,7 +198,7 @@ describe('useConstraintsValidator', () => {
     });
 
     test('handles null date values', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref<Date | null>(null);
 
       const { element } = await renderSetup(() => {
@@ -219,7 +219,7 @@ describe('useConstraintsValidator', () => {
 
   describe('event handling', () => {
     test('forwards events from source to element', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref('test');
       const dispatchedEvents: string[] = [];
 
@@ -260,7 +260,7 @@ describe('useConstraintsValidator', () => {
 
   describe('edge cases', () => {
     test('handles undefined constraints values', async () => {
-      const source = ref<HTMLElement>();
+      const source = shallowRef<HTMLElement>();
       const value = ref<string | undefined>(undefined);
 
       const { element } = await renderSetup(() => {

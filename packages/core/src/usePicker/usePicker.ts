@@ -1,4 +1,4 @@
-import { InjectionKey, provide, ref, toValue } from 'vue';
+import { InjectionKey, provide, toValue, shallowRef } from 'vue';
 import { usePopoverController } from '../helpers/usePopoverController';
 import { createDisabledContext } from '../helpers/createDisabledContext';
 import { normalizeProps, useCaptureProps } from '../utils/common';
@@ -26,7 +26,7 @@ export const PickerContextKey: InjectionKey<PickerContext> = Symbol('PickerConte
 
 export function usePicker(_props: Reactivify<PickerProps>) {
   const props = normalizeProps(_props);
-  const pickerEl = ref<HTMLElement>();
+  const pickerEl = shallowRef<HTMLElement>();
   const disabled = createDisabledContext(props.disabled);
 
   const { isOpen } = usePopoverController(pickerEl, { disabled });

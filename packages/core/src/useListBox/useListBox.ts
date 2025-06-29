@@ -1,4 +1,4 @@
-import { computed, InjectionKey, nextTick, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
+import { computed, InjectionKey, nextTick, onBeforeUnmount, provide, ref, toValue, watch, shallowRef } from 'vue';
 import { AriaLabelableProps, Maybe, Orientation, Reactivify } from '../types';
 import { hasKeyCode, isInViewport, normalizeProps, removeFirst, useUniqId, useCaptureProps } from '../utils/common';
 import { useKeyPressed } from '../helpers/useKeyPressed';
@@ -71,7 +71,7 @@ export function useListBox<TOption, TValue = TOption>(
 ) {
   const props = normalizeProps(_props, ['isValueSelected', 'handleToggleValue']);
   const listBoxId = useUniqId(FieldTypePrefixes.ListBox);
-  const listBoxEl = ref<HTMLElement>();
+  const listBoxEl = shallowRef<HTMLElement>();
   const renderedOptions = ref<OptionRegistrationWithId<TValue>[]>([]);
   const finder = useBasicOptionFinder(renderedOptions);
 

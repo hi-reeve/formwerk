@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/vue';
 import { useLabel } from './useLabel';
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 
 describe('label element', () => {
   test('should render label with `for` attribute', async () => {
@@ -9,7 +9,7 @@ describe('label element', () => {
 
     await render({
       setup: () => {
-        const inputRef = ref<HTMLElement>();
+        const inputRef = shallowRef<HTMLElement>();
 
         return {
           inputRef,
@@ -73,7 +73,7 @@ describe('label target (labelledBy)', () => {
   test('should have aria-labelledby if there is both a target element and a label element', async () => {
     const label = 'label';
     const labelFor = 'input';
-    const targetRef = ref<HTMLElement>();
+    const targetRef = shallowRef<HTMLElement>();
 
     await render({
       setup: () => {

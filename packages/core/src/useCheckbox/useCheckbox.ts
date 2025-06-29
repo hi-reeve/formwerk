@@ -1,4 +1,4 @@
-import { computed, inject, nextTick, ref, toValue } from 'vue';
+import { computed, inject, nextTick, toValue, shallowRef } from 'vue';
 import { registerField } from '@formwerk/devtools';
 import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
 import {
@@ -103,7 +103,7 @@ export function useCheckbox<TValue = string>(_props: Reactivify<CheckboxProps<TV
   const getTrueValue = createTrueValueGetter(props);
   const getFalseValue = () => (toValue(props.falseValue) as TValue) ?? (false as TValue);
   const group: CheckboxGroupContext<TValue> | null = toValue(props.standalone) ? null : inject(CheckboxGroupKey, null);
-  const inputEl = ref<HTMLElement>();
+  const inputEl = shallowRef<HTMLElement>();
   const field = useCheckboxField(props);
   if (!group) {
     useInputValidity({

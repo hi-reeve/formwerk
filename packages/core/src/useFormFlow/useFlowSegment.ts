@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, inject, provide, ref } from 'vue';
+import { computed, defineComponent, h, inject, provide, shallowRef } from 'vue';
 import { FormFlowContextKey, FlowSegmentProps } from './types';
 import { useUniqId, useCaptureProps } from '../utils/common';
 import { FieldTypePrefixes } from '../constants';
@@ -8,7 +8,7 @@ import { GenericFormSchema } from '../types';
 import { FormGroupContext, FormGroupKey } from '../useFormGroup';
 
 export function useFlowSegment<TSchema extends GenericFormSchema>(props: FlowSegmentProps<TSchema>) {
-  const element = ref<HTMLElement>();
+  const element = shallowRef<HTMLElement>();
   const id = useUniqId(FieldTypePrefixes.FlowSegment);
   const formFlow = inject(FormFlowContextKey, null);
   if (!formFlow) {

@@ -1,4 +1,4 @@
-import { computed, nextTick, provide, ref, toValue, watch } from 'vue';
+import { computed, nextTick, provide, ref, toValue, watch, shallowRef } from 'vue';
 import { MaybeAsync, Reactivify, StandardSchema } from '../types';
 import { OtpContextKey, OtpSlotAcceptType } from './types';
 import { createDescribedByProps, normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
@@ -90,7 +90,7 @@ export interface OtpFieldProps {
 
 export function useOtpField(_props: Reactivify<OtpFieldProps, 'schema' | 'onCompleted'>) {
   const props = normalizeProps(_props, ['schema', 'onCompleted']);
-  const controlEl = ref<HTMLElement>();
+  const controlEl = shallowRef<HTMLElement>();
   const id = useUniqId(FieldTypePrefixes.OTPField);
 
   function withPrefix(value: string | undefined) {

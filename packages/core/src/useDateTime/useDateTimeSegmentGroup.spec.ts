@@ -1,6 +1,6 @@
 import { DateFormatter, fromDate } from '@internationalized/date';
 import { useDateTimeSegmentGroup } from './useDateTimeSegmentGroup';
-import { Ref, ref } from 'vue';
+import { Ref, ref, shallowRef } from 'vue';
 import { fireEvent, render, screen } from '@testing-library/vue';
 import { flush } from '@test-utils/flush';
 import { DateTimeSegment } from './useDateTimeSegment';
@@ -27,7 +27,7 @@ describe('useDateTimeSegmentGroup', () => {
   describe('segment registration', () => {
     test('registers and unregisters segments', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
 
       await render({
@@ -74,7 +74,7 @@ describe('useDateTimeSegmentGroup', () => {
   describe('segment navigation', () => {
     test('handles keyboard navigation between segments', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
 
       await render({
@@ -126,7 +126,7 @@ describe('useDateTimeSegmentGroup', () => {
 
     test('respects RTL direction', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
 
       await render({
@@ -181,7 +181,7 @@ describe('useDateTimeSegmentGroup', () => {
   describe('value updates', () => {
     test('increments segment values', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
       let monthRegistration!: ReturnType<ReturnType<typeof useDateTimeSegmentGroup>['useDateSegmentRegistration']>;
 
@@ -217,7 +217,7 @@ describe('useDateTimeSegmentGroup', () => {
 
     test('decrements segment values', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
       let monthRegistration!: ReturnType<ReturnType<typeof useDateTimeSegmentGroup>['useDateSegmentRegistration']>;
 
@@ -253,7 +253,7 @@ describe('useDateTimeSegmentGroup', () => {
 
     test('sets specific segment values', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
       let monthRegistration!: ReturnType<ReturnType<typeof useDateTimeSegmentGroup>['useDateSegmentRegistration']>;
 
@@ -289,7 +289,7 @@ describe('useDateTimeSegmentGroup', () => {
 
     test('clears segment values', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
       let monthRegistration!: ReturnType<ReturnType<typeof useDateTimeSegmentGroup>['useDateSegmentRegistration']>;
 
@@ -328,7 +328,7 @@ describe('useDateTimeSegmentGroup', () => {
   describe('formatting', () => {
     test('formats segments according to locale', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
 
       await render({
@@ -366,7 +366,7 @@ describe('useDateTimeSegmentGroup', () => {
   describe('segment input handling', () => {
     test('handles numeric input', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
 
       await render({
@@ -428,7 +428,7 @@ describe('useDateTimeSegmentGroup', () => {
 
     test('handles keyboard navigation and actions', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
 
       await render({
@@ -491,7 +491,7 @@ describe('useDateTimeSegmentGroup', () => {
 
     test('handles non-numeric input', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
 
       await render({
@@ -548,7 +548,7 @@ describe('useDateTimeSegmentGroup', () => {
           dayPeriod: 'short',
         }),
       );
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
 
       await render({
@@ -617,7 +617,7 @@ describe('useDateTimeSegmentGroup', () => {
 
     test.fails('converts to non-partial when all segments are filled', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const onValueChange = vi.fn();
       const initialDate = currentDate.set({ year: 2024, month: 1, day: 1 });
 
@@ -715,7 +715,7 @@ describe('useDateTimeSegmentGroup', () => {
 
     test('preserves partial state when not all segments are filled', async () => {
       const formatter = ref(createFormatter());
-      const controlEl = ref<HTMLElement>();
+      const controlEl = shallowRef<HTMLElement>();
       const initialDate = currentDate.set({ year: 2024, month: 1, day: 1 });
       const temporalValue = ref(
         createTemporalPartial(initialDate.calendar, initialDate.timeZone),

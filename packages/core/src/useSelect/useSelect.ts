@@ -1,4 +1,4 @@
-import { ref, toValue } from 'vue';
+import { toValue, shallowRef } from 'vue';
 import { useFormField, exposeField } from '../useFormField';
 import { AriaLabelableProps, Arrayable, Orientation, Reactivify, StandardSchema } from '../types';
 import {
@@ -99,7 +99,7 @@ export function useSelect<TOption, TValue = TOption>(_props: Reactivify<SelectPr
     disabled: props.disabled,
     schema: props.schema,
   });
-  const triggerEl = ref<HTMLElement>();
+  const triggerEl = shallowRef<HTMLElement>();
   const { fieldValue, setValue, errorMessage, isDisabled } = field;
   const isMutable = () => !isDisabled.value && !toValue(props.readonly);
   const { labelProps, labelledByProps } = useLabel({

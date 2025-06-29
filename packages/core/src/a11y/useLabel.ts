@@ -1,4 +1,4 @@
-import { MaybeRefOrGetter, computed, ref, toValue } from 'vue';
+import { MaybeRefOrGetter, computed, toValue, shallowRef } from 'vue';
 import { Maybe, AriaLabelProps, AriaLabelableProps } from '../types';
 import { createRefCapture, isInputElement, isLabelElement } from '../utils/common';
 
@@ -10,7 +10,7 @@ interface LabelProps {
 }
 
 export function useLabel(props: LabelProps) {
-  const labelRef = ref<HTMLElement>();
+  const labelRef = shallowRef<HTMLElement>();
   const refCapture = createRefCapture(labelRef);
 
   const labelProps = computed<AriaLabelProps>(() => {
