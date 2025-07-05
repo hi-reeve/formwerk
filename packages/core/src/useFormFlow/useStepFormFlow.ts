@@ -6,7 +6,7 @@ import { createEventDispatcher } from '../utils/events';
 import { FormObject, GenericFormSchema, MaybeAsync } from '../types';
 import { FormFlowProps, useFormFlow } from './useFormFlow';
 import { FormFlowSegment, useFlowSegment } from './useFlowSegment';
-import { FlowSegmentProps, ResolvedSegmentMetadata, StepIdentifier } from './types';
+import { FlowSegmentProps, ResolvedSegmentMetadata, StepDirection, StepIdentifier } from './types';
 import { PartialDeep } from 'type-fest';
 import { resolveSegmentMetadata } from './utils';
 
@@ -55,7 +55,7 @@ export interface StepResolveContext<TInput extends FormObject> {
   /**
    * The values of the form.
    */
-  direction: 'next' | 'previous';
+  direction: StepDirection;
 
   /**
    * The values of the form.
@@ -98,7 +98,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
     };
   }, flow.formElement);
 
-  function createStepResolverContext(direction: 'next' | 'previous'): StepResolveContext<TInput> {
+  function createStepResolverContext(direction: StepDirection): StepResolveContext<TInput> {
     const current = flow.currentSegment.value;
     if (!current) {
       if (__DEV__) {
@@ -139,7 +139,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
       }) as PartialDeep<TInput>,
       direction,
       next: () => {
-        const step = flow.resolveRelative(direction === 'next' ? 1 : -1);
+        const step = flow.resolveRelative(direction === 'NEXT' ? 1 : -1);
 
         return step ? resolveSegmentMetadata(step) : null;
       },
@@ -156,7 +156,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
     flow.moveRelative(1);
   }
 
-  async function executeStepResolver(resolver: StepResolver<TInput>, direction: 'next' | 'previous') {
+  async function executeStepResolver(resolver: StepResolver<TInput>, direction: StepDirection) {
     const ctx = createStepResolverContext(direction);
     const step = await resolver(ctx);
     if (step === DONE_EVENT) {
@@ -177,7 +177,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
 
     if (isNullOrUndefined(step)) {
       if (__DEV__) {
-        if (direction === 'next' && !ctx.isLastStep) {
+        if (direction === 'NEXT' && !ctx.isLastStep) {
           warn(
             `onBeforeStepResolve returned an empty step identifier: ${step}. Executing the default ${direction} step resolver.`,
           );
@@ -185,7 +185,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      direction === 'next' ? defaultNext() : defaultPrevious();
+      direction === 'NEXT' ? defaultNext() : defaultPrevious();
     }
   }
 
@@ -201,7 +201,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
       return defaultNext();
     }
 
-    await executeStepResolver(stepResolver, 'next');
+    await executeStepResolver(stepResolver, 'NEXT');
   });
 
   function defaultPrevious() {
@@ -214,7 +214,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
       return;
     }
 
-    await executeStepResolver(stepResolver, 'previous');
+    await executeStepResolver(stepResolver, 'PREVIOUS');
   }
 
   const nextButtonProps = useControlButtonProps(btn => ({
