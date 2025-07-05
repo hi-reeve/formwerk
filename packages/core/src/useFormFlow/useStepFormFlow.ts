@@ -3,10 +3,10 @@ import { useControlButtonProps } from '../helpers/useControlButtonProps';
 import { cloneDeep, isFormElement, isNullOrUndefined, warn, useCaptureProps } from '../utils/common';
 import { asConsumableData, ConsumableData } from '../useForm/useFormActions';
 import { createEventDispatcher } from '../utils/events';
-import { FormObject, MaybeAsync } from '../types';
+import { FormObject, GenericFormSchema, MaybeAsync } from '../types';
 import { FormFlowProps, useFormFlow } from './useFormFlow';
-import { FormFlowSegment } from './useFlowSegment';
-import { ResolvedSegmentMetadata, StepIdentifier } from './types';
+import { FormFlowSegment, useFlowSegment } from './useFlowSegment';
+import { FlowSegmentProps, ResolvedSegmentMetadata, StepIdentifier } from './types';
 import { PartialDeep } from 'type-fest';
 import { resolveSegmentMetadata } from './utils';
 
@@ -65,7 +65,7 @@ export interface StepResolveContext<TInput extends FormObject> {
   /**
    * Resolves the next step in the flow.
    */
-  next(): MaybeAsync<StepIdentifier | null>;
+  next(): MaybeAsync<ResolvedSegmentMetadata | null>;
 
   /**
    * Fires the done event, use it to "submit" the entire collected data across all steps.
@@ -138,7 +138,11 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
         ...form.values,
       }) as PartialDeep<TInput>,
       direction,
-      next: () => flow.resolveRelative(direction === 'next' ? 1 : -1),
+      next: () => {
+        const step = flow.resolveRelative(direction === 'next' ? 1 : -1);
+
+        return step ? resolveSegmentMetadata(step) : null;
+      },
       done: () => DONE_EVENT,
     };
   }
@@ -346,3 +350,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
     onBeforeStepResolve,
   };
 }
+
+export const useFormStep = /*#__PURE__*/ useFlowSegment;
+
+export type FormStepProps<TSchema extends GenericFormSchema> = FlowSegmentProps<TSchema>;
