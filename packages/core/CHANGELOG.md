@@ -1,5 +1,15 @@
 # @formwerk/core
 
+## 0.11.0
+
+### Minor Changes
+
+- 5b95c4b: feat: added stepped form flow
+
+### Patch Changes
+
+- @formwerk/devtools@0.11.0
+
 ## 0.10.7
 
 ### Patch Changes
