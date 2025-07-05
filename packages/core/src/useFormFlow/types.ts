@@ -58,4 +58,4 @@ export type StepIdentifier = string | number | symbol | SegmentMetadata | Resolv
 
 export const FormFlowContextKey: InjectionKey<FormFlowContext> = Symbol('FormFlowContext');
 
-export type StepDirection = 'NEXT' | 'PREVIOUS';
+export type StepDirection = 'next' | 'previous';

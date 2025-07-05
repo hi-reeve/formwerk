@@ -24,7 +24,7 @@ export interface StepFormFlowProps<TInput extends FormObject> extends FormFlowPr
 
 type StepResolver<TInput extends FormObject> = (
   ctx: StepResolveContext<TInput>,
-) => MaybeAsync<StepIdentifier | null | undefined>;
+) => MaybeAsync<StepIdentifier | null | undefined | void>;
 
 export interface StepResolveContext<TInput extends FormObject> {
   /**
@@ -139,7 +139,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
       }) as PartialDeep<TInput>,
       direction,
       next: () => {
-        const step = flow.resolveRelative(direction === 'NEXT' ? 1 : -1);
+        const step = flow.resolveRelative(direction === 'next' ? 1 : -1);
 
         return step ? resolveSegmentMetadata(step) : null;
       },
@@ -177,7 +177,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
 
     if (isNullOrUndefined(step)) {
       if (__DEV__) {
-        if (direction === 'NEXT' && !ctx.isLastStep) {
+        if (direction === 'next' && !ctx.isLastStep) {
           warn(
             `onBeforeStepResolve returned an empty step identifier: ${step}. Executing the default ${direction} step resolver.`,
           );
@@ -185,7 +185,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      direction === 'NEXT' ? defaultNext() : defaultPrevious();
+      direction === 'next' ? defaultNext() : defaultPrevious();
     }
   }
 
@@ -201,7 +201,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
       return defaultNext();
     }
 
-    await executeStepResolver(stepResolver, 'NEXT');
+    await executeStepResolver(stepResolver, 'next');
   });
 
   function defaultPrevious() {
@@ -214,7 +214,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
       return;
     }
 
-    await executeStepResolver(stepResolver, 'PREVIOUS');
+    await executeStepResolver(stepResolver, 'previous');
   }
 
   const nextButtonProps = useControlButtonProps(btn => ({
