@@ -71,11 +71,25 @@ export interface StepResolveContext<TInput extends FormObject> {
    * Fires the done event, use it to "submit" the entire collected data across all steps.
    */
   done(): symbol;
+
+  /**
+   * Tells the step resolver to wait for an external controller to change the next step.
+   */
+  wait(): void;
 }
+
+/**
+ * A signal that is used to signal the end of the form flow.
+ */
+const DONE_EVENT = Symbol('done');
+
+/**
+ * A signal that is used to tell the step resolver to halt and not do anything, used for external controllers like state machines with `goToStep` API.
+ */
+const WAIT_EVENT = Symbol('wait');
 
 export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowProps<TInput>) {
   const { form, ...flow } = useFormFlow(props);
-  const DONE_EVENT = Symbol('done');
   const resolvedSteps = computed(() => flow.segments.value.map(resolveSegmentMetadata));
   let stepResolver: StepResolver<TInput> | null = null;
   const [dispatchDone, onDone] = createEventDispatcher<ConsumableData<TInput>>('done');
@@ -123,6 +137,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
         direction,
         next: () => null,
         done: () => DONE_EVENT,
+        wait: () => WAIT_EVENT,
       };
     }
 
@@ -144,6 +159,7 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
         return step ? resolveSegmentMetadata(step) : null;
       },
       done: () => DONE_EVENT,
+      wait: () => WAIT_EVENT,
     };
   }
 
@@ -161,6 +177,10 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
     const step = await resolver(ctx);
     if (step === DONE_EVENT) {
       fireDone();
+      return;
+    }
+
+    if (step === WAIT_EVENT) {
       return;
     }
 
