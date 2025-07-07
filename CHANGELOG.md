@@ -1,5 +1,14 @@
 # @formwerk/core
 
+## 0.11.1
+
+### Patch Changes
+
+- 99e3f1e: feat: add wait signal to step resolver for external control
+- e1b6538: fix: mark swiches default false value as low priority
+- 545c4e2: feat: exported several internal types for public use
+  - @formwerk/devtools@0.11.1
+
 ## 0.11.0
 
 ### Minor Changes
