@@ -9,7 +9,15 @@ import {
   Reactivify,
   StandardSchema,
 } from '../types';
-import { hasKeyCode, isEqual, isInputElement, normalizeProps, useUniqId, useCaptureProps } from '../utils/common';
+import {
+  hasKeyCode,
+  isEqual,
+  isInputElement,
+  normalizeProps,
+  useUniqId,
+  useCaptureProps,
+  lowPriority,
+} from '../utils/common';
 import { useLabel, useErrorMessage } from '../a11y';
 import { useFormField, exposeField } from '../useFormField';
 import { FieldTypePrefixes } from '../constants';
@@ -99,7 +107,7 @@ export function useSwitch<TValue = boolean>(_props: Reactivify<SwitchProps<TValu
 
   const field = useFormField<unknown>({
     path: props.name,
-    initialValue: toValue(props.modelValue) ?? toValue(props.falseValue) ?? false,
+    initialValue: toValue(props.modelValue) ?? toValue(props.falseValue) ?? lowPriority(false),
     disabled: props.disabled,
     schema: props.schema,
   });

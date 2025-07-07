@@ -12,6 +12,7 @@ import {
 } from '../types';
 import { AsyncReturnType } from 'type-fest';
 import { getDotPath } from '@standard-schema/utils';
+import { isObject } from '../../../shared/src/utils';
 
 export const isSSR = typeof window === 'undefined';
 
@@ -454,4 +455,20 @@ export function isInViewport(el: Maybe<HTMLElement>, reference: Maybe<HTMLElemen
   const referenceRect = reference.getBoundingClientRect();
 
   return rect.top >= referenceRect.top && rect.bottom <= referenceRect.bottom;
+}
+
+export type LowPriority<TValue> = {
+  __isFwLowPriority__: true;
+  value: TValue;
+};
+
+export function lowPriority<TValue>(value: TValue) {
+  return {
+    __isFwLowPriority__: true,
+    value,
+  };
+}
+
+export function isLowPriority<TValue = unknown>(value: unknown): value is LowPriority<TValue> {
+  return isObject(value) && '__isFwLowPriority__' in value;
 }

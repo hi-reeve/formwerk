@@ -9,6 +9,7 @@ import {
   combineStandardIssues,
   tryOnScopeDispose,
   warn,
+  isLowPriority,
 } from '../utils/common';
 import { FormGroupKey } from '../useFormGroup';
 import { useErrorDisplay } from './useErrorDisplay';
@@ -344,11 +345,14 @@ function initFormPathIfNecessary({
   nextTick(() => {
     const formInitialValue = form.getFieldInitialValue(path);
     const currentValue = form.getValue(path);
+    const assignedValue = isLowPriority(initialValue)
+      ? (currentValue ?? formInitialValue ?? initialValue.value)
+      : (initialValue ?? currentValue ?? formInitialValue);
 
     form.transaction((tf, { INIT_PATH }) => ({
       kind: INIT_PATH,
       path,
-      value: initialValue ?? currentValue ?? formInitialValue,
+      value: assignedValue,
       touched: initialTouched,
       dirty: initialDirty,
       disabled: toValue(isDisabled),
