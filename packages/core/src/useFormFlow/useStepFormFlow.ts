@@ -334,6 +334,11 @@ export function useStepFormFlow<TInput extends FormObject>(props?: StepFormFlowP
      */
     currentStep: flow.currentSegment,
 
+     /**
+     * The current step index in the flow.
+     */
+    currentIndex: flow.currentSegmentIndex,
+    
     /**
      * Activates the step in the flow, if it is already at the last step it will trigger the `onDone` handler.
      */
