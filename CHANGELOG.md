@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.11.3
+
+### Patch Changes
+
+- b4786e5: fix(useFileField): reset isDragging on file drop
+  - @formwerk/devtools@0.11.3
+
 ## 0.11.2
 
 ### Patch Changes
