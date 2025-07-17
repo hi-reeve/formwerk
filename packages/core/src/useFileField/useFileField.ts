@@ -298,7 +298,7 @@ export function useFileField(_props: Reactivify<FileFieldProps, 'schema' | 'onUp
       if (field.isDisabled.value) {
         return;
       }
-      
+
       processFiles(Array.from(evt.dataTransfer?.files ?? []));
     },
     onClick(e: MouseEvent) {
