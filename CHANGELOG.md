@@ -1,5 +1,12 @@
 # @formwerk/core
 
+## 0.11.2
+
+### Patch Changes
+
+- c68d13a: feat: expose currentIndex to the composable
+  - @formwerk/devtools@0.11.2
+
 ## 0.11.1
 
 ### Patch Changes
