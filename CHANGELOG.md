@@ -1,5 +1,13 @@
 # @formwerk/core
 
+## 0.11.4
+
+### Patch Changes
+
+- c7a12dd: fix: move step visibility condition to render fn
+- 81e650d: fix: hide the form step root element when inactive
+  - @formwerk/devtools@0.11.4
+
 ## 0.11.3
 
 ### Patch Changes
