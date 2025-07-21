@@ -2,4 +2,4 @@
 '@formwerk/core': patch
 ---
 
-feat: expose currentIndex to the composable
+fix: hide the form step root element when inactive
