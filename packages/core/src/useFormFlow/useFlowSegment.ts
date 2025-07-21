@@ -97,13 +97,12 @@ export const FormFlowSegment = /*#__PURE__*/ defineComponent({
   props: ['as', 'schema', 'name'],
   setup(props, { attrs, slots }) {
     const { segmentProps, isActive } = useFlowSegment(props);
-    const style = isActive.value ? undefined : { display: 'none' };
 
     return () =>
       h(
         props.as || 'div',
         {
-          style,
+          style: isActive.value ? undefined : { display: 'none' },
           ...attrs,
           ...segmentProps.value,
         },
