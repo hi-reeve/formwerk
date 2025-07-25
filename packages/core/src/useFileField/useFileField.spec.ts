@@ -332,6 +332,76 @@ test('dropping files adds them to entries', async () => {
   expect(screen.getByTestId('entries')).toHaveTextContent('2 files');
 });
 
+test('isDragging state resets to false after drop event', async () => {
+  await render(makeTest({ multiple: true }));
+
+  const dropzone = screen.getByTestId('fixture').firstChild as HTMLElement;
+  const fixture = screen.getByTestId('fixture');
+
+  // Initially not dragging
+  expect(fixture.className).not.toContain('dragging');
+
+  // Start dragging - dragenter and dragover should set isDragging to true
+  await fireEvent.dragEnter(dropzone);
+  await fireEvent.dragOver(dropzone);
+  expect(fixture.className).toContain('dragging');
+
+  // Drop files - should reset isDragging to false
+  const file1 = new File(['test content 1'], 'test1.txt', { type: 'text/plain' });
+  const file2 = new File(['test content 2'], 'test2.txt', { type: 'text/plain' });
+
+  await fireEvent.drop(dropzone, {
+    dataTransfer: {
+      files: [file1, file2],
+    },
+  });
+
+  await flush();
+
+  // Verify isDragging is false after drop
+  expect(fixture.className).not.toContain('dragging');
+
+  // Verify files were added
+  expect(screen.getByTestId('entries')).toHaveTextContent('2 files');
+});
+
+test('isDragging state transitions correctly during drag sequence', async () => {
+  await render(makeTest({ multiple: true }));
+
+  const dropzone = screen.getByTestId('fixture').firstChild as HTMLElement;
+  const fixture = screen.getByTestId('fixture');
+
+  // Initially not dragging
+  expect(fixture.className).not.toContain('dragging');
+
+  // dragenter should not change isDragging by itself
+  await fireEvent.dragEnter(dropzone);
+  expect(fixture.className).not.toContain('dragging');
+
+  // dragover should set isDragging to true
+  await fireEvent.dragOver(dropzone);
+  expect(fixture.className).toContain('dragging');
+
+  // dragleave should reset isDragging to false
+  await fireEvent.dragLeave(dropzone);
+  expect(fixture.className).not.toContain('dragging');
+
+  // Start dragging again
+  await fireEvent.dragOver(dropzone);
+  expect(fixture.className).toContain('dragging');
+
+  // Drop should reset isDragging to false
+  const file = new File(['test content'], 'test.txt', { type: 'text/plain' });
+  await fireEvent.drop(dropzone, {
+    dataTransfer: {
+      files: [file],
+    },
+  });
+
+  await flush();
+  expect(fixture.className).not.toContain('dragging');
+});
+
 test('aborting an upload when removing an entry', async () => {
   // Create a mock upload function that returns a promise that never resolves
   // This simulates a long-running upload
